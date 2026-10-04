@@ -1,167 +1,296 @@
-from flask import Flask, render_template_string
-
-app = Flask(__name__)
-
-videos = [
-    {
-        "id": 1,
-        "user": "@abdo_official",
-        "desc": "أول فيديو على منصة عبده توك! 🔥 #abdo #tiktok",
-        "url": "https://www.w3schools.com/html/mov_bbb.mp4",
-        "likes": 120,
-        "comments": 15
-    },
-    {
-        "id": 2,
-        "user": "@creative_mind",
-        "desc": "تجربة التمرير السريع مثل تيك توك 🚀",
-        "url": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-        "likes": 450,
-        "comments": 32
-    }
-]
-
-HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abdo Tok - عبده توك</title>
+    <title>abdo-tok</title>
+    <!-- FontAwesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* شاشة تسجيل الدخول */
+        #auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            text-align: center;
+        }
+        #auth-modal h2 {
+            margin-bottom: 10px;
+            color: #fe2c55;
+        }
+        #auth-modal p {
+            margin-bottom: 20px;
+            color: #ccc;
+            font-size: 14px;
+        }
+        .input-box {
+            width: 80%;
+            max-width: 300px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+        }
+        .login-btn {
+            background: #fe2c55;
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(254,44,85,0.4);
+        }
+        /* واجهة التيكتوك الرئيسية */
         .app-container {
             height: 100vh;
-            width: 100vw;
-            max-width: 480px;
-            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             position: relative;
-            overflow-y: scroll;
-            snap-type: y mandatory;
-            scroll-behavior: smooth;
         }
-        .app-container::-webkit-scrollbar { display: none; }
-        .app-container { -ms-overflow-style: none; scrollbar-width: none; }
+        .feed {
+            flex: 1;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+        }
         .video-card {
             height: 100vh;
-            width: 100%;
+            scroll-snap-align: start;
             position: relative;
-            snap-align: start;
             background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        video { width: 100%; height: 100%; object-fit: cover; }
-        .video-details {
+        .video-info {
             position: absolute;
-            bottom: 20px;
+            bottom: 70px;
             right: 15px;
-            left: 80px;
-            z-index: 10;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            left: 70px;
+            text-align: right;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        .user-name { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; }
-        .video-desc { font-size: 0.9rem; color: #ddd; }
-        .action-buttons {
+        .user-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 2px solid #fe2c55;
+            object-fit: cover;
+            background: #333;
+        }
+        .actions {
             position: absolute;
+            bottom: 70px;
             left: 15px;
-            bottom: 40px;
             display: flex;
             flex-direction: column;
             gap: 20px;
             align-items: center;
-            z-index: 10;
         }
         .action-btn {
-            background: none;
+            background: rgba(0,0,0,0.5);
             border: none;
             color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-        .action-btn .icon {
             width: 45px;
             height: 45px;
-            background: rgba(255,255,255,0.2);
             border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
-            margin-bottom: 4px;
-            backdrop-filter: blur(5px);
+            align-items: center;
         }
-        .top-bar {
+        /* نافذة تعديل الملف الشخصي */
+        #profile-modal {
             position: fixed;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
             width: 100%;
-            max-width: 480px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            padding: 20px;
+            text-align: center;
+        }
+        #profile-modal h2 {
+            margin-bottom: 15px;
+            color: #fe2c55;
+        }
+        /* شريط التنقل السفلي */
+        .nav-bar {
+            height: 60px;
+            background: #000;
+            border-top: 1px solid #222;
             display: flex;
             justify-content: space-around;
-            padding: 15px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            z-index: 20;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
         }
-        .top-bar span { cursor: pointer; opacity: 0.7; }
-        .top-bar span.active { opacity: 1; border-bottom: 2px solid #fff; padding-bottom: 2px; }
+        .nav-item {
+            color: #888;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            color: #fff;
+        }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <span>متابعة</span>
-        <span class="active">لك (For You)</span>
+
+    <!-- نافذة تسجيل الدخول الأولى -->
+    <div id="auth-modal">
+        <h2>مرحباً بك في abdo-tok</h2>
+        <p>اكتب اسمك أو اسم المستخدم للمتابعة</p>
+        <input type="text" id="username-input" class="input-box" placeholder="اكتب اسمك هنا...">
+        <br>
+        <button class="login-btn" onclick="handleLogin()">
+            <i class="fas fa-sign-in-alt"></i> دخول للتطبيق
+        </button>
     </div>
-    <div class="app-container">
-        {% for v in videos %}
-        <div class="video-card">
-            <video src="{{ v.url }}" loop onclick="togglePlay(this)"></video>
-            <div class="video-details">
-                <div class="user-name">{{ v.user }}</div>
-                <div class="video-desc">{{ v.desc }}</div>
-            </div>
-            <div class="action-buttons">
-                <div class="action-btn" onclick="likeVideo(this, {{ v.likes }})">
-                    <div class="icon">❤️</div>
-                    <span>{{ v.likes }}</span>
+
+    <!-- نافذة تعديل الملف الشخصي -->
+    <div id="profile-modal">
+        <h2>تعديل الملف الشخصي ⚙️</h2>
+        <p>غيّر اسمك أو صورة بروفايلك براحتك</p>
+        <input type="text" id="edit-name-input" class="input-box" placeholder="الاسم الجديد...">
+        <input type="text" id="edit-avatar-input" class="input-box" placeholder="رابط صورة البروفايل (URL)...">
+        <br>
+        <button class="login-btn" onclick="saveProfile()" style="margin-bottom: 10px;">حفظ التعديلات</button>
+        <button class="login-btn" onclick="closeProfileModal()" style="background: #444;">إغلاق</button>
+    </div>
+
+    <!-- التطبيق الرئيسي -->
+    <div class="app-container" id="main-app" style="display: none;">
+        <div class="feed">
+            <div class="video-card">
+                <div class="video-info">
+                    <img id="profile-img" src="https://via.placeholder.com/55" class="user-avatar" alt="Avatar">
+                    <div>
+                        <h3 id="profile-name">@abdo_official</h3>
+                        <p id="welcome-msg">أهلاً بيك يا فنان في التطبيق الجديد! 🚀🔥</p>
+                    </div>
                 </div>
-                <div class="action-btn">
-                    <div class="icon">💬</div>
-                    <span>{{ v.comments }}</span>
-                </div>
-                <div class="action-btn">
-                    <div class="icon">🔗</div>
-                    <span>مشاركة</span>
+                <div class="actions">
+                    <button class="action-btn" onclick="toggleLike(this)"><i class="fas fa-heart"></i></button>
+                    <button class="action-btn"><i class="fas fa-comment"></i></button>
+                    <button class="action-btn"><i class="fas fa-share"></i></button>
                 </div>
             </div>
         </div>
-        {% endfor %}
+
+        <div class="nav-bar">
+            <div class="nav-item active"><i class="fas fa-home"></i></div>
+            <div class="nav-item"><i class="fas fa-compass"></i></div>
+            <div class="nav-item"><i class="fas fa-plus-circle" style="color: #fe2c55;"></i></div>
+            <div class="nav-item"><i class="fas fa-inbox"></i></div>
+            <div class="nav-item" onclick="openProfileModal()"><i class="fas fa-user"></i></div>
+        </div>
     </div>
+
+    <!-- كود التحكم الذكي -->
     <script>
-        function togglePlay(video) {
-            if (video.paused) { video.play(); } else { video.pause(); }
+        window.onload = function() {
+            const savedUser = localStorage.getItem('abdo_tok_user');
+            const savedAvatar = localStorage.getItem('abdo_tok_avatar');
+            if (savedUser) {
+                applyLogin(savedUser, savedAvatar);
+            }
+        };
+
+        function handleLogin() {
+            const inputVal = document.getElementById('username-input').value.trim();
+            if (inputVal === "") {
+                alert("يا فنان اكتب اسمك الأول عشان تدخل!");
+                return;
+            }
+            localStorage.setItem('abdo_tok_user', inputVal);
+            applyLogin(inputVal, null);
         }
-        function likeVideo(btn, count) {
-            let countSpan = btn.querySelector('span');
-            countSpan.innerText = count + 1;
-            btn.querySelector('.icon').style.color = '#fe2c55';
+
+        function applyLogin(username, avatar) {
+            document.getElementById('auth-modal').style.display = 'none';
+            document.getElementById('main-app').style.display = 'flex';
+
+            let userAvatar = avatar || "https://via.placeholder.com/55";
+            document.getElementById('profile-img').src = userAvatar;
+
+            if (username === "@abdo_admin") {
+                document.getElementById('profile-name').innerHTML = "@abdo_admin <span style='color: #fe2c55; font-size: 12px;'>(صاحب التطبيق 👑)</span>";
+                document.getElementById('welcome-msg').innerText = "أهلاً بك يا عبده يا ملك التطبيق! التحكم معك بالكامل 🚀🔥";
+            } else {
+                document.getElementById('profile-name').innerText = username;
+                document.getElementById('welcome-msg').innerText = "أهلاً بيك يا فنان في التطبيق! 🚀🔥";
+            }
         }
-        document.addEventListener('DOMContentLoaded', () => {
-            let firstVideo = document.querySelector('video');
-            if(firstVideo) firstVideo.play().catch(()=>{});
-        });
+
+        function openProfileModal() {
+            document.getElementById('profile-modal').style.display = 'flex';
+            document.getElementById('edit-name-input').value = localStorage.getItem('abdo_tok_user') || '';
+            document.getElementById('edit-avatar-input').value = localStorage.getItem('abdo_tok_avatar') || '';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').style.display = 'none';
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('edit-name-input').value.trim();
+            const newAvatar = document.getElementById('edit-avatar-input').value.trim();
+
+            if (newName !== "") {
+                localStorage.setItem('abdo_tok_user', newName);
+            }
+            if (newAvatar !== "") {
+                localStorage.setItem('abdo_tok_avatar', newAvatar);
+            }
+
+            alert("تم حفظ التعديلات بنجاح يا فنان! 🚀");
+            closeProfileModal();
+            location.reload();
+        }
+
+        function toggleLike(btn) {
+            btn.style.color = btn.style.color === 'rgb(254, 44, 85)' ? '#fff' : '#fe2c55';
+        }
     </script>
 </body>
 </html>
-"""
-
-@app.route('/')
-def home():
-    return render_template_string(HTML_TEMPLATE, videos=videos)
-
-app = app
