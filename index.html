@@ -41,7 +41,7 @@
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: var(--text-color);
             display: flex;
@@ -54,7 +54,7 @@
             color: #fff;
             padding: 2px 8px;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .search-container {
@@ -62,8 +62,8 @@
             align-items: center;
             gap: 6px;
             flex-grow: 1;
-            max-width: 250px;
-            margin: 0 10px;
+            max-width: 220px;
+            margin: 0 8px;
         }
 
         .search-container input {
@@ -146,19 +146,21 @@
         .channel-avatar {
             width: 36px;
             height: 36px;
-            background: var(--accent-red);
+            background: #333;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             flex-shrink: 0;
+            color: #fff;
         }
 
         .feed-details {
             display: flex;
             flex-direction: column;
             gap: 4px;
+            flex-grow: 1;
         }
 
         .feed-title {
@@ -184,7 +186,7 @@
             position: relative;
             width: 100%;
             max-width: 350px;
-            height: 580px;
+            height: 520px;
             background: #000;
             border-radius: 12px;
             overflow: hidden;
@@ -194,6 +196,7 @@
             width: 100%;
             height: 100%;
             border: none;
+            object-fit: cover;
         }
 
         .short-overlay {
@@ -202,7 +205,7 @@
             left: 0;
             right: 0;
             padding: 15px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
         }
 
         .sub-btn {
@@ -216,7 +219,41 @@
             cursor: pointer;
         }
 
-        /* Bottom Navigation Bar (YouTube App Style) */
+        /* Profile Style */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 5px;
+            border-bottom: 1px solid #222;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .my-videos-title {
+            margin: 15px 0 10px 0;
+            font-size: 16px;
+        }
+
+        /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -289,10 +326,10 @@
             <span class="yt-red">▶</span> AbdoTube
         </div>
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="بحث...">
+            <input type="text" id="searchInput" placeholder="بحث..." oninput="handleSearch()">
             <button class="mic-btn" id="micBtn" onclick="startVoiceSearch()">🎙️</button>
         </div>
-        <div id="userBadge" style="font-size: 12px; font-weight: bold;">زائر</div>
+        <div id="userBadge" style="font-size: 12px; font-weight: bold;">عماد</div>
     </header>
 
     <div class="container">
@@ -306,10 +343,10 @@
             <div class="shorts-grid" id="shortsGrid"></div>
         </div>
 
-        <!-- رفع فيديو -->
+        <!-- رفع فيديو (زر +) -->
         <div id="upload" class="section">
             <div class="upload-box">
-                <h3>إنشاء فيديو جديد 📤</h3>
+                <h3>إنشاء ونشر فيديو 📤</h3>
                 <input type="text" id="uploadTitle" placeholder="عنوان الفيديو">
                 <select id="uploadType">
                     <option value="video">فيديو عادي</option>
@@ -322,20 +359,29 @@
 
         <!-- الاشتراكات -->
         <div id="subs" class="section">
-            <h3 style="text-align: center; margin-top: 30px;">قنواتك المشترك فيها تظهر هنا 👍</h3>
+            <h3 style="text-align: center; margin-top: 30px;">القنوات المشترك فيها 👍</h3>
+            <p style="text-align: center; color: var(--text-secondary); margin-top: 10px;">لا يوجد اشتراكات جديدة حالياً</p>
         </div>
 
-        <!-- حسابك (أنت) -->
+        <!-- حسابك (صفحة قناتك) -->
         <div id="profile" class="section">
-            <div style="text-align: center; margin-top: 20px;">
-                <h2 id="profileName">Abpo</h2>
-                <p style="color:var(--text-secondary); margin-top: 5px;">المطور والمالك VIP 👑</p>
-                <button onclick="changeName()" style="margin-top: 15px; padding: 8px 15px; background:#333; color:#fff; border:none; border-radius:5px;">تغيير الاسم</button>
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">ع</div>
+                <div>
+                    <h2 id="profileName">عماد</h2>
+                    <div class="profile-stats">
+                        <span>المشتركين: <b id="subCount">1.2k</b></span>
+                        <span>الفيديوهات: <b id="videoCount">0</b></span>
+                    </div>
+                </div>
             </div>
+
+            <h3 class="my-videos-title">فيديوهاتك المرفوعة 🎬</h3>
+            <div class="video-feed" id="myVideosFeed"></div>
         </div>
     </div>
 
-    <!-- شريط التنقل السفلي (شبه يوتيوب) -->
+    <!-- شريط التنقل السفلي -->
     <div class="bottom-nav">
         <button class="nav-item active" onclick="switchTab('home', this)">
             <span class="icon">🏠</span>
@@ -359,43 +405,47 @@
     </div>
 
     <script>
-        let currentUser = localStorage.getItem('abdo_user') || 'Abpo';
+        let currentUser = localStorage.getItem('abdo_user') || 'عماد';
 
-        // قائمة فيديوهات يوتيوب حقيقية مدرجة
-        let defaultVideos = [
+        // قائمة الفيديوهات العامة
+        let videos = [
             {
                 id: '1',
                 title: 'لما يحصل حاجات غريبه متتوقعهاش من ابوك وامك - الجزء الثالث',
                 author: 'Bassem Otaka',
-                views: '8.6 مليون',
-                embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // مثال رابط
+                views: '8.6M',
+                embedUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0',
                 type: 'video'
             },
             {
                 id: '2',
                 title: 'هل اقدر احقق الكرة الذهبية بلاعب معتزل؟',
                 author: 'Syrian Gamer - سوري جيمر',
-                views: '1.2 مليون',
-                embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ',
+                views: '1.2M',
+                embedUrl: 'https://www.youtube-nocookie.com/embed/3JZ_D3ELwOQ?rel=0',
                 type: 'video'
             }
         ];
 
-        let defaultShorts = [
+        let shorts = [
             {
                 id: 's1',
                 title: 'تحدي وسرعة ⚡',
-                author: 'Abpo',
-                embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                author: 'عماد',
+                embedUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0',
                 likes: '250K'
             }
         ];
 
+        let myUploadedVideos = [];
+
         function init() {
             document.getElementById('userBadge').innerText = currentUser;
             document.getElementById('profileName').innerText = currentUser;
-            renderHomeFeed();
-            renderShortsFeed();
+            document.getElementById('profileAvatar').innerText = currentUser[0] || 'ع';
+            renderHomeFeed(videos);
+            renderShortsFeed(shorts);
+            renderMyVideos();
         }
 
         function switchTab(tabId, btn) {
@@ -405,10 +455,21 @@
             if(btn) btn.classList.add('active');
         }
 
-        function renderHomeFeed() {
+        // 1. تشغيل خاصية البحث الحقيقي
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const filteredVideos = videos.filter(v => v.title.toLowerCase().includes(query) || v.author.toLowerCase().includes(query));
+            renderHomeFeed(filteredVideos);
+        }
+
+        function renderHomeFeed(list) {
             const feed = document.getElementById('videoFeed');
             feed.innerHTML = '';
-            defaultVideos.forEach(v => {
+            if(list.length === 0) {
+                feed.innerHTML = '<p style="text-align:center; color:#aaa; margin-top:20px;">لا توجد نتائج بحث مطابقة</p>';
+                return;
+            }
+            list.forEach(v => {
                 feed.innerHTML += `
                     <div class="feed-card">
                         <div class="video-wrapper">
@@ -426,17 +487,17 @@
             });
         }
 
-        function renderShortsFeed() {
+        function renderShortsFeed(list) {
             const grid = document.getElementById('shortsGrid');
             grid.innerHTML = '';
-            defaultShorts.forEach(s => {
+            list.forEach(s => {
                 grid.innerHTML += `
                     <div class="short-card">
                         ${s.src ? `<video src="${s.src}" controls loop></video>` : `<iframe src="${s.embedUrl}" allowfullscreen></iframe>`}
                         <div class="short-overlay">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <span>@${s.author}</span>
-                                <button class="sub-btn" onclick="this.innerText='تم الاشتراك'">اشتراك</button>
+                                <button class="sub-btn" onclick="toggleSub(this)">اشتراك</button>
                             </div>
                             <p style="margin-top:5px; font-size:13px;">${s.title}</p>
                         </div>
@@ -445,47 +506,84 @@
             });
         }
 
+        // 3. عرض فيديوهات القناة الخاصة بك فقط
+        function renderMyVideos() {
+            const myFeed = document.getElementById('myVideosFeed');
+            myFeed.innerHTML = '';
+            document.getElementById('videoCount').innerText = myUploadedVideos.length;
+
+            if(myUploadedVideos.length === 0) {
+                myFeed.innerHTML = '<p style="color:#aaa; font-size:13px;">لم تقم بنشر أي فيديوهات بعد.</p>';
+                return;
+            }
+
+            myUploadedVideos.forEach(v => {
+                myFeed.innerHTML += `
+                    <div class="feed-card">
+                        <div class="video-wrapper">
+                            <video src="${v.src}" controls></video>
+                        </div>
+                        <div class="feed-info">
+                            <div class="feed-details">
+                                <div class="feed-title">${v.title}</div>
+                                <div class="feed-meta">قناتك • ${v.views} مشاهدة</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleSub(btn) {
+            if(btn.innerText === 'اشتراك') {
+                btn.innerText = 'تم الاشتراك';
+                btn.style.background = '#333';
+            } else {
+                btn.innerText = 'اشتراك';
+                btn.style.background = 'var(--accent-red)';
+            }
+        }
+
         function uploadVideo() {
             const title = document.getElementById('uploadTitle').value;
             const type = document.getElementById('uploadType').value;
             const fileInput = document.getElementById('uploadFile');
 
             if(!title || !fileInput.files[0]) {
-                alert('اختر فيديو واكتب العنوان الأول');
+                alert('يرجى اختيار فيديو وكتابة العنوان أولاً');
                 return;
             }
 
             const url = URL.createObjectURL(fileInput.files[0]);
+            const newVid = {
+                id: Date.now().toString(),
+                title: title,
+                author: currentUser,
+                views: '1',
+                src: url,
+                type: type
+            };
+
+            myUploadedVideos.unshift(newVid);
 
             if(type === 'video') {
-                defaultVideos.unshift({
-                    id: Date.now().toString(),
-                    title: title,
-                    author: currentUser,
-                    views: '1',
-                    src: url,
-                    type: 'video'
-                });
-                renderHomeFeed();
+                videos.unshift(newVid);
+                renderHomeFeed(videos);
                 switchTab('home');
             } else {
-                defaultShorts.unshift({
-                    id: Date.now().toString(),
-                    title: title,
-                    author: currentUser,
-                    src: url,
-                    likes: '1'
-                });
-                renderShortsFeed();
+                shorts.unshift(newVid);
+                renderShortsFeed(shorts);
                 switchTab('shorts');
             }
-            alert('تم نشر الفيديو بنجاح!');
+
+            renderMyVideos();
+            alert('تم نشر الفيديو على قناتك بنجاح!');
         }
 
         function startVoiceSearch() {
             const micBtn = document.getElementById('micBtn');
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert('البحث الصوتي غير مدعوم على متصفحك');
+                alert('البحث الصوتي غير مدعوم على هذا المتصفح');
                 return;
             }
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -494,7 +592,9 @@
 
             recognition.onstart = () => micBtn.classList.add('listening');
             recognition.onresult = (e) => {
-                document.getElementById('searchInput').value = e.results[0][0].transcript;
+                const text = e.results[0][0].transcript;
+                document.getElementById('searchInput').value = text;
+                handleSearch();
                 micBtn.classList.remove('listening');
             };
             recognition.onerror = () => micBtn.classList.remove('listening');
@@ -502,16 +602,8 @@
             recognition.start();
         }
 
-        function changeName() {
-            let n = prompt("ادخل اسمك الجديد:", currentUser);
-            if(n) {
-                currentUser = n;
-                localStorage.setItem('abdo_user', n);
-                init();
-            }
-        }
-
         window.onload = init;
     </script>
 </body>
-</html>
+    </html>
+    
