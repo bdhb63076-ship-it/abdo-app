@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abdo Tube - عبده تيوپ المتكامل</title>
+    <title>Abdo Tube - عبده تيوپ</title>
     <style>
         :root {
             --bg-color: #0f0f0f;
             --card-bg: #1f1f1f;
             --accent-red: #ff0000;
-            --gold-color: #ffd700;
             --text-color: #ffffff;
             --text-secondary: #aaa;
             --border-color: #333;
@@ -25,128 +24,80 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding-bottom: 20px;
+            padding-bottom: 70px;
         }
 
+        /* Top Header */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            background-color: #202020;
+            padding: 10px 15px;
+            background-color: #0f0f0f;
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 1px solid #222;
         }
 
         .logo {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
-            color: var(--accent-red);
+            color: var(--text-color);
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
-        .search-bar-container {
+        .logo span.yt-red {
+            background: var(--accent-red);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .search-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex-grow: 1;
-            max-width: 500px;
-            margin: 0 15px;
+            max-width: 250px;
+            margin: 0 10px;
         }
 
-        .search-bar {
-            display: flex;
-            flex-grow: 1;
-            background: #121212;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .search-bar input {
+        .search-container input {
             width: 100%;
-            padding: 8px 15px;
-            background: transparent;
-            border: none;
+            padding: 6px 12px;
+            background: #222;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
             color: #fff;
             outline: none;
-        }
-
-        .search-bar button, .mic-btn {
-            background: #303030;
-            border: none;
-            color: #fff;
-            padding: 8px 15px;
-            cursor: pointer;
-            border-radius: 50%;
+            font-size: 13px;
         }
 
         .mic-btn {
-            width: 36px;
-            height: 36px;
+            background: #222;
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #272727;
+            flex-shrink: 0;
         }
 
         .mic-btn.listening {
             background: var(--accent-red);
-            animation: pulse 1s infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .vip-badge {
-            background: linear-gradient(45deg, #ffd700, #ff8c00);
-            color: #000;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            background: #181818;
-            padding: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        nav button {
-            background: #272727;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 18px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        nav button.active {
-            background: #fff;
-            color: #000;
-        }
-
+        /* Layout Main */
         .container {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 10px;
         }
 
         .section {
@@ -157,46 +108,72 @@
             display: block;
         }
 
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        /* Feed Videos */
+        .video-feed {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
         }
 
-        .video-card {
-            background: var(--card-bg);
-            border-radius: 10px;
+        .feed-card {
+            background: #0f0f0f;
+            border-radius: 8px;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
-        .video-card video, .video-card iframe {
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            background: #000;
+        }
+
+        .video-wrapper iframe, .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 180px;
-            object-fit: cover;
+            height: 100%;
             border: none;
         }
 
-        .video-info {
-            padding: 12px;
+        .feed-info {
+            padding: 10px 5px;
+            display: flex;
+            gap: 10px;
         }
 
-        .video-title {
-            font-size: 15px;
+        .channel-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
-            margin-bottom: 6px;
+            flex-shrink: 0;
         }
 
-        .video-stats {
+        .feed-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .feed-title {
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+
+        .feed-meta {
             font-size: 12px;
             color: var(--text-secondary);
-            display: flex;
-            justify-content: space-between;
         }
 
-        /* Shorts Section */
-        .shorts-container {
+        /* Shorts Feed */
+        .shorts-grid {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -206,18 +183,17 @@
         .short-card {
             position: relative;
             width: 100%;
-            max-width: 340px;
+            max-width: 350px;
             height: 580px;
             background: #000;
-            border-radius: 15px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        .short-card video {
+        .short-card iframe, .short-card video {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            border: none;
         }
 
         .short-overlay {
@@ -225,68 +201,81 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 20px;
+            padding: 15px;
             background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .short-actions {
-            position: absolute;
-            right: 12px;
-            bottom: 80px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .action-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: #fff;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 12px;
         }
 
         .sub-btn {
             background: var(--accent-red);
             color: #fff;
             border: none;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 15px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .upload-form {
+        /* Bottom Navigation Bar (YouTube App Style) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #0f0f0f;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #222;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #fff;
+        }
+
+        .nav-item .icon {
+            font-size: 18px;
+        }
+
+        .plus-btn {
+            font-size: 28px;
+            line-height: 1;
+            color: #fff;
+        }
+
+        /* Upload Form */
+        .upload-box {
             background: var(--card-bg);
             padding: 20px;
             border-radius: 10px;
-            max-width: 500px;
-            margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .upload-form input, .upload-form select, .upload-form button {
+        .upload-box input, .upload-box select, .upload-box button {
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 6px;
             border: 1px solid var(--border-color);
             background: #272727;
             color: #fff;
         }
 
-        .upload-form button {
+        .upload-box button {
             background: var(--accent-red);
             font-weight: bold;
             cursor: pointer;
@@ -296,217 +285,230 @@
 <body>
 
     <header>
-        <div class="logo">Abdo Tube <span id="vipTag" class="vip-badge" style="display:none;">VIP PRO</span></div>
-        
-        <div class="search-bar-container">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="بحث...">
-                <button onclick="performSearch()">🔍</button>
-            </div>
-            <button class="mic-btn" id="micBtn" onclick="startVoiceSearch()" title="بحث صوتي">🎙️</button>
+        <div class="logo">
+            <span class="yt-red">▶</span> AbdoTube
         </div>
-
-        <div class="user-section">
-            <span id="userName">زائر</span>
-            <button onclick="loginPrompt()" style="background:none; border:none; color:var(--text-secondary); cursor:pointer;">👤</button>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="بحث...">
+            <button class="mic-btn" id="micBtn" onclick="startVoiceSearch()">🎙️</button>
         </div>
+        <div id="userBadge" style="font-size: 12px; font-weight: bold;">زائر</div>
     </header>
 
-    <nav>
-        <button class="active" onclick="switchTab('home', this)">الرئيسية</button>
-        <button onclick="switchTab('shorts', this)">Shorts ⚡</button>
-        <button onclick="switchTab('upload', this)">رفع فيديو 📤</button>
-    </nav>
-
     <div class="container">
-        <!-- الرئيسية -->
+        <!-- الصفحة الرئيسية -->
         <div id="home" class="section active">
-            <div class="video-grid" id="videoGrid"></div>
+            <div class="video-feed" id="videoFeed"></div>
         </div>
 
         <!-- Shorts -->
         <div id="shorts" class="section">
-            <div class="shorts-container" id="shortsContainer"></div>
+            <div class="shorts-grid" id="shortsGrid"></div>
         </div>
 
         <!-- رفع فيديو -->
         <div id="upload" class="section">
-            <div class="upload-form">
-                <h3>رفع فيديو جديد من التليفون</h3>
-                <input type="text" id="uploadTitle" placeholder="عنوان الفيديو" required>
+            <div class="upload-box">
+                <h3>إنشاء فيديو جديد 📤</h3>
+                <input type="text" id="uploadTitle" placeholder="عنوان الفيديو">
                 <select id="uploadType">
                     <option value="video">فيديو عادي</option>
                     <option value="short">فيديو قصير (Shorts)</option>
                 </select>
-                <input type="file" id="uploadFile" accept="video/*" required>
-                <button onclick="handleFileUpload()">نشر الفيديو</button>
+                <input type="file" id="uploadFile" accept="video/*">
+                <button onclick="uploadVideo()">نشر الآن</button>
+            </div>
+        </div>
+
+        <!-- الاشتراكات -->
+        <div id="subs" class="section">
+            <h3 style="text-align: center; margin-top: 30px;">قنواتك المشترك فيها تظهر هنا 👍</h3>
+        </div>
+
+        <!-- حسابك (أنت) -->
+        <div id="profile" class="section">
+            <div style="text-align: center; margin-top: 20px;">
+                <h2 id="profileName">Abpo</h2>
+                <p style="color:var(--text-secondary); margin-top: 5px;">المطور والمالك VIP 👑</p>
+                <button onclick="changeName()" style="margin-top: 15px; padding: 8px 15px; background:#333; color:#fff; border:none; border-radius:5px;">تغيير الاسم</button>
             </div>
         </div>
     </div>
 
+    <!-- شريط التنقل السفلي (شبه يوتيوب) -->
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('home', this)">
+            <span class="icon">🏠</span>
+            <span>الرئيسية</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('shorts', this)">
+            <span class="icon">⚡</span>
+            <span>Shorts</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('upload', this)">
+            <span class="icon plus-btn">+</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('subs', this)">
+            <span class="icon">🔔</span>
+            <span>الاشتراكات</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('profile', this)">
+            <span class="icon">👤</span>
+            <span>أنت</span>
+        </button>
+    </div>
+
     <script>
-        let currentUser = localStorage.getItem('abdo_user') || 'زائر';
-        let videos = JSON.parse(localStorage.getItem('abdo_videos')) || [
-            { id: 1, title: 'أول فيديو تجريبي على المنصة', type: 'video', views: 120, likes: 15, author: 'Abpo', src: '' },
-            { id: 2, title: 'شورتس تجريبي مميز ⚡', type: 'short', views: 450, likes: 89, author: 'Abpo', src: '' }
+        let currentUser = localStorage.getItem('abdo_user') || 'Abpo';
+
+        // قائمة فيديوهات يوتيوب حقيقية مدرجة
+        let defaultVideos = [
+            {
+                id: '1',
+                title: 'لما يحصل حاجات غريبه متتوقعهاش من ابوك وامك - الجزء الثالث',
+                author: 'Bassem Otaka',
+                views: '8.6 مليون',
+                embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // مثال رابط
+                type: 'video'
+            },
+            {
+                id: '2',
+                title: 'هل اقدر احقق الكرة الذهبية بلاعب معتزل؟',
+                author: 'Syrian Gamer - سوري جيمر',
+                views: '1.2 مليون',
+                embedUrl: 'https://www.youtube.com/embed/3JZ_D3ELwOQ',
+                type: 'video'
+            }
+        ];
+
+        let defaultShorts = [
+            {
+                id: 's1',
+                title: 'تحدي وسرعة ⚡',
+                author: 'Abpo',
+                embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                likes: '250K'
+            }
         ];
 
         function init() {
-            updateUserDisplay();
-            renderVideos(videos);
-            renderShorts(videos);
-        }
-
-        function updateUserDisplay() {
-            document.getElementById('userName').innerText = currentUser;
-            if(currentUser.toLowerCase() === 'abpo') {
-                document.getElementById('vipTag').style.display = 'inline';
-            } else {
-                document.getElementById('vipTag').style.display = 'none';
-            }
-        }
-
-        function loginPrompt() {
-            let name = prompt("أدخل اسم المستخدم:", currentUser);
-            if(name) {
-                currentUser = name;
-                localStorage.setItem('abdo_user', currentUser);
-                updateUserDisplay();
-            }
+            document.getElementById('userBadge').innerText = currentUser;
+            document.getElementById('profileName').innerText = currentUser;
+            renderHomeFeed();
+            renderShortsFeed();
         }
 
         function switchTab(tabId, btn) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
+            if(btn) btn.classList.add('active');
         }
 
-        function renderVideos(list) {
-            const grid = document.getElementById('videoGrid');
+        function renderHomeFeed() {
+            const feed = document.getElementById('videoFeed');
+            feed.innerHTML = '';
+            defaultVideos.forEach(v => {
+                feed.innerHTML += `
+                    <div class="feed-card">
+                        <div class="video-wrapper">
+                            ${v.src ? `<video src="${v.src}" controls></video>` : `<iframe src="${v.embedUrl}" allowfullscreen></iframe>`}
+                        </div>
+                        <div class="feed-info">
+                            <div class="channel-avatar">${v.author[0]}</div>
+                            <div class="feed-details">
+                                <div class="feed-title">${v.title}</div>
+                                <div class="feed-meta">${v.author} • ${v.views} مشاهدة</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderShortsFeed() {
+            const grid = document.getElementById('shortsGrid');
             grid.innerHTML = '';
-            list.filter(v => v.type === 'video').forEach(v => {
+            defaultShorts.forEach(s => {
                 grid.innerHTML += `
-                    <div class="video-card">
-                        ${v.src ? `<video src="${v.src}" controls></video>` : `<div style="height:180px;background:#333;display:flex;align-items:center;justify-content:center;">فيديو توضيحي</div>`}
-                        <div class="video-info">
-                            <div class="video-title">${v.title}</div>
-                            <div class="video-stats">
-                                <span>القناة: ${v.author}</span>
-                                <span>👁️ ${v.views} مشاهدة</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function renderShorts(list) {
-            const container = document.getElementById('shortsContainer');
-            container.innerHTML = '';
-            list.filter(v => v.type === 'short').forEach(v => {
-                container.innerHTML += `
                     <div class="short-card">
-                        ${v.src ? `<video src="${v.src}" controls loop></video>` : `<div style="height:100%;background:#222;display:flex;align-items:center;justify-content:center;">Shorts Video</div>`}
-                        <div class="short-actions">
-                            <button class="action-btn" onclick="likeVideo(${v.id})">❤️<br>${v.likes}</button>
-                            <button class="action-btn">💬<br>12</button>
-                        </div>
+                        ${s.src ? `<video src="${s.src}" controls loop></video>` : `<iframe src="${s.embedUrl}" allowfullscreen></iframe>`}
                         <div class="short-overlay">
-                            <div style="display:flex; align-items:center; justify-content:space-between;">
-                                <strong>@${v.author}</strong>
-                                <button class="sub-btn" onclick="subscribe(this)">اشتراك</button>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span>@${s.author}</span>
+                                <button class="sub-btn" onclick="this.innerText='تم الاشتراك'">اشتراك</button>
                             </div>
-                            <p>${v.title}</p>
+                            <p style="margin-top:5px; font-size:13px;">${s.title}</p>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function handleFileUpload() {
+        function uploadVideo() {
             const title = document.getElementById('uploadTitle').value;
             const type = document.getElementById('uploadType').value;
             const fileInput = document.getElementById('uploadFile');
 
             if(!title || !fileInput.files[0]) {
-                alert('يرجى ملء جميع البيانات واختيار فيديو');
+                alert('اختر فيديو واكتب العنوان الأول');
                 return;
             }
 
-            const file = fileInput.files[0];
-            const url = URL.createObjectURL(file);
+            const url = URL.createObjectURL(fileInput.files[0]);
 
-            const newVid = {
-                id: Date.now(),
-                title: title,
-                type: type,
-                views: 1,
-                likes: 0,
-                author: currentUser,
-                src: url
-            };
-
-            videos.unshift(newVid);
-            localStorage.setItem('abdo_videos', JSON.stringify(videos));
+            if(type === 'video') {
+                defaultVideos.unshift({
+                    id: Date.now().toString(),
+                    title: title,
+                    author: currentUser,
+                    views: '1',
+                    src: url,
+                    type: 'video'
+                });
+                renderHomeFeed();
+                switchTab('home');
+            } else {
+                defaultShorts.unshift({
+                    id: Date.now().toString(),
+                    title: title,
+                    author: currentUser,
+                    src: url,
+                    likes: '1'
+                });
+                renderShortsFeed();
+                switchTab('shorts');
+            }
             alert('تم نشر الفيديو بنجاح!');
-            renderVideos(videos);
-            renderShorts(videos);
-            switchTab(type === 'short' ? 'shorts' : 'home', document.querySelectorAll('nav button')[type === 'short' ? 1 : 0]);
-        }
-
-        function performSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = videos.filter(v => v.title.toLowerCase().includes(query));
-            renderVideos(filtered);
-            renderShorts(filtered);
         }
 
         function startVoiceSearch() {
             const micBtn = document.getElementById('micBtn');
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert('البحث الصوتي غير مدعوم في متصفحك.');
+                alert('البحث الصوتي غير مدعوم على متصفحك');
                 return;
             }
-
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             const recognition = new SpeechRecognition();
             recognition.lang = 'ar-EG';
 
-            recognition.onstart = function() {
-                micBtn.classList.add('listening');
-            };
-
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                document.getElementById('searchInput').value = transcript;
-                micBtn.classList.remove('listening');
-                performSearch();
-            };
-
-            recognition.onerror = function() {
+            recognition.onstart = () => micBtn.classList.add('listening');
+            recognition.onresult = (e) => {
+                document.getElementById('searchInput').value = e.results[0][0].transcript;
                 micBtn.classList.remove('listening');
             };
-
-            recognition.onend = function() {
-                micBtn.classList.remove('listening');
-            };
-
+            recognition.onerror = () => micBtn.classList.remove('listening');
+            recognition.onend = () => micBtn.classList.remove('listening');
             recognition.start();
         }
 
-        function likeVideo(id) {
-            const vid = videos.find(v => v.id === id);
-            if(vid) {
-                vid.likes++;
-                localStorage.setItem('abdo_videos', JSON.stringify(videos));
-                renderShorts(videos);
+        function changeName() {
+            let n = prompt("ادخل اسمك الجديد:", currentUser);
+            if(n) {
+                currentUser = n;
+                localStorage.setItem('abdo_user', n);
+                init();
             }
-        }
-
-        function subscribe(btn) {
-            btn.innerText = 'تم الاشتراك';
-            btn.style.background = '#555';
         }
 
         window.onload = init;
