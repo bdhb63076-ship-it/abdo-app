@@ -111,10 +111,12 @@
         .name-modal input {
             width: 100%; padding: 12px; background: #121212; border: 1px solid var(--border-color);
             border-radius: 8px; color: #fff; font-size: 15px; margin: 15px 0; outline: none;
+            text-align: center;
         }
         .name-modal button {
             width: 100%; padding: 12px; background-color: var(--yt-red); color: white;
             border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+            font-size: 16px;
         }
 
         /* شريط البحث المنسدل */
@@ -216,9 +218,9 @@
     <div class="name-modal-overlay" id="name-modal">
         <div class="name-modal">
             <h2>مرحباً بك في Abdo Tube! 👑</h2>
-            <p>أدخل اسمك أو اسم قناتك للبدء:</p>
-            <input type="text" id="user-name-input" placeholder="اكتب Abpo للحصول على صلاحيات المالك">
-            <button onclick="saveUserName()">دخول للتطبيق</button>
+            <p style="margin-top:8px; font-size:13px; color:#aaa;">أدخل اسمك أو اسم قناتك للبدء:</p>
+            <input type="text" id="user-name-input" placeholder="اكتب اسمك هنا..." onkeypress="handleNameEnter(event)">
+            <button type="button" onclick="saveUserName()">دخول للتطبيق</button>
         </div>
     </div>
 
@@ -363,26 +365,31 @@
             } else {
                 document.getElementById('name-modal').style.display = 'flex';
             }
+        }
 
-            // ميزة المتابعة التلقائية للزوار الجدد لقناة Abdo
-            let autoFollowed = localStorage.getItem('auto_followed_abpo');
-            if (!autoFollowed && user !== 'Abpo' && user !== 'Abdo') {
-                localStorage.setItem('auto_followed_abpo', 'true');
-                let subs = JSON.parse(localStorage.getItem('abdo_subscriptions') || '[]');
-                if (!subs.includes('Abdo Tube Official')) {
-                    subs.push('Abdo Tube Official');
-                    localStorage.setItem('abdo_subscriptions', JSON.stringify(subs));
-                }
+        function handleNameEnter(e) {
+            if (e.key === 'Enter') {
+                saveUserName();
             }
         }
 
         function saveUserName() {
-            let name = document.getElementById('user-name-input').value.trim();
-            if (name) {
-                localStorage.setItem('abdo_tube_user', name);
-                document.getElementById('name-modal').style.display = 'none';
-                applyUserRole(name);
+            let inputField = document.getElementById('user-name-input');
+            let name = inputField.value.trim();
+            
+            if (!name) {
+                name = "Abpo"; // اسم افتراضي إذا ترك فارغاً
             }
+            
+            try {
+                localStorage.setItem('abdo_tube_user', name);
+            } catch(e) {
+                console.log("Storage warning:", e);
+            }
+
+            // إخفاء النافذة فوراً
+            document.getElementById('name-modal').style.display = 'none';
+            applyUserRole(name);
         }
 
         function applyUserRole(name) {
@@ -391,6 +398,7 @@
             document.getElementById('avatar-letter').innerText = firstLetter;
             document.getElementById('nav-avatar-letter').innerText = firstLetter;
 
+            // تفعيل ميزات الملك
             if (name.toLowerCase() === 'abpo' || name.toLowerCase() === 'abdo' || name === 'عماد') {
                 document.getElementById('owner-crown').style.display = 'block';
                 document.getElementById('owner-panel').style.display = 'block';
@@ -411,7 +419,6 @@
             }
         }
 
-        // التنقل بين الصفحات
         function switchTab(tab) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.bottom-nav .nav-item').forEach(i => i.classList.remove('active'));
@@ -426,7 +433,6 @@
             else if (tab === 'profile') document.getElementById('profile-page').classList.add('active');
         }
 
-        // البحث والفلترة
         function openSearch() { document.getElementById('search-overlay').classList.add('active'); document.getElementById('search-input').focus(); }
         function closeSearch() { document.getElementById('search-overlay').classList.remove('active'); }
         function handleSearchKey(e) { if (e.key === 'Enter') executeSearch(); }
@@ -446,8 +452,9 @@
             fetchVideos(cat === 'الكل' ? 'trending' : cat);
         }
 
-        // جلب الفيديوهات من يوتيوب
         async function fetchVideos(query = 'trending') {
             let url = '';
             if (query === 'trending') {
-                url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&m
+                url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&maxResults=20&regionCode=EG&key=${API_KEY}`;
+            } else {
+                url = `https://www.googleapis.com/yo
