@@ -57,9 +57,36 @@
         .header-icons {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
             font-size: 18px;
             cursor: pointer;
+        }
+
+        /* نافذة تسجيل الدخول */
+        .name-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.95);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 3000; padding: 20px;
+        }
+        .name-modal {
+            background-color: #212121;
+            color: #fff;
+            padding: 24px;
+            border-radius: 16px;
+            width: 100%; max-width: 350px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .name-modal input {
+            width: 100%; padding: 14px; background: #121212; border: 1px solid var(--border-color);
+            border-radius: 8px; color: #fff; font-size: 16px; margin: 15px 0; outline: none;
+            text-align: center;
+        }
+        .name-modal button {
+            width: 100%; padding: 14px; background-color: var(--yt-red); color: white;
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+            font-size: 16px;
         }
 
         .chips-container {
@@ -89,32 +116,6 @@
             cursor: pointer;
         }
         .chip.active { background-color: #fff; color: #000; }
-
-        .name-modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.95);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 3000; padding: 20px;
-        }
-        .name-modal {
-            background-color: #212121;
-            color: #fff;
-            padding: 24px;
-            border-radius: 16px;
-            width: 100%; max-width: 350px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-        .name-modal input {
-            width: 100%; padding: 14px; background: #121212; border: 1px solid var(--border-color);
-            border-radius: 8px; color: #fff; font-size: 16px; margin: 15px 0; outline: none;
-            text-align: center;
-        }
-        .name-modal button {
-            width: 100%; padding: 14px; background-color: var(--yt-red); color: white;
-            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
-            font-size: 16px;
-        }
 
         .search-overlay {
             position: fixed; top: 0; left: 0; right: 0; height: 48px;
@@ -156,15 +157,18 @@
         .profile-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; position: relative; }
         .profile-avatar-large {
             width: 72px; height: 72px; border-radius: 50%;
-            background: linear-gradient(135deg, #FFD700, #ff8c00);
+            background: linear-gradient(135deg, #333, #555);
             color: white; display: flex; align-items: center; justify-content: center;
             font-size: 28px; font-weight: bold; position: relative; cursor: pointer;
         }
-        .crown-icon { position: absolute; top: -14px; font-size: 22px; color: #FFD700; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
-        .verified-badge { color: #3ea6ff; margin-right: 4px; }
+        .profile-avatar-large.owner-style {
+            background: linear-gradient(135deg, #FFD700, #ff8c00);
+        }
+        .crown-icon { position: absolute; top: -14px; font-size: 22px; color: #FFD700; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); display: none; }
+        .verified-badge { color: #3ea6ff; margin-right: 4px; display: none; }
         
         .owner-vip-box {
-            background: #1e1e1e; border: 1px solid #FFD700; border-radius: 12px; padding: 16px; margin-top: 15px;
+            background: #1e1e1e; border: 1px solid #FFD700; border-radius: 12px; padding: 16px; margin-top: 15px; display: none;
         }
 
         .bottom-nav {
@@ -205,12 +209,13 @@
 </head>
 <body>
 
-    <div class="name-modal-overlay" id="name-modal" style="display:flex;">
+    <!-- نافذة تسجيل الدخول -->
+    <div class="name-modal-overlay" id="name-modal">
         <div class="name-modal">
-            <h2>مرحباً بك في Abdo Tube! 👑</h2>
-            <p style="margin-top:8px; font-size:13px; color:#aaa;">أدخل اسمك أو اسم قناتك للبدء:</p>
-            <input type="text" id="user-name-input" value="Abpo">
-            <button type="button" id="enter-btn">دخول للتطبيق</button>
+            <h2>مرحباً بك في Abdo Tube! 📺</h2>
+            <p style="margin-top:8px; font-size:13px; color:#aaa;">أدخل اسمك للبدء:</p>
+            <input type="text" id="user-name-input" placeholder="اكتب اسمك هنا...">
+            <button type="button" id="login-btn">دخول للتطبيق</button>
         </div>
     </div>
 
@@ -221,7 +226,7 @@
         </div>
         <div class="header-icons">
             <i class="fa-solid fa-magnifying-glass" onclick="openSearch()"></i>
-            <i class="fa-regular fa-bell"></i>
+            <i class="fa-solid fa-user-pen" onclick="resetUser()" title="تغيير الاسم" style="font-size:15px; color:#aaa;"></i>
         </div>
     </header>
 
@@ -267,17 +272,18 @@
         <div id="profile-page" class="page">
             <div class="profile-container">
                 <div class="profile-header">
-                    <div class="profile-avatar-large" onclick="changeProfilePic()">
-                        <i class="fa-solid fa-crown crown-icon" id="owner-crown" style="display:none;"></i>
+                    <div class="profile-avatar-large" id="profile-avatar-box">
+                        <i class="fa-solid fa-crown crown-icon" id="owner-crown"></i>
                         <span id="avatar-letter">A</span>
                     </div>
                     <div>
-                        <div class="profile-name" id="display-user-name">Abdo</div>
+                        <div class="profile-name" id="display-user-name">زائر</div>
                         <div id="badge-container" style="font-size: 13px; color: #aaa; margin-top: 4px;">مشترك</div>
                     </div>
                 </div>
 
-                <div class="owner-vip-box" id="owner-panel" style="display:none;">
+                <!-- لوحة المالك (تظهر لـ Abpo أو Abdo فقط) -->
+                <div class="owner-vip-box" id="owner-panel">
                     <h3 style="color: #FFD700; margin-bottom: 8px;"><i class="fa-solid fa-star"></i> لوحة تحكم المالك (Abdo Tube)</h3>
                     <p style="font-size: 13px; color: #ddd; margin-bottom: 6px;">🛡️ الحماية وتجربة خالية تماماً من الإعلانات مفعلة.</p>
                     <p style="font-size: 13px; color: #ddd; margin-bottom: 6px;">👑 تم تفعيل التوثيق الأزرق والتاج الملكي.</p>
@@ -335,16 +341,33 @@
         const API_KEY = 'AIzaSyC80bHi4NQ1cumbNSl8WSe9O47w0_Szw7k';
         let currentChannelName = '';
 
-        // ربط الحدث مباشرة بالزر بطريقة آمنة
-        document.getElementById('enter-btn').addEventListener('click', function() {
+        // التحقق من وجود اسم مسجل سابقاً
+        window.onload = () => {
+            let savedUser = localStorage.getItem('abdo_tube_current_user');
+            if (savedUser) {
+                document.getElementById('name-modal').style.display = 'none';
+                applyUserRole(savedUser);
+            } else {
+                document.getElementById('name-modal').style.display = 'flex';
+            }
+            fetchVideos();
+        };
+
+        // تفاعل زر الدخول
+        document.getElementById('login-btn').addEventListener('click', function() {
             let inputField = document.getElementById('user-name-input');
-            let name = inputField ? inputField.value.trim() : "Abpo";
-            if(!name) name = "Abpo";
-            
+            let name = inputField ? inputField.value.trim() : "مستخدم";
+            if (!name) name = "مستخدم يوتيوب";
+
+            localStorage.setItem('abdo_tube_current_user', name);
             document.getElementById('name-modal').style.display = 'none';
             applyUserRole(name);
-            fetchVideos();
         });
+
+        function resetUser() {
+            localStorage.removeItem('abdo_tube_current_user');
+            document.getElementById('name-modal').style.display = 'flex';
+        }
 
         function applyUserRole(name) {
             document.getElementById('display-user-name').innerText = name;
@@ -352,22 +375,18 @@
             document.getElementById('avatar-letter').innerText = firstLetter;
             document.getElementById('nav-avatar-letter').innerText = firstLetter;
 
-            if (name.toLowerCase() === 'abpo' || name.toLowerCase() === 'abdo' || name === 'عماد') {
+            let lowerName = name.toLowerCase();
+            // التحقق إذا كان المستخدم هو المالك الحقيقي (Abpo أو Abdo أو عماد)
+            if (lowerName === 'abpo' || lowerName === 'abdo' || name === 'عماد') {
                 document.getElementById('owner-crown').style.display = 'block';
                 document.getElementById('owner-panel').style.display = 'block';
-                document.getElementById('badge-container').innerHTML = `مالك التطبيق <i class="fa-solid fa-circle-check verified-badge"></i>`;
+                document.getElementById('profile-avatar-box').classList.add('owner-style');
+                document.getElementById('badge-container').innerHTML = `مالك التطبيق <i class="fa-solid fa-circle-check" style="color:#3ea6ff;"></i>`;
             } else {
                 document.getElementById('owner-crown').style.display = 'none';
                 document.getElementById('owner-panel').style.display = 'none';
-                document.getElementById('badge-container').innerText = 'مشترك ومتابع';
-            }
-        }
-
-        function changeProfilePic() {
-            let newPic = prompt("أدخل الحرف أو الاسم الجديد لبروفايلك:");
-            if (newPic) {
-                document.getElementById('avatar-letter').innerText = newPic.charAt(0).toUpperCase();
-                document.getElementById('nav-avatar-letter').innerText = newPic.charAt(0).toUpperCase();
+                document.getElementById('profile-avatar-box').classList.remove('owner-style');
+                document.getElementById('badge-container').innerText = 'مشترك في Abdo Tube';
             }
         }
 
@@ -378,9 +397,7 @@
             if (tab === 'home') document.getElementById('home-page').classList.add('active');
             else if (tab === 'shorts') document.getElementById('shorts-page').classList.add('active');
             else if (tab === 'upload') document.getElementById('upload-page').classList.add('active');
-            else if (tab === 'subs') {
-                document.getElementById('subs-page').classList.add('active');
-            }
+            else if (tab === 'subs') document.getElementById('subs-page').classList.add('active');
             else if (tab === 'profile') document.getElementById('profile-page').classList.add('active');
         }
 
@@ -424,22 +441,4 @@
             if(!items) return;
             items.forEach(item => {
                 let id = item.id.videoId || item.id;
-                let title = item.snippet.title;
-                let channel = item.snippet.channelTitle;
-                let thumb = item.snippet.thumbnails.high.url;
-
-                let card = document.createElement('div');
-                card.className = 'video-card';
-                card.onclick = () => openWatch(id, title, channel);
-
-                card.innerHTML = `
-                    <div class="thumbnail-box">
-                        <img src="${thumb}" alt="thumb">
-                        <span class="duration-tag">10:20</span>
-                    </div>
-                    <div class="video-info-box">
-                        <img src="${thumb}" class="channel-avatar">
-                        <div>
-                            <div class="video-title">${title}</div>
-                            <div class="sub-meta">${channel} • مشاهدة حقيقية</div>
-                        </div
+                let title = item.snip
