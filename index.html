@@ -209,9 +209,8 @@
         <div class="name-modal">
             <h2>مرحباً بك في Abdo Tube! 👑</h2>
             <p style="margin-top:8px; font-size:13px; color:#aaa;">أدخل اسمك أو اسم قناتك للبدء:</p>
-            <!-- تم إضافة المعرف الصحيح هنا ليعمل حقل الإدخال بدقة -->
             <input type="text" id="user-name-input" value="Abpo">
-            <button type="button" onclick="forceLogin()">دخول للتطبيق</button>
+            <button type="button" id="enter-btn">دخول للتطبيق</button>
         </div>
     </div>
 
@@ -336,7 +335,8 @@
         const API_KEY = 'AIzaSyC80bHi4NQ1cumbNSl8WSe9O47w0_Szw7k';
         let currentChannelName = '';
 
-        function forceLogin() {
+        // ربط الحدث مباشرة بالزر بطريقة آمنة
+        document.getElementById('enter-btn').addEventListener('click', function() {
             let inputField = document.getElementById('user-name-input');
             let name = inputField ? inputField.value.trim() : "Abpo";
             if(!name) name = "Abpo";
@@ -344,7 +344,7 @@
             document.getElementById('name-modal').style.display = 'none';
             applyUserRole(name);
             fetchVideos();
-        }
+        });
 
         function applyUserRole(name) {
             document.getElementById('display-user-name').innerText = name;
@@ -442,5 +442,4 @@
                         <div>
                             <div class="video-title">${title}</div>
                             <div class="sub-meta">${channel} • مشاهدة حقيقية</div>
-                        </div>
-                   
+                        </div
