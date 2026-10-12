@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Abdo Tube - يوتيوب المصغر</title>
+    <title>Abdo Tube - عبده يوتيوب</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -261,7 +261,7 @@
             <div class="shorts-container">
                 <i class="fa-solid fa-bolt" style="font-size: 50px; color: var(--yt-red);"></i>
                 <h3>قسم الفيديوهات القصيرة (Shorts)</h3>
-                <p style="font-size: 13px; color: var(--secondary-text);">شاهد أروع المقاطع القصيرة قريباً...</p>
+                <p style="font-size: 13px; color: var(--secondary-text);">شاهد أروع المقاطع القصيرة...</p>
             </div>
         </div>
 
@@ -294,7 +294,7 @@
                     </div>
                 </div>
 
-                <!-- لوحة مميزات المالك (تظهر فقط عند إدخال اسم Abpo أو Abdo) -->
+                <!-- لوحة مميزات المالك -->
                 <div class="owner-vip-box" id="owner-panel" style="display:none;">
                     <h3 style="color: #FFD700; margin-bottom: 8px;"><i class="fa-solid fa-star"></i> لوحة تحكم المالك (Abdo Tube)</h3>
                     <p style="font-size: 13px; color: #ddd; margin-bottom: 6px;">🛡️ الحماية وتجربة خالية تماماً من الإعلانات مفعلة.</p>
@@ -404,10 +404,10 @@
         }
 
         function changeProfilePic() {
-            let newPic = prompt("أضع رابط صورة جديدة لبروفايلك أو اكتب حرفك المفضّل:");
-            if (newPic && newPic.length === 1) {
-                document.getElementById('avatar-letter').innerText = newPic.toUpperCase();
-                document.getElementById('nav-avatar-letter').innerText = newPic.toUpperCase();
+            let newPic = prompt("أدخل الحرف أو الاسم الجديد لبروفايلك:");
+            if (newPic) {
+                document.getElementById('avatar-letter').innerText = newPic.charAt(0).toUpperCase();
+                document.getElementById('nav-avatar-letter').innerText = newPic.charAt(0).toUpperCase();
             }
         }
 
@@ -450,4 +450,4 @@
         async function fetchVideos(query = 'trending') {
             let url = '';
             if (query === 'trending') {
-                url = `https://www.googleapis.c
+                url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&m
