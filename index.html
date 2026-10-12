@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Abdo Tube - النسخة الملكية المطورة</title>
+    <title>Abdo Tube - عبده يوتيوب</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -17,8 +17,7 @@
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
@@ -36,34 +35,24 @@
             top: 0; left: 0; right: 0;
             height: 48px;
             background-color: var(--bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between;
             padding: 0 16px;
             z-index: 1000;
             border-bottom: 1px solid var(--border-color);
         }
 
         .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            font-size: 20px; font-weight: bold; cursor: pointer;
         }
-
         .logo-area i { color: var(--yt-red); font-size: 24px; }
 
         .header-icons {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 18px;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 16px;
+            font-size: 18px; cursor: pointer;
         }
 
-        /* نافذة تسجيل الاسم السريعة (بدون أي تعليق) */
+        /* نافذة تسجيل الاسم السريعة */
         .login-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background-color: rgba(0, 0, 0, 0.92);
@@ -72,11 +61,9 @@
         }
         .login-box {
             background-color: #1f1f1f;
-            padding: 24px;
-            border-radius: 16px;
+            padding: 24px; border-radius: 16px;
             width: 100%; max-width: 320px;
-            text-align: center;
-            border: 1px solid var(--border-color);
+            text-align: center; border: 1px solid var(--border-color);
         }
         .login-box input {
             width: 100%; padding: 12px; background: #121212; border: 1px solid var(--border-color);
@@ -89,30 +76,19 @@
 
         /* شريط الأقسام */
         .chips-container {
-            position: fixed;
-            top: 48px; left: 0; right: 0;
-            height: 48px;
-            background-color: var(--bg-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 12px;
-            overflow-x: auto;
-            white-space: nowrap;
-            z-index: 999;
-            scrollbar-width: none;
+            position: fixed; top: 48px; left: 0; right: 0;
+            height: 48px; background-color: var(--bg-color);
+            display: flex; align-items: center; gap: 8px;
+            padding: 0 12px; overflow-x: auto; white-space: nowrap;
+            z-index: 999; scrollbar-width: none;
             border-bottom: 1px solid var(--border-color);
         }
         .chips-container::-webkit-scrollbar { display: none; }
 
         .chip {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            border: none;
-            cursor: pointer;
+            background-color: var(--card-bg); color: var(--text-color);
+            padding: 6px 12px; border-radius: 8px; font-size: 13px;
+            border: none; cursor: pointer;
         }
         .chip.active { background-color: #fff; color: #000; }
 
@@ -148,7 +124,7 @@
             align-items: center; justify-content: center; color: #fff; font-size: 18px; flex-direction: column; gap: 15px;
         }
 
-        /* بروفايل المستخدم */
+        /* البروفايل */
         .profile-container { padding: 16px; }
         .profile-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; position: relative; }
         .profile-avatar-large {
@@ -205,12 +181,12 @@
 </head>
 <body>
 
-    <!-- نافذة تسجيل الاسم (تظهر فقط للمستخدمين الجدد) -->
+    <!-- نافذة تسجيل الاسم -->
     <div class="login-overlay" id="login-modal" style="display:none;">
         <div class="login-box">
             <h2>Abdo Tube 📺</h2>
             <p style="font-size:13px; color:#aaa; margin-top:8px;">اكتب اسمك للبدء (اكتب Abpo لتكون الملك):</p>
-            <input type="text" id="username-input" placeholder="اسمك هنا...">
+            <input type="text" id="username-input" placeholder="اسمك هنا..." onkeypress="if(event.key==='Enter') submitUserLogin()">
             <button onclick="submitUserLogin()">دخول</button>
         </div>
     </div>
@@ -230,26 +206,24 @@
     <!-- البحث -->
     <div class="search-overlay" id="search-overlay">
         <i class="fa-solid fa-arrow-right" onclick="closeSearch()" style="cursor:pointer;"></i>
-        <input type="text" id="search-input" placeholder="ابحث عن فيديوهات أو قنوات..." onkeypress="handleSearchKey(event)">
+        <input type="text" id="search-input" placeholder="ابحث عن فيديوهات أو قنوات..." onkeypress="if(event.key==='Enter') executeSearch()">
         <i class="fa-solid fa-magnifying-glass" onclick="executeSearch()" style="cursor:pointer;"></i>
     </div>
 
     <!-- الأقسام -->
     <div class="chips-container" id="chips-bar">
-        <button class="chip active" onclick="filterCat('الكل')">كل المحتوى</button>
-        <button class="chip" onclick="filterCat('ألعاب فيديو')">ألعاب فيديو</button>
-        <button class="chip" onclick="filterCat('كرة القدم')">كرة القدم</button>
-        <button class="chip" onclick="filterCat('موسيقى')">موسيقى</button>
+        <button class="chip active" onclick="filterCat(this, 'الكل')">كل المحتوى</button>
+        <button class="chip" onclick="filterCat(this, 'ألعاب فيديو')">ألعاب فيديو</button>
+        <button class="chip" onclick="filterCat(this, 'كرة القدم')">كرة القدم</button>
+        <button class="chip" onclick="filterCat(this, 'موسيقى')">موسيقى</button>
     </div>
 
     <!-- الصفحات -->
     <main>
-        <!-- الرئيسية -->
         <div id="home-page" class="page active">
             <div class="feed" id="video-feed"></div>
         </div>
 
-        <!-- Shorts -->
         <div id="shorts-page" class="page">
             <div class="shorts-container">
                 <i class="fa-solid fa-bolt" style="font-size: 50px; color: var(--yt-red);"></i>
@@ -258,14 +232,12 @@
             </div>
         </div>
 
-        <!-- رفع محتوى -->
         <div id="upload-page" class="page" style="padding: 20px;">
             <h2><i class="fa-solid fa-cloud-arrow-up"></i> رفع فيديو جديد لقناتك</h2>
             <p style="color:var(--secondary-text); margin: 10px 0 20px 0;">اختر مقطع فيديو من هاتفك لنشره:</p>
             <input type="file" accept="video/*" style="background:#212121; padding:15px; border-radius:8px; color:#fff; width:100%;">
         </div>
 
-        <!-- الاشتراكات -->
         <div id="subs-page" class="page" style="padding: 20px;">
             <h2>القنوات التي تتابعها</h2>
             <div id="subscriptions-list" style="margin-top: 15px;">
@@ -273,7 +245,6 @@
             </div>
         </div>
 
-        <!-- البروفايل (أنت) -->
         <div id="profile-page" class="page">
             <div class="profile-container">
                 <div class="profile-header">
@@ -287,7 +258,6 @@
                     </div>
                 </div>
 
-                <!-- لوحة المالك الخاصة بك وحدك -->
                 <div class="owner-vip-box" id="owner-panel">
                     <h3 style="color: #FFD700; margin-bottom: 8px;"><i class="fa-solid fa-star"></i> لوحة تحكم المالك الملكي (Abpo)</h3>
                     <p style="font-size: 13px; color: #ddd; margin-bottom: 6px;">🛡️ الحماية وتجربة خالية تماماً من الإعلانات مفعلة.</p>
@@ -348,8 +318,7 @@
         const API_KEY = 'AIzaSyC80bHi4NQ1cumbNSl8WSe9O47w0_Szw7k';
         let currentChannelName = '';
 
-        // التشغيل التلقائي عند فتح الصفحة بدون تعليق
-        window.onload = () => {
+        window.addEventListener('DOMContentLoaded', () => {
             let user = localStorage.getItem('abdo_tube_user');
             if (user) {
                 applyUserRole(user);
@@ -358,7 +327,7 @@
             }
             fetchVideos();
             loadSubscriptionsPage();
-        };
+        });
 
         function submitUserLogin() {
             let input = document.getElementById('username-input').value.trim();
@@ -381,7 +350,6 @@
             document.getElementById('nav-avatar-letter').innerText = firstLetter;
 
             let lower = name.toLowerCase();
-            // التعرف عليك بصفتك المالك الملكي
             if (lower === 'abpo' || lower === 'abdo' || name === 'عماد') {
                 document.getElementById('owner-crown').style.display = 'block';
                 document.getElementById('owner-panel').style.display = 'block';
@@ -392,17 +360,6 @@
                 document.getElementById('owner-panel').style.display = 'none';
                 document.getElementById('profile-avatar-box').classList.remove('owner-mode');
                 document.getElementById('badge-container').innerText = 'مشترك في Abdo Tube';
-
-                // ميزة المتابعة التلقائية لقناتك لأي زائر جديد
-                let autoFollowed = localStorage.getItem('auto_followed_abpo');
-                if (!autoFollowed) {
-                    localStorage.setItem('auto_followed_abpo', 'true');
-                    let subs = JSON.parse(localStorage.getItem('abdo_subscriptions') || '[]');
-                    if (!subs.includes('Abdo Tube Official')) {
-                        subs.push('Abdo Tube Official');
-                        localStorage.setItem('abdo_subscriptions', JSON.stringify(subs));
-                    }
-                }
             }
             loadSubscriptionsPage();
         }
@@ -423,10 +380,9 @@
 
         function openSearch() { document.getElementById('search-overlay').classList.add('active'); document.getElementById('search-input').focus(); }
         function closeSearch() { document.getElementById('search-overlay').classList.remove('active'); }
-        function handleSearchKey(e) { if (e.key === 'Enter') executeSearch(); }
 
         function executeSearch() {
-            let query = document.getElementById('search-input').value;
+            let query = document.getElementById('search-input').value.trim();
             if (query) {
                 fetchVideos(query);
                 closeSearch();
@@ -434,11 +390,36 @@
             }
         }
 
-        function filterCat(cat) {
+        function filterCat(elem, cat) {
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
+            if(elem) elem.classList.add('active');
             fetchVideos(cat === 'الكل' ? 'trending' : cat);
         }
 
         async function fetchVideos(query = 'trending') {
-           
+            let url = '';
+            if (query === 'trending') {
+                url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&maxResults=20&regionCode=EG&key=${API_KEY}`;
+            } else {
+                url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${encodeURIComponent(query)}&type=video&key=${API_KEY}`;
+            }
+
+            try {
+                let res = await fetch(url);
+                let data = await res.json();
+                renderFeed(data.items);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderFeed(items) {
+            let feed = document.getElementById('video-feed');
+            feed.innerHTML = '';
+            if(!items || items.length === 0) {
+                feed.innerHTML = '<p style="padding:20px; text-align:center; color:#aaa;">لم يتم العثور على نتائج.</p>';
+                return;
+            }
+            items.forEach(item => {
+                let id = item.id.videoId || item.id;
+                let title = item.snippet.title;
+                let channel = item.snippet.channelTitle;
+                let thumb = it
