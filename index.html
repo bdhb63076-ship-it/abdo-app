@@ -92,7 +92,7 @@
 
         .name-modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.9);
+            background-color: rgba(0,0,0,0.95);
             display: flex; align-items: center; justify-content: center;
             z-index: 3000; padding: 20px;
         }
@@ -106,8 +106,8 @@
             border: 1px solid var(--border-color);
         }
         .name-modal input {
-            width: 100%; padding: 12px; background: #121212; border: 1px solid var(--border-color);
-            border-radius: 8px; color: #fff; font-size: 15px; margin: 15px 0; outline: none;
+            width: 100%; padding: 14px; background: #121212; border: 1px solid var(--border-color);
+            border-radius: 8px; color: #fff; font-size: 16px; margin: 15px 0; outline: none;
             text-align: center;
         }
         .name-modal button {
@@ -209,6 +209,7 @@
         <div class="name-modal">
             <h2>مرحباً بك في Abdo Tube! 👑</h2>
             <p style="margin-top:8px; font-size:13px; color:#aaa;">أدخل اسمك أو اسم قناتك للبدء:</p>
+            <!-- تم إضافة المعرف الصحيح هنا ليعمل حقل الإدخال بدقة -->
             <input type="text" id="user-name-input" value="Abpo">
             <button type="button" onclick="forceLogin()">دخول للتطبيق</button>
         </div>
@@ -336,7 +337,8 @@
         let currentChannelName = '';
 
         function forceLogin() {
-            let name = document.getElementById('user-name-input').value.trim();
+            let inputField = document.getElementById('user-name-input');
+            let name = inputField ? inputField.value.trim() : "Abpo";
             if(!name) name = "Abpo";
             
             document.getElementById('name-modal').style.display = 'none';
@@ -441,10 +443,4 @@
                             <div class="video-title">${title}</div>
                             <div class="sub-meta">${channel} • مشاهدة حقيقية</div>
                         </div>
-                    </div>
-                `;
-                feed.appendChild(card);
-            });
-        }
-
-        function openWatch(id, title, cha
+                   
