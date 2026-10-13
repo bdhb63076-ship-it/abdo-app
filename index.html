@@ -167,7 +167,7 @@
             <div class="feed" id="video-feed"></div>
         </div>
 
-        <!-- قسم البثوث المباشرة (اللايفات الجديدة) -->
+        <!-- قسم البثوث المباشرة -->
         <div id="live-page" class="page">
             <div class="live-container">
                 <h2 style="color: #ff0000;"><i class="fa-solid fa-tower-broadcast"></i> بثوث الاستريمرز المباشرة الآن</h2>
@@ -233,7 +233,7 @@
         </div>
     </div>
 
-    <!-- الشريط السفلي (مع زر اللايفات الجديد) -->
+    <!-- الشريط السفلي -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>الرئيسية</span></button>
         <button class="nav-item" onclick="switchTab('live')"><i class="fa-solid fa-tower-broadcast"></i><span>اللايفات</span></button>
@@ -245,9 +245,7 @@
     <script>
         const API_KEY = 'AIzaSyC80bHi4NQ1cumbNSl8WSe9O47w0_Szw7k';
         let currentVideosList = [];
-        let currentChannelName = '';
 
-        // بثوث اللايفات والاستريمرز المباشرة المتاحة
         let liveStreams = [
             { id: "5qap5aO4i9A", title: "بث مباشر: ألعاب استريمرز العرب الآن 🔴", channel: "Gaming Live TV", viewers: "14.2 ألف مشاهد" },
             { id: "jfKfPfyJRdk", title: "استريمر يوتيوب مباشر - موسيقى هادئة للدراسة والتركيز 🎧", channel: "Lofi Girl Live", viewers: "45 ألف مشاهد" }
@@ -345,6 +343,7 @@
 
         function renderLiveStreams() {
             let list = document.getElementById('live-streams-list');
+            if (!list) return;
             list.innerHTML = '';
             liveStreams.forEach(stream => {
                 let card = document.createElement('div');
@@ -363,4 +362,9 @@
                         </div>
                     </div>
                 `;
-                list.appendChild(c
+                list.appendChild(card);
+            });
+        }
+
+        function switchTab(tabId) {
+            document.querySelector
