@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>اللاسلكي الملكي - السيرفر الرئيسي</title>
+    <title>اللاسلكي الملكي - الاتصال الفوري</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة الاتصال السريع المباشر بالسيرفر -->
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <style>
         :root {
             --bg-dark: #0a0d14;
@@ -104,6 +103,7 @@
             70% { box-shadow: 0 0 0 25px rgba(0, 230, 118, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
         }
+
         .footer-note { font-size: 13px; color: #777; text-align: center; }
     </style>
 </head>
@@ -112,9 +112,9 @@
     <div class="modal-overlay" id="register-modal">
         <div class="modal-box">
             <h2>🎙️ اللاسلكي الملكي</h2>
-            <p style="font-size:13px; color:#aaa; margin-top:8px;">اكتب اسمك للاتصال (اكتب عبده لتفعيل العرش):</p>
+            <p style="font-size:13px; color:#aaa; margin-top:8px;">اكتب اسمك للبدء (اكتب عبده للعرش الملكي):</p>
             <input type="text" id="user-name-input" placeholder="اسمك هنا...">
-            <button onclick="saveUserAndConnect()">دخول وسحب الكود</button>
+            <button onclick="saveUserAndStart()">دخول واستلام الكود</button>
         </div>
     </div>
 
@@ -150,7 +150,7 @@
 
         <div class="my-code-card">
             <span>كود اللاسلكي الخاص بك:</span>
-            <div class="code-display" id="my-5digit-code">جار الاتصال بالسيرفر...</div>
+            <div class="code-display" id="my-5digit-code">جار توليد الكود...</div>
         </div>
 
         <div class="search-box">
@@ -158,88 +158,98 @@
             <input type="text" id="target-code-input" maxlength="5" placeholder="أدخل الكود">
             <button class="call-btn" onclick="startCallProcess()">
                 <i class="fa-solid fa-phone"></i>
-                <span>رن على الصديق</span>
+                <span>اتصال بالصديق</span>
             </button>
         </div>
     </div>
 
     <div class="footer-note" style="display:flex; justify-content:center; align-items:center; gap:15px;">
-        <span id="footer-details">متصل بسيرفرك الخاص</span>
+        <span id="footer-details">متصل بالشبكة العامة</span>
         <button onclick="resetAppData()" style="background:#222; border:1px solid #444; color:#ff1744; padding:4px 10px; border-radius:6px; font-size:11px; cursor:pointer;">إعادة ضبط</button>
     </div>
 
     <script>
-        // ضع هنا رابط سيرفرك الخاص (الذي يعمل 24 ساعة)
-        const SERVER_URL = 'https://your-custom-server.com'; 
-        
-        let socket = null;
         let myCode = '';
         let myName = '';
+        let peer = null;
+        let activeConnection = null;
         let localStream = null;
         let ringToneAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/1359/1359-preview.mp3');
         ringToneAudio.loop = true;
 
         window.onload = () => {
-            let savedName = localStorage.getItem('wt_user_name_v8');
-            let savedCode = localStorage.getItem('wt_user_code_v8');
+            let savedName = localStorage.getItem('wt_user_name_v9');
+            let savedCode = localStorage.getItem('wt_user_code_v9');
 
             if (savedName && savedCode) {
                 myName = savedName;
                 myCode = savedCode;
                 document.getElementById('register-modal').style.display = 'none';
-                connectToServer(myCode);
+                initPeer(myCode);
                 setupUserPanel();
             } else {
                 document.getElementById('register-modal').style.display = 'flex';
             }
         };
 
-        function saveUserAndConnect() {
+        function saveUserAndStart() {
             let nameInp = document.getElementById('user-name-input').value.trim();
             if (!nameInp) nameInp = "مستخدم";
             myName = nameInp;
             myCode = Math.floor(10000 + Math.random() * 90000).toString();
 
-            localStorage.setItem('wt_user_name_v8', myName);
-            localStorage.setItem('wt_user_code_v8', myCode);
+            localStorage.setItem('wt_user_name_v9', myName);
+            localStorage.setItem('wt_user_code_v9', myCode);
 
             document.getElementById('register-modal').style.display = 'none';
-            connectToServer(myCode);
+            initPeer(myCode);
             setupUserPanel();
         }
 
-        function connectToServer(code) {
-            socket = io(SERVER_URL);
+        function initPeer(code) {
+            peer = new Peer('abdo-king-radio-' + code);
 
-            socket.on('connect', () => {
-                socket.emit('register_user', { code: code, name: myName });
+            peer.on('open', (id) => {
                 document.getElementById('my-5digit-code').innerText = code;
             });
 
-            // استقبال طلب الرنين من صديق
-            socket.on('incoming_call', (data) => {
+            peer.on('error', (err) => {
+                myCode = Math.floor(10000 + Math.random() * 90000).toString();
+                localStorage.setItem('wt_user_code_v9', myCode);
+                initPeer(myCode);
+            });
+
+            peer.on('call', (call) => {
+                activeConnection = call;
                 ringToneAudio.play().catch(e => {});
-                document.getElementById('calling-target-text').innerText = `مكالمة واردة من: ${data.fromName}`;
-                document.getElementById('call-sub-text').innerText = `الكود المتصل: ${data.fromCode}`;
+                document.getElementById('calling-target-text').innerText = "مكالمة واردة من لاسلكي!";
+                document.getElementById('call-sub-text').innerText = "هناك اتصال مباشر بك الآن";
                 document.getElementById('incoming-actions').style.display = 'flex';
                 document.getElementById('call-screen').style.display = 'flex';
             });
+        }
 
-            socket.on('call_rejected', () => {
-                alert('الطرف الآخر مشغول أو رفض المكالمة.');
-                endCall();
-            });
+        function answerCall() {
+            ringToneAudio.pause();
+            ringToneAudio.currentTime = 0;
+            document.getElementById('incoming-actions').style.display = 'none';
+            document.getElementById('call-sub-text').innerText = "تم الاتصال بنجاح.. تحدث الآن";
 
-            socket.on('user_offline', () => {
-                alert('هذا الكود غير متصل حالياً بالسيرفر!');
-                endCall();
-            });
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                localStream = stream;
+                activeConnection.answer(stream);
+                activeConnection.on('stream', (remoteStream) => {
+                    let audio = document.getElementById('remote-audio');
+                    audio.srcObject = remoteStream;
+                    audio.play();
+                });
+            }).catch(e => alert('السماح بالميكروفون مطلوب للرد!'));
         }
 
         function startCallProcess() {
             let targetCode = document.getElementById('target-code-input').value.trim();
             if (targetCode.length !== 5) {
-                alert('أدخل الكود الصحيح المكون من 5 أرقام!');
+                alert('ادخل الكود الصحيح المكون من 5 أرقام!');
                 return;
             }
             if (targetCode === myCode) {
@@ -248,28 +258,42 @@
             }
 
             document.getElementById('calling-target-text').innerText = `جاري الرن على (${targetCode})...`;
-            document.getElementById('call-sub-text').innerText = "في انتظار رد الصديق...";
+            document.getElementById('call-sub-text').innerText = "انتظر رد الطرف الآخر...";
             document.getElementById('call-screen').style.display = 'flex';
             ringToneAudio.play().catch(e => {});
 
-            socket.emit('call_user', { targetCode: targetCode, myCode: myCode, myName: myName });
-        }
-
-        function answerCall() {
-            ringToneAudio.pause();
-            ringToneAudio.currentTime = 0;
-            document.getElementById('incoming-actions').style.display = 'none';
-            document.getElementById('call-sub-text').innerText = "متصل الآن عبر السيرفر 🎙️";
-            
-            // تفعيل الميكروفون وبدء نقل الصوت
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                 localStream = stream;
-            }).catch(e => alert('يجب السماح بالميكروفون!'));
+                let call = peer.call('abdo-king-radio-' + targetCode, stream);
+
+                if (!call) {
+                    alert('الرقم غير متصل أو خطأ في الكود!');
+                    endCall();
+                    return;
+                }
+
+                activeConnection = call;
+
+                call.on('stream', (remoteStream) => {
+                    ringToneAudio.pause();
+                    ringToneAudio.currentTime = 0;
+                    document.getElementById('call-sub-text').innerText = "متصل الآن! تحدث بحرية 🎙️";
+                    let audio = document.getElementById('remote-audio');
+                    audio.srcObject = remoteStream;
+                    audio.play();
+                });
+
+                call.on('close', () => { endCall(); });
+            }).catch(e => {
+                alert('يجب الموافقة على الميكروفون للاتصال!');
+                endCall();
+            });
         }
 
         function endCall() {
             ringToneAudio.pause();
             ringToneAudio.currentTime = 0;
+            if (activeConnection) activeConnection.close();
             if (localStream) localStream.getTracks().forEach(t => t.stop());
             document.getElementById('call-screen').style.display = 'none';
             document.getElementById('incoming-actions').style.display = 'none';
@@ -289,7 +313,7 @@
         }
 
         function resetAppData() {
-            if (confirm("إعادة ضبط التطبيق؟")) {
+            if (confirm("إعادة ضبط وحذف البيانات؟")) {
                 localStorage.clear();
                 location.reload();
             }
