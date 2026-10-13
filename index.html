@@ -1,323 +1,887 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>اللاسلكي الملكي - الاتصال الفوري</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-    <style>
-        :root {
-            --bg-dark: #0a0d14;
-            --card-bg: #141923;
-            --green-active: #00e676;
-            --red-cancel: #ff1744;
-            --gold-color: #FFD700;
-            --text-main: #ffffff;
-            --border-line: #222a38;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0d14">
+<title>اللاسلكي الملكي</title>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+<script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
-            padding: 20px 15px;
-        }
+<style>
+:root {
+  --bg: #0a0d14;
+  --card: #141923;
+  --panel: #080b11;
+  --green: #00e676;
+  --gold: #ffd700;
+  --red: #ff1744;
+  --text: #fff;
+  --muted: #9ba5b5;
+  --border: #273142;
+}
 
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center;
-            z-index: 9999; padding: 20px;
-        }
-        .modal-box {
-            background: var(--card-bg); padding: 25px; border-radius: 20px;
-            width: 100%; max-width: 340px; text-align: center; border: 1px solid var(--border-line);
-        }
-        .modal-box input {
-            width: 100%; padding: 14px; background: #080a0f; border: 1px solid var(--border-line);
-            border-radius: 10px; color: #fff; font-size: 16px; margin: 15px 0; outline: none; text-align: center;
-        }
-        .modal-box button {
-            width: 100%; padding: 14px; background: var(--green-active); color: #000;
-            border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;
-        }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
 
-        header {
-            width: 100%; max-width: 400px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--card-bg); padding: 15px 20px; border-radius: 16px;
-            border: 1px solid var(--border-line);
-        }
-        .logo { font-size: 18px; font-weight: bold; color: var(--green-active); display: flex; align-items: center; gap: 8px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 14px calc(22px + env(safe-area-inset-bottom));
+}
 
-        .app-card {
-            width: 100%; max-width: 400px;
-            background: var(--card-bg); border-radius: 24px;
-            padding: 25px; border: 1px solid var(--border-line);
-            display: flex; flex-direction: column; gap: 20px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }
+button, input {
+  font: inherit;
+}
 
-        .owner-badge-box {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.1));
-            border: 1px solid var(--gold-color); border-radius: 14px; padding: 12px;
-            display: none; align-items: center; justify-content: center; gap: 8px;
-            color: var(--gold-color); font-weight: bold; font-size: 14px;
-        }
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
 
-        .my-code-card {
-            background: #080a0f; border: 1px dashed var(--green-active);
-            border-radius: 16px; padding: 15px;
-        }
-        .my-code-card span { font-size: 13px; color: #aaa; }
-        .code-display { font-size: 32px; font-weight: bold; color: var(--green-active); letter-spacing: 6px; margin-top: 5px; }
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
 
-        .search-box { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
-        .search-box label { font-size: 14px; color: #ddd; text-align: right; }
-        .search-box input {
-            width: 100%; padding: 15px; background: #080a0f; border: 1px solid var(--border-line);
-            border-radius: 12px; color: #fff; font-size: 22px; text-align: center; letter-spacing: 5px; outline: none;
-        }
-        .call-btn {
-            width: 100%; padding: 15px; background: var(--green-active); color: #000;
-            border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
+header, main, footer {
+  width: 100%;
+  max-width: 430px;
+}
 
-        .calling-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(10, 13, 20, 0.98); display: none; flex-direction: column;
-            align-items: center; justify-content: center; gap: 25px; z-index: 10000; padding: 20px;
-        }
-        .avatar-ring {
-            width: 110px; height: 110px; border-radius: 50%; background: var(--card-bg);
-            border: 3px solid var(--green-active); display: flex; align-items: center;
-            justify-content: center; font-size: 45px; color: var(--green-active);
-            animation: ringAnim 1.2s infinite;
-        }
-        @keyframes ringAnim {
-            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); }
-            70% { box-shadow: 0 0 0 25px rgba(0, 230, 118, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
-        }
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  margin-bottom: 22px;
+}
 
-        .footer-note { font-size: 13px; color: #777; text-align: center; }
-    </style>
+.logo {
+  color: var(--green);
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.user-label {
+  color: var(--muted);
+  font-size: 12px;
+  max-width: 120px;
+  overflow-wrap: anywhere;
+}
+
+main {
+  margin: auto 0;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 23px 19px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+  box-shadow: 0 12px 38px #0006;
+}
+
+.crown {
+  display: none;
+  padding: 12px;
+  border: 1px solid #806e14;
+  border-radius: 12px;
+  color: var(--gold);
+  background: #ffd70012;
+  font-weight: bold;
+}
+
+.code-card {
+  padding: 18px 12px;
+  background: var(--panel);
+  border: 1px dashed var(--green);
+  border-radius: 16px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.code {
+  color: var(--green);
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 8px;
+  direction: ltr;
+  margin: 8px 0;
+}
+
+.small-btn {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: white;
+  background: #202735;
+  font-size: 12px;
+}
+
+.status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #89919e;
+}
+
+.dot.online {
+  background: var(--green);
+  box-shadow: 0 0 9px #00e67680;
+}
+
+.dot.error {
+  background: var(--red);
+}
+
+label {
+  display: block;
+  text-align: right;
+  margin-bottom: 9px;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  color: white;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--green);
+}
+
+#target-code {
+  font-size: 25px;
+  text-align: center;
+  direction: ltr;
+  letter-spacing: 8px;
+}
+
+.field {
+  text-align: right;
+}
+
+.primary {
+  width: 100%;
+  padding: 15px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--green);
+  color: #001b0c;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.secondary {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #202735;
+  color: white;
+}
+
+.danger {
+  background: var(--red);
+  color: white;
+  border: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions > button {
+  flex: 1;
+}
+
+footer {
+  margin-top: 22px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #05070bf5;
+}
+
+.overlay.show {
+  display: flex;
+}
+
+.dialog {
+  width: 100%;
+  max-width: 360px;
+  padding: 25px 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  text-align: center;
+}
+
+.dialog h2 {
+  margin-bottom: 12px;
+  font-size: 23px;
+}
+
+.dialog p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 18px;
+}
+
+.dialog input {
+  margin-bottom: 13px;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 22px;
+  border: 3px solid var(--green);
+  border-radius: 50%;
+  color: var(--green);
+  font-size: 42px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 #00e67635; }
+  50% { box-shadow: 0 0 0 18px #00e67600; }
+}
+
+#call-sub {
+  min-height: 44px;
+  overflow-wrap: anywhere;
+}
+
+.call-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.call-actions button {
+  flex: 1;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.notice {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+@media (max-width: 360px) {
+  .logo { font-size: 15px; }
+  .card { padding: 18px 14px; }
+}
+</style>
 </head>
+
 <body>
 
-    <div class="modal-overlay" id="register-modal">
-        <div class="modal-box">
-            <h2>🎙️ اللاسلكي الملكي</h2>
-            <p style="font-size:13px; color:#aaa; margin-top:8px;">اكتب اسمك للبدء (اكتب عبده للعرش الملكي):</p>
-            <input type="text" id="user-name-input" placeholder="اسمك هنا...">
-            <button onclick="saveUserAndStart()">دخول واستلام الكود</button>
-        </div>
+<header>
+  <div class="logo">📻 اللاسلكي الملكي</div>
+  <div class="user-label" id="header-name">زائر</div>
+</header>
+
+<main>
+  <section class="card">
+
+    <div class="crown" id="owner-badge">
+      👑 مالك التطبيق: عبده
     </div>
 
-    <div class="calling-overlay" id="call-screen">
-        <div class="avatar-ring">
-            <i class="fa-solid fa-walkie-talkie"></i>
-        </div>
-        <h2 id="calling-target-text" style="font-size: 20px;">جاري الاتصال...</h2>
-        <p id="call-sub-text" style="color: #aaa; font-size: 14px;">انتظر رد الطرف الآخر</p>
-        <div id="incoming-actions" style="display:none; gap: 15px;">
-            <button onclick="answerCall()" style="background: var(--green-active); color: #000; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; cursor: pointer;">رد الآن</button>
-        </div>
-        <button onclick="endCall()" style="background: var(--red-cancel); color: #fff; border: none; padding: 12px 30px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer;">
-            إنهاء المكالمة
-        </button>
+    <div class="status">
+      <span class="dot" id="status-dot"></span>
+      <span id="status-text">جاري تجهيز الاتصال...</span>
     </div>
 
-    <audio id="remote-audio" autoplay></audio>
-
-    <header>
-        <div class="logo">
-            <i class="fa-solid fa-tower-cell"></i>
-            <span>اللاسلكي الملكي</span>
-        </div>
-        <span id="header-user-name" style="font-size: 13px; color: #aaa;">زائر</span>
-    </header>
-
-    <div class="app-card">
-        <div class="owner-badge-box" id="owner-panel">
-            <i class="fa-solid fa-crown"></i>
-            <span>مالك التطبيق الرسمي (عبده)</span>
-        </div>
-
-        <div class="my-code-card">
-            <span>كود اللاسلكي الخاص بك:</span>
-            <div class="code-display" id="my-5digit-code">جار توليد الكود...</div>
-        </div>
-
-        <div class="search-box">
-            <label>اكتب كود الصديق (5 أرقام):</label>
-            <input type="text" id="target-code-input" maxlength="5" placeholder="أدخل الكود">
-            <button class="call-btn" onclick="startCallProcess()">
-                <i class="fa-solid fa-phone"></i>
-                <span>اتصال بالصديق</span>
-            </button>
-        </div>
+    <div class="code-card">
+      <div class="muted">كود اللاسلكي الخاص بك</div>
+      <div class="code" id="my-code">-----</div>
+      <button class="small-btn" id="copy-code">نسخ الكود</button>
+      <p class="muted" style="margin-top:10px">
+        شارك الكود مع الشخص الذي تريد الاتصال به
+      </p>
     </div>
 
-    <div class="footer-note" style="display:flex; justify-content:center; align-items:center; gap:15px;">
-        <span id="footer-details">متصل بالشبكة العامة</span>
-        <button onclick="resetAppData()" style="background:#222; border:1px solid #444; color:#ff1744; padding:4px 10px; border-radius:6px; font-size:11px; cursor:pointer;">إعادة ضبط</button>
+    <div class="field">
+      <label for="target-code">كود الصديق (5 أرقام)</label>
+      <input
+        id="target-code"
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]{5}"
+        maxlength="5"
+        placeholder="00000"
+        autocomplete="off"
+      >
     </div>
 
-    <script>
-        let myCode = '';
-        let myName = '';
-        let peer = null;
-        let activeConnection = null;
-        let localStream = null;
-        let ringToneAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/1359/1359-preview.mp3');
-        ringToneAudio.loop = true;
+    <button class="primary" id="call-btn">
+      📞 اتصال صوتي
+    </button>
 
-        window.onload = () => {
-            let savedName = localStorage.getItem('wt_user_name_v9');
-            let savedCode = localStorage.getItem('wt_user_code_v9');
+    <p class="notice">
+      يجب أن يكون الطرف الآخر متصلًا بالإنترنت، وأن يكون قد فتح التطبيق.
+      اسم المالك الظاهر هنا ليس نظام تحقق أمنيًا.
+    </p>
 
-            if (savedName && savedCode) {
-                myName = savedName;
-                myCode = savedCode;
-                document.getElementById('register-modal').style.display = 'none';
-                initPeer(myCode);
-                setupUserPanel();
-            } else {
-                document.getElementById('register-modal').style.display = 'flex';
-            }
-        };
+    <button class="secondary" id="reset-btn">إعادة ضبط بيانات هذا الجهاز</button>
 
-        function saveUserAndStart() {
-            let nameInp = document.getElementById('user-name-input').value.trim();
-            if (!nameInp) nameInp = "مستخدم";
-            myName = nameInp;
-            myCode = Math.floor(10000 + Math.random() * 90000).toString();
+  </section>
+</main>
 
-            localStorage.setItem('wt_user_name_v9', myName);
-            localStorage.setItem('wt_user_code_v9', myCode);
+<footer>
+  <div id="footer-status">اللاسلكي الملكي • اتصال عبر الإنترنت</div>
+  <div>تأكد من السماح باستخدام الميكروفون.</div>
+</footer>
 
-            document.getElementById('register-modal').style.display = 'none';
-            initPeer(myCode);
-            setupUserPanel();
-        }
+<!-- نافذة تسجيل الاسم -->
+<div class="overlay" id="register-modal">
+  <div class="dialog">
+    <h2>📻 اللاسلكي الملكي</h2>
+    <p>أهلًا بك! اكتب اسمك للبدء.</p>
+    <input
+      id="name-input"
+      type="text"
+      maxlength="30"
+      placeholder="اكتب اسمك هنا"
+      autocomplete="name"
+    >
+    <button class="primary" id="start-btn">دخول وإنشاء الكود</button>
+  </div>
+</div>
 
-        function initPeer(code) {
-            peer = new Peer('abdo-king-radio-' + code);
+<!-- نافذة المكالمة -->
+<div class="overlay" id="call-modal">
+  <div class="dialog">
+    <div class="avatar">📻</div>
+    <h2 id="call-title">جاري الاتصال...</h2>
+    <p id="call-sub">انتظر حتى يتم الاتصال بالطرف الآخر.</p>
 
-            peer.on('open', (id) => {
-                document.getElementById('my-5digit-code').innerText = code;
-            });
+    <div class="call-actions">
+      <button class="primary hidden" id="answer-btn">✅ رد</button>
+      <button class="secondary danger" id="reject-btn">✖ إنهاء</button>
+    </div>
+  </div>
+</div>
 
-            peer.on('error', (err) => {
-                myCode = Math.floor(10000 + Math.random() * 90000).toString();
-                localStorage.setItem('wt_user_code_v9', myCode);
-                initPeer(myCode);
-            });
+<audio id="remote-audio" autoplay playsinline></audio>
 
-            peer.on('call', (call) => {
-                activeConnection = call;
-                ringToneAudio.play().catch(e => {});
-                document.getElementById('calling-target-text').innerText = "مكالمة واردة من لاسلكي!";
-                document.getElementById('call-sub-text').innerText = "هناك اتصال مباشر بك الآن";
-                document.getElementById('incoming-actions').style.display = 'flex';
-                document.getElementById('call-screen').style.display = 'flex';
-            });
-        }
+<script>
+"use strict";
 
-        function answerCall() {
-            ringToneAudio.pause();
-            ringToneAudio.currentTime = 0;
-            document.getElementById('incoming-actions').style.display = 'none';
-            document.getElementById('call-sub-text').innerText = "تم الاتصال بنجاح.. تحدث الآن";
+const $ = id => document.getElementById(id);
 
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                localStream = stream;
-                activeConnection.answer(stream);
-                activeConnection.on('stream', (remoteStream) => {
-                    let audio = document.getElementById('remote-audio');
-                    audio.srcObject = remoteStream;
-                    audio.play();
-                });
-            }).catch(e => alert('السماح بالميكروفون مطلوب للرد!'));
-        }
+const KEYS = {
+  name: "royal_radio_name_v1",
+  code: "royal_radio_code_v1"
+};
 
-        function startCallProcess() {
-            let targetCode = document.getElementById('target-code-input').value.trim();
-            if (targetCode.length !== 5) {
-                alert('ادخل الكود الصحيح المكون من 5 أرقام!');
-                return;
-            }
-            if (targetCode === myCode) {
-                alert('لا يمكنك الاتصال برقمك الشخصي!');
-                return;
-            }
+let myName = "";
+let myCode = "";
+let peer = null;
+let activeCall = null;
+let localStream = null;
+let remoteStream = null;
+let callTimer = null;
+let peerReady = false;
+let busy = false;
+let pendingIncoming = null;
+let incomingTimeout = null;
+let destroyed = false;
 
-            document.getElementById('calling-target-text').innerText = `جاري الرن على (${targetCode})...`;
-            document.getElementById('call-sub-text').innerText = "انتظر رد الطرف الآخر...";
-            document.getElementById('call-screen').style.display = 'flex';
-            ringToneAudio.play().catch(e => {});
+function setStatus(message, state = "normal") {
+  $("status-text").textContent = message;
+  $("status-dot").className = "dot";
 
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                localStream = stream;
-                let call = peer.call('abdo-king-radio-' + targetCode, stream);
+  if (state === "online") {
+    $("status-dot").classList.add("online");
+  } else if (state === "error") {
+    $("status-dot").classList.add("error");
+  }
+}
 
-                if (!call) {
-                    alert('الرقم غير متصل أو خطأ في الكود!');
-                    endCall();
-                    return;
-                }
+function showModal(id) {
+  $(id).classList.add("show");
+}
 
-                activeConnection = call;
+function hideModal(id) {
+  $(id).classList.remove("show");
+}
 
-                call.on('stream', (remoteStream) => {
-                    ringToneAudio.pause();
-                    ringToneAudio.currentTime = 0;
-                    document.getElementById('call-sub-text').innerText = "متصل الآن! تحدث بحرية 🎙️";
-                    let audio = document.getElementById('remote-audio');
-                    audio.srcObject = remoteStream;
-                    audio.play();
-                });
+function validCode(code) {
+  return /^[0-9]{5}$/.test(code);
+}
 
-                call.on('close', () => { endCall(); });
-            }).catch(e => {
-                alert('يجب الموافقة على الميكروفون للاتصال!');
-                endCall();
-            });
-        }
+function makeCode() {
+  return String(
+    Math.floor(10000 + Math.random() * 90000)
+  );
+}
 
-        function endCall() {
-            ringToneAudio.pause();
-            ringToneAudio.currentTime = 0;
-            if (activeConnection) activeConnection.close();
-            if (localStream) localStream.getTracks().forEach(t => t.stop());
-            document.getElementById('call-screen').style.display = 'none';
-            document.getElementById('incoming-actions').style.display = 'none';
-            document.getElementById('target-code-input').value = '';
-        }
+function peerId(code) {
+  return "royal-radio-v1-" + code;
+}
 
-        function setupUserPanel() {
-            document.getElementById('header-user-name').innerText = myName;
-            let lower = myName.toLowerCase();
-            if (lower === 'abdo' || lower === 'abpo' || myName === 'عبده') {
-                document.getElementById('owner-panel').style.display = 'flex';
-                document.getElementById('footer-details').innerHTML = `👑 مالك التطبيق: <b>${myName}</b>`;
-            } else {
-                document.getElementById('owner-panel').style.display = 'none';
-                document.getElementById('footer-details').innerText = `المستخدم: ${myName}`;
-            }
-        }
+function saveIdentity(name, code) {
+  localStorage.setItem(KEYS.name, name);
+  localStorage.setItem(KEYS.code, code);
+}
 
-        function resetAppData() {
-            if (confirm("إعادة ضبط وحذف البيانات؟")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-    </script>
+function updateUserPanel() {
+  $("header-name").textContent = myName || "زائر";
+
+  // هذه العلامة شكلية فقط، وليست إثباتًا لهوية المالك.
+  const owner = myName.trim().toLowerCase() === "abdo"
+    || myName.trim().toLowerCase() === "abpo"
+    || myName.trim() === "عبده";
+
+  $("owner-badge").style.display = owner ? "block" : "none";
+  $("footer-status").textContent =
+    owner ? "👑 اللاسلكي الملكي" : "المستخدم: " + myName;
+}
+
+function startApp() {
+  const inputName = $("name-input").value.trim();
+  myName = (inputName || "مستخدم").slice(0, 30);
+
+  myCode = makeCode();
+  saveIdentity(myName, myCode);
+
+  hideModal("register-modal");
+  updateUserPanel();
+  initPeer();
+}
+
+function initPeer() {
+  if (typeof Peer === "undefined") {
+    setStatus("تعذر تحميل مكتبة الاتصال", "error");
+    alert("تعذر تحميل PeerJS. تحقق من الإنترنت ثم أعد تحميل الصفحة.");
+    return;
+  }
+
+  destroyed = false;
+  peerReady = false;
+  $("my-code").textContent = myCode;
+  setStatus("جاري الاتصال بخادم الإشارة...");
+
+  try {
+    peer = new Peer(peerId(myCode), {
+      debug: 0
+    });
+  } catch (error) {
+    setStatus("تعذر بدء الاتصال", "error");
+    return;
+  }
+
+  peer.on("open", () => {
+    peerReady = true;
+    $("my-code").textContent = myCode;
+    setStatus("متصل وجاهز للمكالمات", "online");
+  });
+
+  peer.on("call", incoming => {
+    if (destroyed || busy || activeCall || pendingIncoming) {
+      incoming.close();
+      return;
+    }
+
+    pendingIncoming = incoming;
+    busy = true;
+
+    $("call-title").textContent = "📞 مكالمة واردة";
+    $("call-sub").textContent = "هناك شخص يتصل بك. هل تريد الرد؟";
+    $("answer-btn").classList.remove("hidden");
+    $("reject-btn").textContent = "رفض المكالمة";
+
+    showModal("call-modal");
+
+    incomingTimeout = setTimeout(() => {
+      if (pendingIncoming === incoming) {
+        finishCall("انتهت مهلة الرد.");
+      }
+    }, 30000);
+  });
+
+  peer.on("disconnected", () => {
+    peerReady = false;
+    setStatus("انقطع الاتصال بخادم الإشارة", "error");
+  });
+
+  peer.on("error", error => {
+    console.error("PeerJS error:", error);
+
+    peerReady = false;
+
+    if (error.type === "unavailable-id") {
+      setStatus("الكود مستخدم بالفعل", "error");
+      $("call-sub").textContent =
+        "يوجد تعارض في الكود. استخدم إعادة الضبط لإنشاء هوية جديدة.";
+    } else if (error.type === "peer-unavailable") {
+      setStatus("تعذر العثور على الصديق", "error");
+    } else if (error.type === "network" ||
+               error.type === "server-error" ||
+               error.type === "socket-error") {
+      setStatus("مشكلة في الشبكة أو خادم الإشارة", "error");
+    } else {
+      setStatus("حدث خطأ في الاتصال", "error");
+    }
+  });
+
+  peer.on("close", () => {
+    peerReady = false;
+    if (!destroyed) {
+      setStatus("تم إغلاق اتصال التطبيق", "error");
+    }
+  });
+}
+
+async function getMicrophone() {
+  if (!navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia) {
+    throw new Error("الميكروفون غير متاح. افتح الصفحة عبر HTTPS.");
+  }
+
+  return await navigator.mediaDevices.getUserMedia({
+    audio: {
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true
+    },
+    video: false
+  });
+}
+
+async function startOutgoingCall() {
+  const target = $("target-code").value.trim();
+
+  if (!validCode(target)) {
+    alert("أدخل كودًا مكونًا من 5 أرقام فقط.");
+    return;
+  }
+
+  if (target === myCode) {
+    alert("لا يمكنك الاتصال بكودك الشخصي.");
+    return;
+  }
+
+  if (!peer || !peerReady || peer.destroyed) {
+    alert("التطبيق غير متصل بخادم الإشارة. تحقق من الإنترنت.");
+    return;
+  }
+
+  if (busy || activeCall || pendingIncoming) {
+    alert("أنهِ المكالمة الحالية أولًا.");
+    return;
+  }
+
+  busy = true;
+  $("call-title").textContent = "جاري الاتصال...";
+  $("call-sub").textContent = "جاري طلب إذن الميكروفون.";
+  $("answer-btn").classList.add("hidden");
+  $("reject-btn").textContent = "إلغاء الاتصال";
+  showModal("call-modal");
+
+  try {
+    localStream = await getMicrophone();
+
+    if (!busy || destroyed) {
+      stopLocalStream();
+      return;
+    }
+
+    activeCall = peer.call(peerId(target), localStream);
+
+    if (!activeCall) {
+      throw new Error("تعذر إنشاء المكالمة.");
+    }
+
+    bindCallEvents(activeCall, true);
+
+    $("call-sub").textContent =
+      "جارٍ الاتصال بالطرف الآخر. انتظر الرد.";
+
+    callTimer = setTimeout(() => {
+      if (activeCall && !remoteStream) {
+        finishCall("لم يتم الرد خلال المهلة المحددة.");
+      }
+    }, 45000);
+
+  } catch (error) {
+    console.error(error);
+    finishCall("تعذر بدء المكالمة. تحقق من الميكروفون والاتصال.");
+    alert(error.message || "حدث خطأ أثناء بدء المكالمة.");
+  }
+}
+
+async function answerIncomingCall() {
+  const call = pendingIncoming;
+
+  if (!call) return;
+
+  clearTimeout(incomingTimeout);
+  pendingIncoming = null;
+  activeCall = call;
+
+  $("answer-btn").classList.add("hidden");
+  $("call-title").textContent = "جاري الرد...";
+  $("call-sub").textContent = "اسمح باستخدام الميكروفون للتحدث.";
+
+  try {
+    localStream = await getMicrophone();
+
+    if (!busy || activeCall !== call || destroyed) {
+      stopLocalStream();
+      return;
+    }
+
+    call.answer(localStream);
+    bindCallEvents(call, false);
+
+    $("call-sub").textContent = "تم الرد. جاري تجهيز الصوت...";
+
+  } catch (error) {
+    console.error(error);
+    finishCall("تعذر الرد. تحقق من إذن الميكروفون.");
+    alert("يجب السماح باستخدام الميكروفون للرد على المكالمة.");
+  }
+}
+
+function bindCallEvents(call, outgoing) {
+  call.on("stream", stream => {
+    if (activeCall !== call || !busy) return;
+
+    clearTimeout(callTimer);
+    remoteStream = stream;
+
+    const audio = $("remote-audio");
+    audio.srcObject = stream;
+    audio.play().catch(error => {
+      console.warn("Audio playback requires user interaction:", error);
+      $("call-sub").textContent =
+        "المكالمة متصلة. اضغط على الشاشة أو زر الصوت لتشغيل الصوت إذا لم تسمعه.";
+    });
+
+    $("call-title").textContent = "🟢 المكالمة متصلة";
+    $("call-sub").textContent = "تحدث الآن. يمكنك إنهاء المكالمة في أي وقت.";
+  });
+
+  call.on("close", () => {
+    if (activeCall === call || pendingIncoming === call) {
+      finishCall("انتهت المكالمة.");
+    }
+  });
+
+  call.on("error", error => {
+    console.error("Call error:", error);
+
+    if (activeCall === call || pendingIncoming === call) {
+      finishCall("حدث خطأ أثناء المكالمة.");
+    }
+  });
+}
+
+function stopLocalStream() {
+  if (localStream) {
+    localStream.getTracks().forEach(track => {
+      try { track.stop(); } catch (_) {}
+    });
+    localStream = null;
+  }
+}
+
+function stopRemoteStream() {
+  if (remoteStream) {
+    remoteStream.getTracks().forEach(track => {
+      try { track.stop(); } catch (_) {}
+    });
+    remoteStream = null;
+  }
+
+  const audio = $("remote-audio");
+  audio.pause();
+  audio.srcObject = null;
+}
+
+function finishCall(message = "انتهت المكالمة.") {
+  clearTimeout(callTimer);
+  clearTimeout(incomingTimeout);
+  callTimer = null;
+  incomingTimeout = null;
+
+  const oldCall = activeCall || pendingIncoming;
+
+  // إزالة المراجع أولًا لتجنب الاستدعاء المتكرر عند حدث close.
+  activeCall = null;
+  pendingIncoming = null;
+  busy = false;
+
+  if (oldCall) {
+    try { oldCall.close(); } catch (_) {}
+  }
+
+  stopLocalStream();
+  stopRemoteStream();
+
+  hideModal("call-modal");
+  $("answer-btn").classList.add("hidden");
+  $("reject-btn").textContent = "إنهاء المكالمة";
+  $("target-code").value = "";
+
+  if (peerReady) {
+    setStatus("متصل وجاهز للمكالمات", "online");
+  } else {
+    setStatus("غير متصل بخادم الإشارة", "error");
+  }
+
+  $("call-sub").textContent = message;
+}
+
+async function copyCode() {
+  try {
+    await navigator.clipboard.writeText(myCode);
+    $("copy-code").textContent = "تم النسخ ✓";
+  } catch (_) {
+    const input = document.createElement("textarea");
+    input.value = myCode;
+    input.style.position = "fixed";
+    input.style.opacity = "0";
+    document.body.appendChild(input);
+    input.select();
+
+    const success = document.execCommand("copy");
+    input.remove();
+
+    $("copy-code").textContent =
+      success ? "تم النسخ ✓" : "تعذر النسخ";
+  }
+
+  setTimeout(() => {
+    $("copy-code").textContent = "نسخ الكود";
+  }, 2000);
+}
+
+function resetApp() {
+  if (!confirm("هل تريد حذف اسمك وكودك من هذا الجهاز وإنشاء هوية جديدة؟")) {
+    return;
+  }
+
+  destroyed = true;
+  finishCall("تم إنهاء المكالمة.");
+
+  if (peer) {
+    try { peer.destroy(); } catch (_) {}
+    peer = null;
+  }
+
+  localStorage.removeItem(KEYS.name);
+  localStorage.removeItem(KEYS.code);
+  location.reload();
+}
+
+function initialize() {
+  const savedName = localStorage.getItem(KEYS.name);
+  const savedCode = localStorage.getItem(KEYS.code);
+
+  if (savedName && savedCode && validCode(savedCode)) {
+    myName = savedName;
+    myCode = savedCode;
+    updateUserPanel();
+    initPeer();
+  } else {
+    showModal("register-modal");
+  }
+}
+
+$("start-btn").addEventListener("click", startApp);
+$("call-btn").addEventListener("click", startOutgoingCall);
+$("answer-btn").addEventListener("click", answerIncomingCall);
+$("reject-btn").addEventListener("click", () => {
+  finishCall(pendingIncoming ? "تم رفض المكالمة." : "تم إنهاء المكالمة.");
+});
+$("copy-code").addEventListener("click", copyCode);
+$("reset-btn").addEventListener("click", resetApp);
+
+$("target-code").addEventListener("input", event => {
+  event.target.value = event.target.value.replace(/[^0-9]/g, "").slice(0, 5);
+});
+
+$("name-input").addEventListener("keydown", event => {
+  if (event.key === "Enter") startApp();
+});
+
+window.addEventListener("beforeunload", () => {
+  destroyed = true;
+  clearTimeout(callTimer);
+  clearTimeout(incomingTimeout);
+  stopLocalStream();
+  stopRemoteStream();
+
+  if (peer) {
+    try { peer.destroy(); } catch (_) {}
+  }
+});
+
+initialize();
+</script>
+
 </body>
 </html>
