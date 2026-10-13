@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>اللاسلكي الملكي - مكالمات وإشعارات فورية</title>
+    <title>اللاسلكي الملكي - السيرفر الرئيسي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة الاتصال السريع المباشر بالسيرفر -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <style>
         :root {
             --bg-dark: #0a0d14;
@@ -26,7 +28,6 @@
             padding: 20px 15px;
         }
 
-        /* نافذة التسجيل الأولى */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center;
@@ -45,7 +46,6 @@
             border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer;
         }
 
-        /* الهيدر العلوي */
         header {
             width: 100%; max-width: 400px;
             display: flex; justify-content: space-between; align-items: center;
@@ -54,20 +54,14 @@
         }
         .logo { font-size: 18px; font-weight: bold; color: var(--green-active); display: flex; align-items: center; gap: 8px; }
 
-        .user-info-head { display: flex; align-items: center; gap: 8px; }
-        .edit-name-btn { background: none; border: none; color: #3ea6ff; cursor: pointer; font-size: 15px; padding: 4px; }
-
-        /* الكارت الرئيسي */
         .app-card {
             width: 100%; max-width: 400px;
             background: var(--card-bg); border-radius: 24px;
             padding: 25px; border: 1px solid var(--border-line);
             display: flex; flex-direction: column; gap: 20px; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            position: relative; overflow: hidden;
         }
 
-        /* لوحة تحكم المالك الملكي */
         .owner-badge-box {
             background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.1));
             border: 1px solid var(--gold-color); border-radius: 14px; padding: 12px;
@@ -75,19 +69,6 @@
             color: var(--gold-color); font-weight: bold; font-size: 14px;
         }
 
-        /* زر تفعيل الإشعارات برة المتصفح */
-        .noti-btn-box {
-            background: #080a0f; border: 1px solid #2a3447;
-            border-radius: 12px; padding: 10px; display: flex;
-            align-items: center; justify-content: space-between; font-size: 13px; color: #ccc;
-        }
-        .noti-btn-box button {
-            background: #232d3f; border: 1px solid var(--green-active);
-            color: var(--green-active); padding: 6px 12px; border-radius: 8px;
-            cursor: pointer; font-size: 12px; font-weight: bold;
-        }
-
-        /* عرض كود المستخدم الخاص */
         .my-code-card {
             background: #080a0f; border: 1px dashed var(--green-active);
             border-radius: 16px; padding: 15px;
@@ -95,7 +76,6 @@
         .my-code-card span { font-size: 13px; color: #aaa; }
         .code-display { font-size: 32px; font-weight: bold; color: var(--green-active); letter-spacing: 6px; margin-top: 5px; }
 
-        /* منطقة البحث والاتصال */
         .search-box { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
         .search-box label { font-size: 14px; color: #ddd; text-align: right; }
         .search-box input {
@@ -105,10 +85,9 @@
         .call-btn {
             width: 100%; padding: 15px; background: var(--green-active); color: #000;
             border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        /* شاشة الاتصال والرنين المباشر */
         .calling-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 13, 20, 0.98); display: none; flex-direction: column;
@@ -125,68 +104,58 @@
             70% { box-shadow: 0 0 0 25px rgba(0, 230, 118, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
         }
-
         .footer-note { font-size: 13px; color: #777; text-align: center; }
     </style>
 </head>
 <body>
 
-    <!-- نافذة التسجيل الأولى -->
     <div class="modal-overlay" id="register-modal">
         <div class="modal-box">
             <h2>🎙️ اللاسلكي الملكي</h2>
-            <p style="font-size:13px; color:#aaa; margin-top:8px;">ادخل اسمك لإنشاء كودك (اكتب عبده للعرش الملكي):</p>
+            <p style="font-size:13px; color:#aaa; margin-top:8px;">اكتب اسمك للاتصال (اكتب عبده لتفعيل العرش):</p>
             <input type="text" id="user-name-input" placeholder="اسمك هنا...">
-            <button onclick="saveUserAndStart()">دخول واستلام الكود</button>
+            <button onclick="saveUserAndConnect()">دخول وسحب الكود</button>
         </div>
     </div>
 
-    <!-- شاشة الاتصال والرنين المباشر -->
     <div class="calling-overlay" id="call-screen">
         <div class="avatar-ring">
             <i class="fa-solid fa-walkie-talkie"></i>
         </div>
-        <h2 id="calling-target-text" style="font-size: 20px;">جاري الرن على الرقم...</h2>
-        <p style="color: #aaa; font-size: 14px;">يرجى الانتظار حتى يتم الرد من اللاسلكي</p>
-        <button onclick="endCall()" style="background: var(--red-cancel); color: #fff; border: none; padding: 15px 35px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer;">
-            <i class="fa-solid fa-phone-slash"></i> إنهاء المكالمة
+        <h2 id="calling-target-text" style="font-size: 20px;">جاري الاتصال...</h2>
+        <p id="call-sub-text" style="color: #aaa; font-size: 14px;">انتظر رد الطرف الآخر</p>
+        <div id="incoming-actions" style="display:none; gap: 15px;">
+            <button onclick="answerCall()" style="background: var(--green-active); color: #000; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; cursor: pointer;">رد الآن</button>
+        </div>
+        <button onclick="endCall()" style="background: var(--red-cancel); color: #fff; border: none; padding: 12px 30px; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer;">
+            إنهاء المكالمة
         </button>
     </div>
+
+    <audio id="remote-audio" autoplay></audio>
 
     <header>
         <div class="logo">
             <i class="fa-solid fa-tower-cell"></i>
             <span>اللاسلكي الملكي</span>
         </div>
-        <div class="user-info-head">
-            <span id="header-user-name" style="font-size: 13px; color: #aaa;">زائر</span>
-            <button class="edit-name-btn" onclick="reRegister()" title="تعديل الاسم"><i class="fa-solid fa-pen-to-square"></i></button>
-        </div>
+        <span id="header-user-name" style="font-size: 13px; color: #aaa;">زائر</span>
     </header>
 
     <div class="app-card">
-        <!-- لوحة تحكم المالك الملكي -->
         <div class="owner-badge-box" id="owner-panel">
             <i class="fa-solid fa-crown"></i>
             <span>مالك التطبيق الرسمي (عبده)</span>
         </div>
 
-        <!-- زر تفعيل الإشعارات الخارجية -->
-        <div class="noti-btn-box">
-            <span>🔔 الرنين برة المتصفح:</span>
-            <button id="noti-status-btn" onclick="requestNotificationPermission()">تفعيل الرنين</button>
-        </div>
-
-        <!-- كود المستخدم الخاص (5 أرقام) -->
         <div class="my-code-card">
-            <span>رقم اللاسلكي الثابت الخاص بك:</span>
-            <div class="code-display" id="my-5digit-code">-----</div>
+            <span>كود اللاسلكي الخاص بك:</span>
+            <div class="code-display" id="my-5digit-code">جار الاتصال بالسيرفر...</div>
         </div>
 
-        <!-- البحث برقم الصديق والاتصال -->
         <div class="search-box">
-            <label>اكتب كود صديقك (5 أرقام) للاتصال به:</label>
-            <input type="text" id="target-code-input" maxlength="5" placeholder="مثال: 58291">
+            <label>اكتب كود الصديق (5 أرقام):</label>
+            <input type="text" id="target-code-input" maxlength="5" placeholder="أدخل الكود">
             <button class="call-btn" onclick="startCallProcess()">
                 <i class="fa-solid fa-phone"></i>
                 <span>رن على الصديق</span>
@@ -195,126 +164,135 @@
     </div>
 
     <div class="footer-note" style="display:flex; justify-content:center; align-items:center; gap:15px;">
-        <span id="footer-details">مكالمات صوتية مباشرة برقم الكود</span>
-        <button onclick="resetAppData()" style="background:#222; border:1px solid #444; color:#ff1744; padding:4px 10px; border-radius:6px; font-size:11px; cursor:pointer;" title="مسح الاسم والبدء من جديد">إعادة ضبط</button>
+        <span id="footer-details">متصل بسيرفرك الخاص</span>
+        <button onclick="resetAppData()" style="background:#222; border:1px solid #444; color:#ff1744; padding:4px 10px; border-radius:6px; font-size:11px; cursor:pointer;">إعادة ضبط</button>
     </div>
 
     <script>
+        // ضع هنا رابط سيرفرك الخاص (الذي يعمل 24 ساعة)
+        const SERVER_URL = 'https://your-custom-server.com'; 
+        
+        let socket = null;
         let myCode = '';
         let myName = '';
+        let localStream = null;
         let ringToneAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/1359/1359-preview.mp3');
         ringToneAudio.loop = true;
 
         window.onload = () => {
-            let savedName = localStorage.getItem('wt_user_name_v5');
-            let savedCode = localStorage.getItem('wt_user_code_v5');
+            let savedName = localStorage.getItem('wt_user_name_v8');
+            let savedCode = localStorage.getItem('wt_user_code_v8');
 
             if (savedName && savedCode) {
                 myName = savedName;
                 myCode = savedCode;
                 document.getElementById('register-modal').style.display = 'none';
+                connectToServer(myCode);
                 setupUserPanel();
             } else {
                 document.getElementById('register-modal').style.display = 'flex';
             }
-
-            checkNotificationPermissionStatus();
         };
 
-        function requestNotificationPermission() {
-            if ("Notification" in window) {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        alert("تم تفعيل رنين الإشعارات بنجاح!");
-                        checkNotificationPermissionStatus();
-                    }
-                });
-            }
-        }
-
-        function checkNotificationPermissionStatus() {
-            let btn = document.getElementById('noti-status-btn');
-            if ("Notification" in window && Notification.permission === "granted") {
-                btn.innerText = "مفعل ✅";
-                btn.style.borderColor = "#00e676";
-                btn.style.color = "#00e676";
-            }
-        }
-
-        function saveUserAndStart() {
+        function saveUserAndConnect() {
             let nameInp = document.getElementById('user-name-input').value.trim();
             if (!nameInp) nameInp = "مستخدم";
-
             myName = nameInp;
             myCode = Math.floor(10000 + Math.random() * 90000).toString();
 
-            localStorage.setItem('wt_user_name_v5', myName);
-            localStorage.setItem('wt_user_code_v5', myCode);
+            localStorage.setItem('wt_user_name_v8', myName);
+            localStorage.setItem('wt_user_code_v8', myCode);
 
             document.getElementById('register-modal').style.display = 'none';
+            connectToServer(myCode);
             setupUserPanel();
         }
 
-        function reRegister() {
-            let newName = prompt("اكتب اسمك الجديد (أو اسمك الحقيقي لتفعيل الملكية):", myName);
-            if (newName && newName.trim() !== '') {
-                myName = newName.trim();
-                localStorage.setItem('wt_user_name_v5', myName);
-                setupUserPanel();
-            }
-        }
+        function connectToServer(code) {
+            socket = io(SERVER_URL);
 
-        function resetAppData() {
-            if (confirm("هل تريد حقاً مسح الاسم وإعادة تعيين التطبيق من جديد؟")) {
-                localStorage.removeItem('wt_user_name_v5');
-                localStorage.removeItem('wt_user_code_v5');
-                location.reload();
-            }
-        }
+            socket.on('connect', () => {
+                socket.emit('register_user', { code: code, name: myName });
+                document.getElementById('my-5digit-code').innerText = code;
+            });
 
-        function setupUserPanel() {
-            document.getElementById('my-5digit-code').innerText = myCode;
-            document.getElementById('header-user-name').innerText = myName;
+            // استقبال طلب الرنين من صديق
+            socket.on('incoming_call', (data) => {
+                ringToneAudio.play().catch(e => {});
+                document.getElementById('calling-target-text').innerText = `مكالمة واردة من: ${data.fromName}`;
+                document.getElementById('call-sub-text').innerText = `الكود المتصل: ${data.fromCode}`;
+                document.getElementById('incoming-actions').style.display = 'flex';
+                document.getElementById('call-screen').style.display = 'flex';
+            });
 
-            let lower = myName.toLowerCase();
-            if (lower === 'abdo' || lower === 'abpo' || myName === 'عبده') {
-                document.getElementById('owner-panel').style.display = 'flex';
-                document.getElementById('footer-details').innerHTML = `👑 الحساب الملكي مفعل لـ <b>${myName}</b> | كودك: ${myCode}`;
-            } else {
-                document.getElementById('owner-panel').style.display = 'none';
-                document.getElementById('footer-details').innerText = `أهلاً بك يا ${myName} | كودك: ${myCode}`;
-            }
+            socket.on('call_rejected', () => {
+                alert('الطرف الآخر مشغول أو رفض المكالمة.');
+                endCall();
+            });
+
+            socket.on('user_offline', () => {
+                alert('هذا الكود غير متصل حالياً بالسيرفر!');
+                endCall();
+            });
         }
 
         function startCallProcess() {
             let targetCode = document.getElementById('target-code-input').value.trim();
-
             if (targetCode.length !== 5) {
-                alert('يرجى كتابة كود مكون من 5 أرقام بالظبط!');
+                alert('أدخل الكود الصحيح المكون من 5 أرقام!');
                 return;
             }
-
             if (targetCode === myCode) {
-                alert('هذا هو الكود الخاص بك! اكتب كود صديقك للاتصال به.');
+                alert('لا يمكنك الاتصال برقمك الشخصي!');
                 return;
             }
 
-            navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(stream => {
-                document.getElementById('calling-target-text').innerText = `جاري الرن على الرقم (${targetCode})...`;
-                document.getElementById('call-screen').style.display = 'flex';
-                ringToneAudio.play().catch(e => console.log(e));
-            })
-            .catch(err => {
-                alert('يرجى الموافقة على صلاحية الميكروفون لبدء المكالمة اللاسلكية!');
-            });
+            document.getElementById('calling-target-text').innerText = `جاري الرن على (${targetCode})...`;
+            document.getElementById('call-sub-text').innerText = "في انتظار رد الصديق...";
+            document.getElementById('call-screen').style.display = 'flex';
+            ringToneAudio.play().catch(e => {});
+
+            socket.emit('call_user', { targetCode: targetCode, myCode: myCode, myName: myName });
+        }
+
+        function answerCall() {
+            ringToneAudio.pause();
+            ringToneAudio.currentTime = 0;
+            document.getElementById('incoming-actions').style.display = 'none';
+            document.getElementById('call-sub-text').innerText = "متصل الآن عبر السيرفر 🎙️";
+            
+            // تفعيل الميكروفون وبدء نقل الصوت
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                localStream = stream;
+            }).catch(e => alert('يجب السماح بالميكروفون!'));
         }
 
         function endCall() {
             ringToneAudio.pause();
             ringToneAudio.currentTime = 0;
+            if (localStream) localStream.getTracks().forEach(t => t.stop());
             document.getElementById('call-screen').style.display = 'none';
+            document.getElementById('incoming-actions').style.display = 'none';
             document.getElementById('target-code-input').value = '';
+        }
+
+        function setupUserPanel() {
+            document.getElementById('header-user-name').innerText = myName;
+            let lower = myName.toLowerCase();
+            if (lower === 'abdo' || lower === 'abpo' || myName === 'عبده') {
+                document.getElementById('owner-panel').style.display = 'flex';
+                document.getElementById('footer-details').innerHTML = `👑 مالك التطبيق: <b>${myName}</b>`;
+            } else {
+                document.getElementById('owner-panel').style.display = 'none';
+                document.getElementById('footer-details').innerText = `المستخدم: ${myName}`;
+            }
+        }
+
+        function resetAppData() {
+            if (confirm("إعادة ضبط التطبيق؟")) {
+                localStorage.clear();
+                location.reload();
+            }
         }
     </script>
 </body>
