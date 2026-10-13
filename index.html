@@ -21,14 +21,14 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
             padding: 20px 15px;
         }
 
-        /* نافذة تسجيل الاسم المباشرة */
+        /* نافذة التسجيل (تظهر أول مرة فقط) */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center;
             z-index: 9999; padding: 20px;
         }
         .modal-box {
@@ -52,6 +52,9 @@
             border: 1px solid var(--border-line);
         }
         .logo { font-size: 18px; font-weight: bold; color: var(--green-active); display: flex; align-items: center; gap: 8px; }
+
+        .user-info-head { display: flex; align-items: center; gap: 8px; }
+        .edit-name-btn { background: none; border: none; color: #888; cursor: pointer; font-size: 14px; }
 
         /* الكارت الرئيسي */
         .app-card {
@@ -82,15 +85,8 @@
             border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s;
         }
-        .call-btn.active-call { background: var(--red-cancel); color: #fff; animation: pulse 1s infinite; }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-
-        /* شاشة الرنين والاتصال */
+        /* شاشة الاتصال والرنين المباشر */
         .calling-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 13, 20, 0.98); display: none; flex-direction: column;
@@ -113,13 +109,13 @@
 </head>
 <body>
 
-    <!-- نافذة التسجيل الأولي -->
+    <!-- نافذة التسجيل (تظهر فقط للزائر الجديد) -->
     <div class="modal-overlay" id="register-modal">
         <div class="modal-box">
             <h2>🎙️ جهاز اللاسلكي المباشر</h2>
-            <p style="font-size:13px; color:#aaa; margin-top:8px;">ادخل اسمك لإنشاء كود الاتصال الخاص بك:</p>
+            <p style="font-size:13px; color:#aaa; margin-top:8px;">ادخل اسمك لمرة واحدة فقط لإنشاء كودك:</p>
             <input type="text" id="user-name-input" placeholder="اكتب اسمك هنا...">
-            <button onclick="saveUserAndStart()">دخول واستلام الكود</button>
+            <button onclick="saveUserAndStart()">حفظ واستلام الكود</button>
         </div>
     </div>
 
@@ -129,7 +125,7 @@
             <i class="fa-solid fa-walkie-talkie"></i>
         </div>
         <h2 id="calling-target-text" style="font-size: 20px;">جاري الاتصال بالرقم...</h2>
-        <p id="call-timer-text" style="color: #aaa; font-size: 14px;">يرجى الانتظار حتى يرد الطرف الآخر</p>
+        <p style="color: #aaa; font-size: 14px;">يرجى الانتظار حتى يرد الطرف الآخر</p>
         <button onclick="endCall()" style="background: var(--red-cancel); color: #fff; border: none; padding: 15px 35px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer;">
             <i class="fa-solid fa-phone-slash"></i> إنهاء المكالمة
         </button>
@@ -140,13 +136,16 @@
             <i class="fa-solid fa-tower-cell"></i>
             <span>اللاسلكي المجاني</span>
         </div>
-        <span id="header-user-name" style="font-size: 13px; color: #aaa;">زائر</span>
+        <div class="user-info-head">
+            <span id="header-user-name" style="font-size: 13px; color: #aaa;">زائر</span>
+            <button class="edit-name-btn" onclick="reRegister()" title="تعديل الاسم"><i class="fa-solid fa-pen-to-square"></i></button>
+        </div>
     </header>
 
     <div class="app-card">
         <!-- كود المستخدم الخاص (5 أرقام) -->
         <div class="my-code-card">
-            <span>رقم اللاسلكي الخاص بك (أعطه لصديقك):</span>
+            <span>رقم اللاسلكي الثابت الخاص بك:</span>
             <div class="code-display" id="my-5digit-code">-----</div>
         </div>
 
@@ -156,7 +155,7 @@
             <input type="text" id="target-code-input" maxlength="5" placeholder="مثال: 58291">
             <button class="call-btn" onclick="startCallProcess()">
                 <i class="fa-solid fa-phone"></i>
-                <span>بحث ورن على الصديق</span>
+                <span>رن على الصديق</span>
             </button>
         </div>
     </div>
@@ -170,15 +169,17 @@
         let myName = '';
 
         window.onload = () => {
-            let savedName = localStorage.getItem('wt_user_name');
-            let savedCode = localStorage.getItem('wt_user_code');
+            let savedName = localStorage.getItem('wt_user_name_v2');
+            let savedCode = localStorage.getItem('wt_user_code_v2');
 
+            // إذا كان الاسم والكود محفوظين سابقاً، يدخل فوراً بدون إظهار الشاشة
             if (savedName && savedCode) {
                 myName = savedName;
                 myCode = savedCode;
                 document.getElementById('register-modal').style.display = 'none';
                 setupUserPanel();
             } else {
+                // تظهر فقط لو كانت أول مرة يفتح فيها الموقع
                 document.getElementById('register-modal').style.display = 'flex';
             }
         };
@@ -188,20 +189,29 @@
             if (!nameInp) nameInp = "مستخدم";
 
             myName = nameInp;
-            // توليد كود عشوائي من 5 أرقام
+            // توليد كود ثابت من 5 أرقام وحفظه دائماً
             myCode = Math.floor(10000 + Math.random() * 90000).toString();
 
-            localStorage.setItem('wt_user_name', myName);
-            localStorage.setItem('wt_user_code', myCode);
+            localStorage.setItem('wt_user_name_v2', myName);
+            localStorage.setItem('wt_user_code_v2', myCode);
 
             document.getElementById('register-modal').style.display = 'none';
             setupUserPanel();
         }
 
+        function reRegister() {
+            let newName = prompt("اكتب اسمك الجديد إذا كنت تريد تغييره:", myName);
+            if (newName && newName.trim() !== '') {
+                myName = newName.trim();
+                localStorage.setItem('wt_user_name_v2', myName);
+                setupUserPanel();
+            }
+        }
+
         function setupUserPanel() {
             document.getElementById('my-5digit-code').innerText = myCode;
             document.getElementById('header-user-name').innerText = myName;
-            document.getElementById('footer-details').innerText = `حسابك: ${myName} | كودك: ${myCode}`;
+            document.getElementById('footer-details').innerText = `أهلاً بك يا ${myName} | كودك الثابت: ${myCode}`;
         }
 
         function startCallProcess() {
@@ -217,14 +227,13 @@
                 return;
             }
 
-            // طلب الميكروفون للاتصال
             navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
                 document.getElementById('calling-target-text').innerText = `جاري الرن على الرقم (${targetCode})...`;
                 document.getElementById('call-screen').style.display = 'flex';
             })
             .catch(err => {
-                alert('يرجى الموافقة على الميكروفون لبدء المكالمة اللاسلكية!');
+                alert('يرجى الموافقة على صلاحية الميكروفون لبدء المكالمة اللاسلكية!');
             });
         }
 
