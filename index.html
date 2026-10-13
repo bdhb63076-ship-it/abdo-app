@@ -55,7 +55,7 @@
         .logo { font-size: 18px; font-weight: bold; color: var(--green-active); display: flex; align-items: center; gap: 8px; }
 
         .user-info-head { display: flex; align-items: center; gap: 8px; }
-        .edit-name-btn { background: none; border: none; color: #888; cursor: pointer; font-size: 14px; }
+        .edit-name-btn { background: none; border: none; color: #3ea6ff; cursor: pointer; font-size: 15px; padding: 4px; }
 
         /* الكارت الرئيسي */
         .app-card {
@@ -135,7 +135,7 @@
     <div class="modal-overlay" id="register-modal">
         <div class="modal-box">
             <h2>🎙️ اللاسلكي الملكي</h2>
-            <p style="font-size:13px; color:#aaa; margin-top:8px;">ادخل اسمك لمرة واحدة فقط (اكتب عبده للعرش الملكي):</p>
+            <p style="font-size:13px; color:#aaa; margin-top:8px;">ادخل اسمك لإنشاء كودك (اكتب عبده للعرش الملكي):</p>
             <input type="text" id="user-name-input" placeholder="اسمك هنا...">
             <button onclick="saveUserAndStart()">دخول واستلام الكود</button>
         </div>
@@ -194,8 +194,9 @@
         </div>
     </div>
 
-    <div class="footer-note" id="footer-details">
-        مكالمات صوتية مباشرة برقم الكود بدون دقائق ولا رصيد
+    <div class="footer-note" style="display:flex; justify-content:center; align-items:center; gap:15px;">
+        <span id="footer-details">مكالمات صوتية مباشرة برقم الكود</span>
+        <button onclick="resetAppData()" style="background:#222; border:1px solid #444; color:#ff1744; padding:4px 10px; border-radius:6px; font-size:11px; cursor:pointer;" title="مسح الاسم والبدء من جديد">إعادة ضبط</button>
     </div>
 
     <script>
@@ -205,8 +206,8 @@
         ringToneAudio.loop = true;
 
         window.onload = () => {
-            let savedName = localStorage.getItem('wt_user_name_v4');
-            let savedCode = localStorage.getItem('wt_user_code_v4');
+            let savedName = localStorage.getItem('wt_user_name_v5');
+            let savedCode = localStorage.getItem('wt_user_code_v5');
 
             if (savedName && savedCode) {
                 myName = savedName;
@@ -224,14 +225,10 @@
             if ("Notification" in window) {
                 Notification.requestPermission().then(permission => {
                     if (permission === "granted") {
-                        alert("تم تفعيل رنين الإشعارات بنجاح! هتوصلك الرنة حتى وأنت برة المتصفح.");
+                        alert("تم تفعيل رنين الإشعارات بنجاح!");
                         checkNotificationPermissionStatus();
-                    } else {
-                        alert("يرجى السماح بالإشعارات لتلقي المكالمات برة المتصفح!");
                     }
                 });
-            } else {
-                alert("متصفحك لا يدعم الإشعارات الخارجية.");
             }
         }
 
@@ -244,16 +241,6 @@
             }
         }
 
-        function sendExternalCallNotification(callerName, targetCode) {
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification(`📞 مكالمة لاسلكية واردة!`, {
-                    body: `الرقم (${targetCode}) يحاول الاتصال بك الآن عبر اللاسلكي! اضغط للرد.`,
-                    icon: 'https://cdn-icons-png.flaticon.com/512/3616/3616215.png',
-                    requireInteraction: true
-                });
-            }
-        }
-
         function saveUserAndStart() {
             let nameInp = document.getElementById('user-name-input').value.trim();
             if (!nameInp) nameInp = "مستخدم";
@@ -261,19 +248,27 @@
             myName = nameInp;
             myCode = Math.floor(10000 + Math.random() * 90000).toString();
 
-            localStorage.setItem('wt_user_name_v4', myName);
-            localStorage.setItem('wt_user_code_v4', myCode);
+            localStorage.setItem('wt_user_name_v5', myName);
+            localStorage.setItem('wt_user_code_v5', myCode);
 
             document.getElementById('register-modal').style.display = 'none';
             setupUserPanel();
         }
 
         function reRegister() {
-            let newName = prompt("اكتب اسمك الجديد إذا كنت تريد تغييره:", myName);
+            let newName = prompt("اكتب اسمك الجديد (أو اسمك الحقيقي لتفعيل الملكية):", myName);
             if (newName && newName.trim() !== '') {
                 myName = newName.trim();
-                localStorage.setItem('wt_user_name_v4', myName);
+                localStorage.setItem('wt_user_name_v5', myName);
                 setupUserPanel();
+            }
+        }
+
+        function resetAppData() {
+            if (confirm("هل تريد حقاً مسح الاسم وإعادة تعيين التطبيق من جديد؟")) {
+                localStorage.removeItem('wt_user_name_v5');
+                localStorage.removeItem('wt_user_code_v5');
+                location.reload();
             }
         }
 
@@ -284,10 +279,10 @@
             let lower = myName.toLowerCase();
             if (lower === 'abdo' || lower === 'abpo' || myName === 'عبده') {
                 document.getElementById('owner-panel').style.display = 'flex';
-                document.getElementById('footer-details').innerHTML = `👑 الحساب الملكي مفعل لـ <b>${myName}</b> | كودك الثابت: ${myCode}`;
+                document.getElementById('footer-details').innerHTML = `👑 الحساب الملكي مفعل لـ <b>${myName}</b> | كودك: ${myCode}`;
             } else {
                 document.getElementById('owner-panel').style.display = 'none';
-                document.getElementById('footer-details').innerText = `أهلاً بك يا ${myName} | كودك الثابت: ${myCode}`;
+                document.getElementById('footer-details').innerText = `أهلاً بك يا ${myName} | كودك: ${myCode}`;
             }
         }
 
@@ -308,10 +303,7 @@
             .then(stream => {
                 document.getElementById('calling-target-text').innerText = `جاري الرن على الرقم (${targetCode})...`;
                 document.getElementById('call-screen').style.display = 'flex';
-                
-                // تشغيل صوت الرنين الحقيقي وإرسال الإشعار الخارجي
                 ringToneAudio.play().catch(e => console.log(e));
-                sendExternalCallNotification(myName, targetCode);
             })
             .catch(err => {
                 alert('يرجى الموافقة على صلاحية الميكروفون لبدء المكالمة اللاسلكية!');
