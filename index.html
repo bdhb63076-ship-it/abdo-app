@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>شبكة اللاسلكي - اتصال بـ 5 أرقام</title>
+    <title>اللاسلكي الملكي - مكالمات وإشعارات فورية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -11,6 +11,7 @@
             --card-bg: #141923;
             --green-active: #00e676;
             --red-cancel: #ff1744;
+            --gold-color: #FFD700;
             --text-main: #ffffff;
             --border-line: #222a38;
         }
@@ -25,7 +26,7 @@
             padding: 20px 15px;
         }
 
-        /* نافذة التسجيل (تظهر أول مرة فقط) */
+        /* نافذة التسجيل الأولى */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center;
@@ -63,6 +64,27 @@
             padding: 25px; border: 1px solid var(--border-line);
             display: flex; flex-direction: column; gap: 20px; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            position: relative; overflow: hidden;
+        }
+
+        /* لوحة تحكم المالك الملكي */
+        .owner-badge-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.1));
+            border: 1px solid var(--gold-color); border-radius: 14px; padding: 12px;
+            display: none; align-items: center; justify-content: center; gap: 8px;
+            color: var(--gold-color); font-weight: bold; font-size: 14px;
+        }
+
+        /* زر تفعيل الإشعارات برة المتصفح */
+        .noti-btn-box {
+            background: #080a0f; border: 1px solid #2a3447;
+            border-radius: 12px; padding: 10px; display: flex;
+            align-items: center; justify-content: space-between; font-size: 13px; color: #ccc;
+        }
+        .noti-btn-box button {
+            background: #232d3f; border: 1px solid var(--green-active);
+            color: var(--green-active); padding: 6px 12px; border-radius: 8px;
+            cursor: pointer; font-size: 12px; font-weight: bold;
         }
 
         /* عرض كود المستخدم الخاص */
@@ -109,13 +131,13 @@
 </head>
 <body>
 
-    <!-- نافذة التسجيل (تظهر فقط للزائر الجديد) -->
+    <!-- نافذة التسجيل الأولى -->
     <div class="modal-overlay" id="register-modal">
         <div class="modal-box">
-            <h2>🎙️ جهاز اللاسلكي المباشر</h2>
-            <p style="font-size:13px; color:#aaa; margin-top:8px;">ادخل اسمك لمرة واحدة فقط لإنشاء كودك:</p>
-            <input type="text" id="user-name-input" placeholder="اكتب اسمك هنا...">
-            <button onclick="saveUserAndStart()">حفظ واستلام الكود</button>
+            <h2>🎙️ اللاسلكي الملكي</h2>
+            <p style="font-size:13px; color:#aaa; margin-top:8px;">ادخل اسمك لمرة واحدة فقط (اكتب عبده للعرش الملكي):</p>
+            <input type="text" id="user-name-input" placeholder="اسمك هنا...">
+            <button onclick="saveUserAndStart()">دخول واستلام الكود</button>
         </div>
     </div>
 
@@ -124,8 +146,8 @@
         <div class="avatar-ring">
             <i class="fa-solid fa-walkie-talkie"></i>
         </div>
-        <h2 id="calling-target-text" style="font-size: 20px;">جاري الاتصال بالرقم...</h2>
-        <p style="color: #aaa; font-size: 14px;">يرجى الانتظار حتى يرد الطرف الآخر</p>
+        <h2 id="calling-target-text" style="font-size: 20px;">جاري الرن على الرقم...</h2>
+        <p style="color: #aaa; font-size: 14px;">يرجى الانتظار حتى يتم الرد من اللاسلكي</p>
         <button onclick="endCall()" style="background: var(--red-cancel); color: #fff; border: none; padding: 15px 35px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer;">
             <i class="fa-solid fa-phone-slash"></i> إنهاء المكالمة
         </button>
@@ -134,7 +156,7 @@
     <header>
         <div class="logo">
             <i class="fa-solid fa-tower-cell"></i>
-            <span>اللاسلكي المجاني</span>
+            <span>اللاسلكي الملكي</span>
         </div>
         <div class="user-info-head">
             <span id="header-user-name" style="font-size: 13px; color: #aaa;">زائر</span>
@@ -143,6 +165,18 @@
     </header>
 
     <div class="app-card">
+        <!-- لوحة تحكم المالك الملكي -->
+        <div class="owner-badge-box" id="owner-panel">
+            <i class="fa-solid fa-crown"></i>
+            <span>مالك التطبيق الرسمي (عبده)</span>
+        </div>
+
+        <!-- زر تفعيل الإشعارات الخارجية -->
+        <div class="noti-btn-box">
+            <span>🔔 الرنين برة المتصفح:</span>
+            <button id="noti-status-btn" onclick="requestNotificationPermission()">تفعيل الرنين</button>
+        </div>
+
         <!-- كود المستخدم الخاص (5 أرقام) -->
         <div class="my-code-card">
             <span>رقم اللاسلكي الثابت الخاص بك:</span>
@@ -167,33 +201,68 @@
     <script>
         let myCode = '';
         let myName = '';
+        let ringToneAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/1359/1359-preview.mp3');
+        ringToneAudio.loop = true;
 
         window.onload = () => {
-            let savedName = localStorage.getItem('wt_user_name_v2');
-            let savedCode = localStorage.getItem('wt_user_code_v2');
+            let savedName = localStorage.getItem('wt_user_name_v4');
+            let savedCode = localStorage.getItem('wt_user_code_v4');
 
-            // إذا كان الاسم والكود محفوظين سابقاً، يدخل فوراً بدون إظهار الشاشة
             if (savedName && savedCode) {
                 myName = savedName;
                 myCode = savedCode;
                 document.getElementById('register-modal').style.display = 'none';
                 setupUserPanel();
             } else {
-                // تظهر فقط لو كانت أول مرة يفتح فيها الموقع
                 document.getElementById('register-modal').style.display = 'flex';
             }
+
+            checkNotificationPermissionStatus();
         };
+
+        function requestNotificationPermission() {
+            if ("Notification" in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        alert("تم تفعيل رنين الإشعارات بنجاح! هتوصلك الرنة حتى وأنت برة المتصفح.");
+                        checkNotificationPermissionStatus();
+                    } else {
+                        alert("يرجى السماح بالإشعارات لتلقي المكالمات برة المتصفح!");
+                    }
+                });
+            } else {
+                alert("متصفحك لا يدعم الإشعارات الخارجية.");
+            }
+        }
+
+        function checkNotificationPermissionStatus() {
+            let btn = document.getElementById('noti-status-btn');
+            if ("Notification" in window && Notification.permission === "granted") {
+                btn.innerText = "مفعل ✅";
+                btn.style.borderColor = "#00e676";
+                btn.style.color = "#00e676";
+            }
+        }
+
+        function sendExternalCallNotification(callerName, targetCode) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(`📞 مكالمة لاسلكية واردة!`, {
+                    body: `الرقم (${targetCode}) يحاول الاتصال بك الآن عبر اللاسلكي! اضغط للرد.`,
+                    icon: 'https://cdn-icons-png.flaticon.com/512/3616/3616215.png',
+                    requireInteraction: true
+                });
+            }
+        }
 
         function saveUserAndStart() {
             let nameInp = document.getElementById('user-name-input').value.trim();
             if (!nameInp) nameInp = "مستخدم";
 
             myName = nameInp;
-            // توليد كود ثابت من 5 أرقام وحفظه دائماً
             myCode = Math.floor(10000 + Math.random() * 90000).toString();
 
-            localStorage.setItem('wt_user_name_v2', myName);
-            localStorage.setItem('wt_user_code_v2', myCode);
+            localStorage.setItem('wt_user_name_v4', myName);
+            localStorage.setItem('wt_user_code_v4', myCode);
 
             document.getElementById('register-modal').style.display = 'none';
             setupUserPanel();
@@ -203,7 +272,7 @@
             let newName = prompt("اكتب اسمك الجديد إذا كنت تريد تغييره:", myName);
             if (newName && newName.trim() !== '') {
                 myName = newName.trim();
-                localStorage.setItem('wt_user_name_v2', myName);
+                localStorage.setItem('wt_user_name_v4', myName);
                 setupUserPanel();
             }
         }
@@ -211,7 +280,15 @@
         function setupUserPanel() {
             document.getElementById('my-5digit-code').innerText = myCode;
             document.getElementById('header-user-name').innerText = myName;
-            document.getElementById('footer-details').innerText = `أهلاً بك يا ${myName} | كودك الثابت: ${myCode}`;
+
+            let lower = myName.toLowerCase();
+            if (lower === 'abdo' || lower === 'abpo' || myName === 'عبده') {
+                document.getElementById('owner-panel').style.display = 'flex';
+                document.getElementById('footer-details').innerHTML = `👑 الحساب الملكي مفعل لـ <b>${myName}</b> | كودك الثابت: ${myCode}`;
+            } else {
+                document.getElementById('owner-panel').style.display = 'none';
+                document.getElementById('footer-details').innerText = `أهلاً بك يا ${myName} | كودك الثابت: ${myCode}`;
+            }
         }
 
         function startCallProcess() {
@@ -231,6 +308,10 @@
             .then(stream => {
                 document.getElementById('calling-target-text').innerText = `جاري الرن على الرقم (${targetCode})...`;
                 document.getElementById('call-screen').style.display = 'flex';
+                
+                // تشغيل صوت الرنين الحقيقي وإرسال الإشعار الخارجي
+                ringToneAudio.play().catch(e => console.log(e));
+                sendExternalCallNotification(myName, targetCode);
             })
             .catch(err => {
                 alert('يرجى الموافقة على صلاحية الميكروفون لبدء المكالمة اللاسلكية!');
@@ -238,6 +319,8 @@
         }
 
         function endCall() {
+            ringToneAudio.pause();
+            ringToneAudio.currentTime = 0;
             document.getElementById('call-screen').style.display = 'none';
             document.getElementById('target-code-input').value = '';
         }
