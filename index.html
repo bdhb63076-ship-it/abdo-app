@@ -3,295 +3,492 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08080b">
 <title>عبده توك | AbdoTok</title>
 <style>
-:root{--bg:#101014;--panel:#1b1b22;--text:#fff;--muted:#aaa;--pink:#fe2c55;--blue:#25d9e8}
+:root {
+  --bg:#08080b; --panel:#17171d; --pink:#fe2c55;
+  --text:#fff; --muted:#aaaab5;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Tahoma,sans-serif}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);
+font-family:Arial,Tahoma,sans-serif}
+body{overflow:hidden}
 button,input,textarea{font:inherit}
-button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:bold}
-.top{height:65px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#18181e;border-bottom:1px solid #303039;position:sticky;top:0;z-index:5}
-.logo{font-size:24px;font-weight:900;color:var(--pink)}.logo span{color:var(--blue)}
-.search{width:min(40%,360px);padding:11px;border:0;border-radius:24px;background:#303039;color:white;outline:none}
-.layout{max-width:1100px;margin:auto;display:grid;grid-template-columns:210px minmax(0,600px) 210px;gap:18px;padding:18px}
-.side,.card{background:var(--panel);border:1px solid #303039;border-radius:16px;padding:15px;height:max-content}
-.side button{display:block;width:100%;text-align:right;margin:6px 0;background:transparent;color:white}
-.side button:hover{background:#303039}
-.primary{background:var(--pink);color:white}
-.secondary{background:#33333d;color:white}
-.feed-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.post{background:#1b1b22;border:1px solid #303039;border-radius:16px;margin-bottom:18px;overflow:hidden}
-.post-head{padding:14px;display:flex;align-items:center;gap:10px}
-.avatar{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,var(--pink),#7d39ff);font-size:21px;font-weight:bold;flex-shrink:0}
-.username{font-weight:bold}.muted{color:var(--muted);font-size:13px;margin-top:4px}
-video,.placeholder{width:100%;display:block;max-height:620px;aspect-ratio:9/12;object-fit:contain;background:#08080b}
-.placeholder{display:grid;place-items:center;text-align:center;padding:30px;background:radial-gradient(circle at top,#343443,#09090d)}
-.placeholder strong{font-size:30px;color:var(--pink)}
-.post-caption{padding:12px 14px;line-height:1.7}
-.actions{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 14px}
-.actions button{background:#303039;color:white}
-.actions .liked{color:#ff426b}
-.comments{padding:0 14px 14px}
-.comments p{font-size:14px;margin:8px 0}
-.comment-form{display:flex;gap:8px;margin-top:10px}
-.comment-form input{min-width:0;flex:1;background:#303039;color:white;border:0;border-radius:9px;padding:10px}
-input[type=text],input[type=password],textarea{background:#303039;color:white;border:1px solid #444451;border-radius:10px;padding:11px;width:100%;margin:7px 0}
-label{font-size:14px;color:#ddd}
-.modal{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:16px;z-index:10}
-.modal.open{display:grid}
-.modal-content{background:#202028;border:1px solid #444;border-radius:16px;padding:22px;width:min(100%,440px);max-height:90vh;overflow:auto}
-.modal h2{margin-top:0}.notice{font-size:13px;color:#bbb;line-height:1.7}
-.empty{text-align:center;padding:30px;color:#bbb}
-footer{text-align:center;color:#777;font-size:12px;padding:20px}
-.mobile-nav{display:none}
-@media(max-width:850px){.layout{grid-template-columns:minmax(0,600px);justify-content:center}.left,.right{display:none}.search{width:42%}}
-@media(max-width:520px){.top{padding:0 10px;height:58px}.logo{font-size:20px}.search{width:40%;padding:9px;font-size:13px}.layout{padding:10px;display:block}.post{border-radius:12px}.mobile-nav{position:sticky;bottom:0;display:flex;justify-content:space-around;background:#18181e;padding:8px 2px;border-top:1px solid #333;z-index:4}.mobile-nav button{background:transparent;color:white;padding:8px;font-size:12px}.post video,.placeholder{max-height:68vh}}
+button{cursor:pointer;color:white;border:0}
+.app{height:100dvh;width:100%;display:flex;flex-direction:column}
+.topbar{height:52px;flex-shrink:0;display:flex;align-items:center;
+justify-content:space-between;padding:0 15px;background:#08080beF;z-index:5}
+.brand{font-size:20px;font-weight:900}
+.brand span{color:var(--pink)}
+.top-tabs{display:flex;gap:18px;color:#999;font-size:14px}
+.top-tabs button{background:none;padding:8px 0;color:#999}
+.top-tabs button.active{color:white;font-weight:bold;border-bottom:2px solid white}
+.feed{position:relative;flex:1;min-height:0;overflow-y:auto;scroll-snap-type:y mandatory;
+overscroll-behavior-y:contain;scrollbar-width:none}
+.feed::-webkit-scrollbar{display:none}
+.video-card{position:relative;width:100%;height:100%;min-height:300px;
+scroll-snap-align:start;scroll-snap-stop:always;background:#17171d;overflow:hidden}
+.video-card video,.video-poster{position:absolute;width:100%;height:100%;inset:0;
+object-fit:cover}
+.video-card video{background:#101015}
+.video-poster{display:flex;align-items:center;justify-content:center;
+background:linear-gradient(150deg,#241d37,#09090e 60%,#3c1327)}
+.poster-content{text-align:center;padding:30px;max-width:340px}
+.poster-content .play{font-size:65px;text-shadow:0 0 35px #fe2c5580}
+.poster-content h2{font-size:25px}
+.poster-content p{color:#ddd;line-height:1.8}
+.video-shade{position:absolute;inset:35% 0 0;pointer-events:none;
+background:linear-gradient(transparent,#0009)}
+.video-info{position:absolute;bottom:20px;right:14px;left:76px;z-index:2;
+text-shadow:0 1px 4px #000}
+.username{font-weight:bold;font-size:16px;margin-bottom:10px}
+.caption{font-size:14px;line-height:1.7;margin-bottom:10px}
+.music{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actions{position:absolute;bottom:95px;left:10px;z-index:3;
+display:flex;flex-direction:column;align-items:center;gap:17px}
+.avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;
+justify-content:center;background:linear-gradient(135deg,#fe2c55,#5b40a8);
+font-size:20px;font-weight:bold;border:2px solid white}
+.action{display:flex;flex-direction:column;align-items:center;gap:4px;
+background:transparent;font-size:25px;min-width:44px}
+.action small{font-size:11px;text-shadow:0 1px 4px black}
+.action.liked{color:var(--pink)}
+.follow-dot{margin-top:-24px;background:var(--pink);border-radius:50%;
+width:22px;height:22px;font-size:17px;line-height:22px;text-align:center}
+.bottomnav{height:62px;padding-bottom:env(safe-area-inset-bottom);
+flex-shrink:0;display:flex;justify-content:space-around;align-items:center;
+background:#08080b;border-top:1px solid #24242b;z-index:5}
+.navbtn{background:transparent;color:#a6a6b1;display:flex;flex-direction:column;
+align-items:center;gap:4px;font-size:10px;min-width:50px}
+.navbtn .ico{font-size:22px;color:white}
+.navbtn.active{color:white}
+.create-btn{background:white;color:#111;border-radius:9px;padding:2px 13px;
+font-size:24px;box-shadow:-3px 0 var(--pink),3px 0 #43d9f7}
+.overlay{position:fixed;inset:0;background:#000b;z-index:20;
+display:none;align-items:center;justify-content:center;padding:18px}
+.overlay.show{display:flex}
+.modal{background:#17171d;border:1px solid #30303a;border-radius:20px;
+width:100%;max-width:400px;padding:24px}
+.modal h2{margin:0 0 10px;font-size:22px}
+.modal p{color:var(--muted);line-height:1.7;font-size:14px}
+.field{width:100%;background:#0d0d12;color:white;border:1px solid #393944;
+border-radius:10px;padding:13px;margin:8px 0;outline:none}
+.field:focus{border-color:var(--pink)}
+.primary{width:100%;padding:13px;border-radius:10px;background:var(--pink);
+color:white;font-weight:bold;margin-top:10px}
+.secondary{background:#2b2b34;border-radius:10px;padding:11px 14px}
+.close{float:left;background:transparent;font-size:22px;color:#bbb}
+.profile-panel{position:absolute;inset:0;background:var(--bg);z-index:10;
+overflow:auto;padding:20px;display:none}
+.profile-panel.show{display:block}
+.profile-head{text-align:center;padding:25px 0}
+.profile-avatar{width:90px;height:90px;margin:auto;border-radius:50%;
+display:flex;align-items:center;justify-content:center;background:#292039;
+font-size:35px;border:2px solid var(--pink)}
+.stats{display:flex;justify-content:center;gap:35px;margin:22px 0}
+.stats strong{display:block;font-size:19px}
+.stats small{color:var(--muted)}
+.empty{text-align:center;color:var(--muted);padding:35px 10px;line-height:2}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+background:#272730;padding:12px 18px;border-radius:12px;z-index:50;
+display:none;white-space:nowrap;font-size:13px}
+#commentsList{max-height:220px;overflow:auto}
+.comment{padding:10px 0;border-bottom:1px solid #333}
+@media(min-width:700px){
+ .app{max-width:480px;margin:auto;border-left:1px solid #292930;
+ border-right:1px solid #292930}
+ body{background:#030305}
+ .topbar{height:56px}
+}
 </style>
 </head>
 <body>
-
-<header class="top">
-  <div class="logo">عبده<span>توك</span></div>
-  <input class="search" id="search" placeholder="ابحث عن فيديو أو مستخدم..." oninput="renderFeed()">
-  <button class="primary" onclick="openAccount()">حسابي</button>
-</header>
-
-<div class="layout">
-  <aside class="side left">
-    <h3>القائمة</h3>
-    <button onclick="setMode('all')">🏠 الرئيسية</button>
-    <button onclick="setMode('following')">👥 أتابعهم</button>
-    <button onclick="openUpload()">➕ نشر فيديو</button>
-    <button onclick="openAccount()">👤 حسابي</button>
-    <hr style="border-color:#333">
-    <p class="muted">أهلاً بيك في مجتمع عبده توك ❤️</p>
-  </aside>
-
-  <main>
-    <div class="feed-title">
-      <h3 style="margin:5px 0">لك 🎬</h3>
-      <button class="secondary" onclick="openUpload()">＋ فيديو</button>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><span>عبده</span> توك</div>
+    <div class="top-tabs">
+      <button id="followingTab" onclick="setFeed('following')">المتابَعون</button>
+      <button id="forYouTab" class="active" onclick="setFeed('all')">لك</button>
     </div>
-    <section id="feed"></section>
-  </main>
+    <button style="background:none;font-size:22px" onclick="openProfile()">☻</button>
+  </header>
 
-  <aside class="side right">
-    <div class="avatar" style="width:58px;height:58px;margin:auto">ع</div>
-    <h3 style="text-align:center">الملك عبده</h3>
-    <p class="muted" style="text-align:center">مؤسس عبده توك 👑</p>
-    <p style="font-size:13px;line-height:1.8">شارك فيديوهاتك، تفاعل مع الناس، وخلي مجتمعنا يكبر يوم بعد يوم.</p>
-    <button class="primary" style="width:100%" onclick="followFounder()">متابعة المؤسس ⭐</button>
-    <hr style="border-color:#333;margin:18px 0">
-    <p class="muted">اسمك بيتحفظ على الجهاز. تغيير الاسم متاح بعد مرور 7 أيام.</p>
-  </aside>
+  <main id="feed" class="feed"></main>
+
+  <section id="profile" class="profile-panel">
+    <button class="secondary" onclick="closeProfile()">→ رجوع</button>
+    <div class="profile-head">
+      <div class="profile-avatar">ع</div>
+      <h2 id="profileName">عبده توك</h2>
+      <p id="profileHandle" style="color:#aaa">@user</p>
+      <div class="stats">
+        <div><strong id="likesStat">0</strong><small>الإعجابات</small></div>
+        <div><strong id="followersStat">0</strong><small>المتابعون</small></div>
+        <div><strong id="followingStat">1</strong><small>يتابع</small></div>
+      </div>
+      <button class="secondary" onclick="changeUsername()">تغيير اسم المستخدم</button>
+      <button class="secondary" onclick="showMyVideos()">فيديوهاتي</button>
+    </div>
+    <div id="profileContent" class="empty">أهلًا بيك في عبده توك 👋</div>
+    <button class="primary" onclick="logout()">تسجيل الخروج</button>
+  </section>
+
+  <nav class="bottomnav">
+    <button class="navbtn active" onclick="goHome()"><span class="ico">⌂</span>الرئيسية</button>
+    <button class="navbtn" onclick="discover()"><span class="ico">⌕</span>اكتشف</button>
+    <button class="navbtn" onclick="uploadVideo()"><span class="create-btn">＋</span>إضافة</button>
+    <button class="navbtn" onclick="showMessages()"><span class="ico">▤</span>الوارد</button>
+    <button class="navbtn" onclick="openProfile()"><span class="ico">♙</span>حسابي</button>
+  </nav>
 </div>
 
-<nav class="mobile-nav">
-  <button onclick="setMode('all')">🏠 الرئيسية</button>
-  <button onclick="setMode('following')">👥 أتابعهم</button>
-  <button onclick="openUpload()">➕ نشر</button>
-  <button onclick="openAccount()">👤 حسابي</button>
-</nav>
+<input id="videoFile" type="file" accept="video/*" hidden onchange="handleUpload(event)">
 
-<footer>AbdoTok © <span id="year"></span> — منصة الفيديوهات بتاعتك</footer>
-
-<div class="modal" id="accountModal">
- <div class="modal-content">
-  <h2 id="accountTitle">حسابك على عبده توك</h2>
-  <label>اسم العرض</label>
-  <input id="displayName" type="text" maxlength="30" placeholder="اكتب اسمك">
-  <p class="notice" id="nameNotice">أول اسم بتختاره بيتحفظ على الجهاز.</p>
-  <label>اسم المستخدم</label>
-  <input id="handle" type="text" maxlength="24" placeholder="مثال: abdo123">
-  <p class="notice">النسخة دي لا تنشئ حسابًا سحابيًا؛ البيانات محفوظة في متصفحك فقط.</p>
-  <button class="primary" onclick="saveAccount()">حفظ البيانات</button>
-  <button class="secondary" onclick="closeModal('accountModal')">إغلاق</button>
- </div>
+<div class="overlay" id="signupOverlay">
+  <div class="modal">
+    <div style="text-align:center;font-size:40px">♪</div>
+    <h2 style="text-align:center">أهلًا بيك في عبده توك</h2>
+    <p style="text-align:center">أنشئ اسمك وابدأ مشاهدة الفيديوهات ومتابعة الحسابات.</p>
+    <input id="displayName" class="field" maxlength="30" placeholder="اسم العرض">
+    <input id="handle" class="field" maxlength="24" placeholder="اسم المستخدم بالإنجليزية">
+    <button class="primary" onclick="register()">إنشاء الحساب والمتابعة</button>
+    <p>بتسجيلك، أنت توافق على الالتزام بقواعد المجتمع.</p>
+  </div>
 </div>
 
-<div class="modal" id="uploadModal">
- <div class="modal-content">
-  <h2>انشر فيديو جديد 🎬</h2>
-  <label>اختار فيديو من جهازك</label>
-  <input id="videoFile" type="file" accept="video/*">
-  <label>اكتب وصف الفيديو</label>
-  <textarea id="videoCaption" rows="3" maxlength="500" placeholder="بتقدم إيه في الفيديو؟"></textarea>
-  <p class="notice">الفيديوهات المضافة هنا محلية على جهازك، ولا تُرفع تلقائيًا إلى السيرفر.</p>
-  <button class="primary" onclick="publishVideo()">نشر الفيديو</button>
-  <button class="secondary" onclick="closeModal('uploadModal')">إلغاء</button>
- </div>
+<div class="overlay" id="commentsOverlay">
+  <div class="modal">
+    <button class="close" onclick="hideModal('commentsOverlay')">×</button>
+    <h2>التعليقات</h2>
+    <div id="commentsList"></div>
+    <input id="commentInput" class="field" placeholder="اكتب تعليقًا...">
+    <button class="primary" onclick="sendComment()">إرسال التعليق</button>
+  </div>
 </div>
+
+<div class="overlay" id="nameOverlay">
+  <div class="modal">
+    <button class="close" onclick="hideModal('nameOverlay')">×</button>
+    <h2>تغيير اسم المستخدم</h2>
+    <p id="nameCooldown"></p>
+    <input id="newHandle" class="field" maxlength="24" placeholder="اسم المستخدم الجديد">
+    <button class="primary" onclick="saveUsername()">حفظ الاسم</button>
+  </div>
+</div>
+
+<div id="toast"></div>
 
 <script>
-const KEY='abdotok_single_file_v1';
-const SEVEN_DAYS=7*24*60*60*1000;
-let mode='all';
-let state=loadState();
-let objectUrls=[];
+const KEY = "abdotok_demo_v1";
+const FOUNDER = "abdo";
+let data = loadData();
+let activeCommentVideo = null;
+let feedMode = "all";
+let toastTimer;
 
-function loadState(){
-  try{
-    const s=JSON.parse(localStorage.getItem(KEY)||'{}');
-    return {
-      profile:s.profile||null,
-      follows:s.follows||[],
-      posts:Array.isArray(s.posts)?s.posts:[],
-      likes:s.likes||[],
-      comments:s.comments||{}
+function loadData() {
+  try {
+    const saved = localStorage.getItem(KEY);
+    return saved ? JSON.parse(saved) : {
+      user:null, following:[FOUNDER], likes:[], videos:[], comments:{}
     };
-  }catch(e){
-    return {profile:null,follows:[],posts:[],likes:[],comments:{}};
+  } catch {
+    return {user:null, following:[FOUNDER], likes:[], videos:[], comments:{}};
   }
 }
-function persist(){
-  try{
-    localStorage.setItem(KEY,JSON.stringify(state));
-  }catch(e){
-    alert('مساحة التخزين ممتلئة. جرّب فيديو أصغر أو امسح بعض البيانات.');
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(data));
+}
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+function toast(message) {
+  const el = document.getElementById("toast");
+  el.textContent = message;
+  el.style.display = "block";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.style.display="none", 2400);
+}
+function showModal(id) {
+  document.getElementById(id).classList.add("show");
+}
+function hideModal(id) {
+  document.getElementById(id).classList.remove("show");
+}
+function register() {
+  const display = document.getElementById("displayName").value.trim();
+  const handle = document.getElementById("handle").value.trim().replace(/^@/,"").toLowerCase();
+  if (!display || !/^[a-z0-9_.]{3,24}$/.test(handle)) {
+    toast("اكتب اسم العرض واسم مستخدم من 3 إلى 24 حرفًا أو رقمًا");
+    return;
   }
-}
-function escapeHTML(s){
-  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open')}
-function openAccount(){
-  const p=state.profile;
-  document.getElementById('displayName').value=p?.name||'';
-  document.getElementById('handle').value=p?.handle||'';
-  document.getElementById('accountTitle').textContent=p?'حسابك':'أهلاً بيك في عبده توك';
-  const notice=document.getElementById('nameNotice');
-  if(p){
-    const remaining=SEVEN_DAYS-(Date.now()-p.nameChangedAt);
-    notice.textContent=remaining>0
-      ?'تقدر تغيّر اسم العرض بعد '+formatRemaining(remaining)+'.'
-      :'مرّت 7 أيام؛ تقدر تغيّر اسم العرض دلوقتي.';
-    document.getElementById('handle').disabled=true;
-  }else{
-    notice.textContent='اختار اسم العرض واسم المستخدم. اسم المستخدم لا يمكن تغييره في هذه النسخة.';
-    document.getElementById('handle').disabled=false;
-  }
-  openModal('accountModal');
-}
-function formatRemaining(ms){
-  const days=Math.floor(ms/86400000);
-  const hours=Math.floor((ms%86400000)/3600000);
-  return days+' يوم و'+hours+' ساعة';
-}
-function saveAccount(){
-  const name=document.getElementById('displayName').value.trim();
-  let handle=document.getElementById('handle').value.trim().replace(/^@/,'');
-  if(name.length<2){alert('اكتب اسمًا من حرفين على الأقل.');return}
-  if(!state.profile){
-    if(!/^[a-zA-Z0-9_]{3,24}$/.test(handle)){
-      alert('اسم المستخدم لازم يكون من 3 إلى 24 حرفًا إنجليزيًا أو رقمًا أو _.');return;
-    }
-    state.profile={name,handle,nameChangedAt:Date.now()};
-    if(!state.follows.includes('founder'))state.follows.push('founder');
-  }else if(name!==state.profile.name){
-    const elapsed=Date.now()-state.profile.nameChangedAt;
-    if(elapsed<SEVEN_DAYS){
-      alert('لسه ما مرّش 7 أيام على آخر تغيير للاسم.');return;
-    }
-    state.profile.name=name;
-    state.profile.nameChangedAt=Date.now();
-  }
-  persist();closeModal('accountModal');renderFeed();
-}
-function followFounder(){
-  if(!state.profile){openAccount();return}
-  if(state.follows.includes('founder')){
-    alert('إنت بالفعل بتتابع المؤسس 👑');
-  }else{
-    state.follows.push('founder');persist();alert('تمت متابعة المؤسس!');renderFeed();
-  }
-}
-function setMode(next){mode=next;renderFeed();window.scrollTo({top:0,behavior:'smooth'})}
-function openUpload(){
-  if(!state.profile){alert('اعمل حسابك الأول.');openAccount();return}
-  openModal('uploadModal');
-}
-function publishVideo(){
-  const file=document.getElementById('videoFile').files[0];
-  const caption=document.getElementById('videoCaption').value.trim();
-  if(!file){alert('اختار فيديو الأول.');return}
-  if(!file.type.startsWith('video/')){alert('الملف لازم يكون فيديو.');return}
-  if(file.size>40*1024*1024){
-    alert('اختار فيديو أقل من 40 ميجابايت في هذه النسخة التجريبية.');return;
-  }
-  const url=URL.createObjectURL(file);
-  objectUrls.push(url);
-  state.posts.unshift({
-    id:'p'+Date.now(),name:state.profile.name,handle:state.profile.handle,
-    caption,url,createdAt:Date.now(),local:true
-  });
-  persist();
-  document.getElementById('videoFile').value='';
-  document.getElementById('videoCaption').value='';
-  closeModal('uploadModal');renderFeed();
-}
-function toggleLike(id){
-  if(!state.profile){openAccount();return}
-  state.likes=state.likes.includes(id)?state.likes.filter(x=>x!==id):[...state.likes,id];
-  persist();renderFeed();
-}
-function addComment(id){
-  if(!state.profile){openAccount();return}
-  const input=document.getElementById('comment-'+id);
-  const value=input.value.trim();
-  if(!value)return;
-  state.comments[id]=state.comments[id]||[];
-  state.comments[id].push({name:state.profile.name,text:value});
-  persist();renderFeed();
-}
-function renderFeed(){
-  const q=document.getElementById('search').value.trim().toLowerCase();
-  const starter={
-    id:'welcome',name:'الملك عبده',handle:'abdo',caption:'أهلاً بيكم في عبده توك ❤️ دي بداية مجتمعنا. انشر أول فيديو ليك وخلي الناس تتعرف عليك! 👑',
-    starter:true
+  data.user = {
+    displayName:display,
+    handle:handle,
+    createdAt:Date.now(),
+    lastNameChange:Date.now()
   };
-  let posts=[starter,...state.posts];
-  if(mode==='following'&&state.profile){
-    posts=posts.filter(p=>p.starter?state.follows.includes('founder'):state.follows.includes(p.handle));
-  }else if(mode==='following'&&!state.profile){
-    posts=[];
+  if (!data.following.includes(FOUNDER)) data.following.push(FOUNDER);
+  save();
+  hideModal("signupOverlay");
+  renderFeed();
+  toast("أهلًا بيك! أنت بتتابع عبده تلقائيًا");
+}
+function ensureUser() {
+  if (!data.user) showModal("signupOverlay");
+}
+function setFeed(mode) {
+  feedMode = mode;
+  document.getElementById("forYouTab").classList.toggle("active",mode==="all");
+  document.getElementById("followingTab").classList.toggle("active",mode==="following");
+  renderFeed();
+}
+function getVideos() {
+  const samples = [
+    {
+      id:"demo1", owner:"abdo", display:"عبده", caption:"أهلًا بيكم في عبده توك ❤️ أول فيديو في منصتنا الجديدة!",
+      music:"♪ الصوت الأصلي - عبده", demo:true, color:1
+    },
+    {
+      id:"demo2", owner:"abdotok", display:"عبده توك", caption:"شارك فيديوهاتك ولحظاتك مع الجميع ✨",
+      music:"♪ اكتشف أصوات جديدة", demo:true, color:2
+    },
+    {
+      id:"demo3", owner:"abdo", display:"عبده", caption:"تابعنا عشان تشوف كل جديد 🔥",
+      music:"♪ الصوت الأصلي - عبده", demo:true, color:3
+    }
+  ];
+  let all = [...samples,...data.videos];
+  if (feedMode==="following" && data.user) {
+    all = all.filter(v => data.following.includes(v.owner) || v.owner===data.user.handle);
   }
-  if(q){
-    posts=posts.filter(p=>(p.name+' '+p.handle+' '+(p.caption||'')).toLowerCase().includes(q));
-  }
-  const feed=document.getElementById('feed');
-  if(!posts.length){
-    feed.innerHTML='<div class="empty">مفيش فيديوهات هنا لسه. تابع ناس أو ارجع للرئيسية.</div>';return;
-  }
-  feed.innerHTML=posts.map(p=>{
-    const liked=state.likes.includes(p.id);
-    const comments=state.comments[p.id]||[];
-    const video=p.url?`<video src="${p.url}" controls playsinline preload="metadata"></video>`:
-      `<div class="placeholder"><div><strong>عبده توك</strong><p>🎬 مكان الفيديوهات</p><span class="muted">انشر فيديوك وابدأ المشاركة</span></div></div>`;
-    return `<article class="post">
-      <div class="post-head"><div class="avatar">${escapeHTML((p.name||'ع').slice(0,1))}</div>
-      <div><div class="username">${escapeHTML(p.name)} ${p.starter?'👑':''}</div>
-      <div class="muted">@${escapeHTML(p.handle||'abdo')} · ${p.starter?'المؤسس':'عضو في عبده توك'}</div></div></div>
-      ${video}
-      <div class="post-caption">${escapeHTML(p.caption||'')}</div>
+  return all;
+}
+function renderFeed() {
+  const feed = document.getElementById("feed");
+  const oldTop = feed.scrollTop;
+  const videos = getVideos();
+  feed.innerHTML = "";
+  videos.forEach((v,index) => {
+    const liked = data.likes.includes(v.id);
+    const comments = data.comments[v.id] || [];
+    const card = document.createElement("article");
+    card.className = "video-card";
+    card.dataset.id = v.id;
+    const poster = v.demo ? `
+      <div class="video-poster" style="background:${
+        v.color===1 ? "linear-gradient(145deg,#23153b,#101019 55%,#701c40)" :
+        v.color===2 ? "linear-gradient(145deg,#092f3a,#101019 55%,#4c1740)" :
+        "linear-gradient(145deg,#4a241a,#11101a 60%,#251b48)"
+      }">
+        <div class="poster-content">
+          <div class="play">♪</div>
+          <h2>${escapeHTML(v.display)}</h2>
+          <p>${escapeHTML(v.caption)}</p>
+          <small>عبده توك • فيديو تجريبي</small>
+        </div>
+      </div>` : `<video src="${v.url}" playsinline loop muted controls></video>`;
+    card.innerHTML = `
+      ${poster}
+      <div class="video-shade"></div>
+      <div class="video-info">
+        <div class="username">@${escapeHTML(v.owner)}</div>
+        <div class="caption">${escapeHTML(v.caption)}</div>
+        <div class="music">${escapeHTML(v.music || "♪ الصوت الأصلي")}</div>
+      </div>
       <div class="actions">
-        <button class="${liked?'liked':''}" onclick="toggleLike('${p.id}')">${liked?'❤️':'🤍'} إعجاب</button>
-        <button onclick="document.getElementById('comment-${p.id}').focus()">💬 ${comments.length} تعليق</button>
-        ${p.starter?'<button onclick="followFounder()">⭐ متابعة المؤسس</button>':''}
-      </div>
-      <div class="comments">
-        ${comments.map(c=>`<p><b>${escapeHTML(c.name)}:</b> ${escapeHTML(c.text)}</p>`).join('')}
-        <div class="comment-form"><input id="comment-${p.id}" placeholder="اكتب تعليق..." maxlength="300" onkeydown="if(event.key==='Enter')addComment('${p.id}')"><button class="secondary" onclick="addComment('${p.id}')">إرسال</button></div>
-      </div>
-    </article>`;
-  }).join('');
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="avatar">${escapeHTML((v.display||"ع").slice(0,1))}</div>
+          ${v.owner!==data.user?.handle ? `<button class="follow-dot" onclick="toggleFollow('${v.owner}',this)">${data.following.includes(v.owner)?"✓":"+"}</button>` : ""}
+        </div>
+        <button class="action ${liked?"liked":""}" onclick="toggleLike('${v.id}',this)">
+          <span>${liked?"♥":"♡"}</span><small>${liked?"أعجبك":"إعجاب"}</small>
+        </button>
+        <button class="action" onclick="openComments('${v.id}')"><span>▢</span><small>${comments.length} تعليق</small></button>
+        <button class="action" onclick="shareVideo('${v.id}')"><span>➦</span><small>مشاركة</small></button>
+      </div>`;
+    feed.appendChild(card);
+  });
+  if (!videos.length) feed.innerHTML='<div class="empty">مفيش فيديوهات هنا لسه. ارجع لتبويب «لك» أو انشر أول فيديو!</div>';
+  feed.scrollTop = oldTop;
+  activateVisibleVideo();
 }
-document.getElementById('year').textContent=new Date().getFullYear();
+function activateVisibleVideo() {
+  const cards = [...document.querySelectorAll(".video-card")];
+  if (!("IntersectionObserver" in window)) return;
+  if (window.videoObserver) window.videoObserver.disconnect();
+  window.videoObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const video = entry.target.querySelector("video");
+      if (!video) return;
+      if (entry.isIntersecting && entry.intersectionRatio > .65) {
+        video.play().catch(()=>{});
+      } else {
+        video.pause();
+      }
+    });
+  },{root:document.getElementById("feed"),threshold:[0,.65,1]});
+  cards.forEach(card=>window.videoObserver.observe(card));
+}
+function toggleLike(id,button) {
+  if (!data.user) return ensureUser();
+  const index = data.likes.indexOf(id);
+  if (index>=0) data.likes.splice(index,1);
+  else data.likes.push(id);
+  save();
+  button.classList.toggle("liked",data.likes.includes(id));
+  button.querySelector("span").textContent = data.likes.includes(id)?"♥":"♡";
+  button.querySelector("small").textContent = data.likes.includes(id)?"أعجبك":"إعجاب";
+}
+function toggleFollow(owner,button) {
+  if (!data.user) return ensureUser();
+  if (owner===FOUNDER && data.following.includes(owner)) {
+    toast("أنت بتتابع عبده تلقائيًا");
+    return;
+  }
+  if (data.following.includes(owner)) {
+    data.following=data.following.filter(x=>x!==owner);
+    button.textContent="+";
+    toast("تم إلغاء المتابعة");
+  } else {
+    data.following.push(owner);
+    button.textContent="✓";
+    toast("تمت المتابعة");
+  }
+  save();
+}
+function openComments(id) {
+  activeCommentVideo=id;
+  document.getElementById("commentInput").value="";
+  const list=document.getElementById("commentsList");
+  const comments=data.comments[id]||[];
+  list.innerHTML=comments.length ? comments.map(c=>`
+    <div class="comment"><strong>@${escapeHTML(c.user)}</strong><br>${escapeHTML(c.text)}</div>
+  `).join("") : '<p style="color:#aaa">لسه مفيش تعليقات. ابدأ أنت!</p>';
+  showModal("commentsOverlay");
+}
+function sendComment() {
+  if (!data.user) return ensureUser();
+  const input=document.getElementById("commentInput");
+  const text=input.value.trim();
+  if (!text) return;
+  if (!data.comments[activeCommentVideo]) data.comments[activeCommentVideo]=[];
+  data.comments[activeCommentVideo].push({user:data.user.handle,text,at:Date.now()});
+  save();
+  openComments(activeCommentVideo);
+  toast("تم حفظ التعليق على جهازك");
+}
+async function shareVideo(id) {
+  const shareURL=location.href.split("#")[0]+"#video-"+encodeURIComponent(id);
+  try {
+    if (navigator.share) await navigator.share({title:"عبده توك",text:"شوف الفيديو على عبده توك",url:shareURL});
+    else if (navigator.clipboard) {
+      await navigator.clipboard.writeText(shareURL);
+      toast("تم نسخ الرابط");
+    } else toast("انسخ رابط الموقع من المتصفح");
+  } catch(e) {}
+}
+function uploadVideo() {
+  if (!data.user) return ensureUser();
+  document.getElementById("videoFile").click();
+}
+function handleUpload(event) {
+  const file=event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith("video/")) return toast("اختار ملف فيديو");
+  if (file.size>50*1024*1024) return toast("الحد التجريبي 50 ميجابايت");
+  const url=URL.createObjectURL(file);
+  const caption=prompt("اكتب وصف الفيديو:")||"فيديو جديد";
+  data.videos.unshift({
+    id:"local_"+Date.now(),owner:data.user.handle,display:data.user.displayName,
+    caption,music:"♪ الصوت الأصلي",url,localOnly:true
+  });
+  save();
+  setFeed("all");
+  document.getElementById("feed").scrollTop=0;
+  toast("تمت إضافة الفيديو للتجربة على جهازك");
+  event.target.value="";
+}
+function openProfile() {
+  if (!data.user) return ensureUser();
+  document.getElementById("profileName").textContent=data.user.displayName;
+  document.getElementById("profileHandle").textContent="@"+data.user.handle;
+  document.getElementById("likesStat").textContent=data.likes.length;
+  document.getElementById("followingStat").textContent=data.following.length;
+  document.getElementById("followersStat").textContent="—";
+  document.getElementById("profile").classList.add("show");
+}
+function closeProfile() {
+  document.getElementById("profile").classList.remove("show");
+}
+function goHome() {
+  closeProfile();
+  setFeed("all");
+  document.getElementById("feed").scrollTop=0;
+}
+function changeUsername() {
+  const now=Date.now();
+  const last=data.user.lastNameChange||data.user.createdAt;
+  const remaining=7*24*60*60*1000-(now-last);
+  const field=document.getElementById("newHandle");
+  field.value="";
+  const button=document.querySelector("#nameOverlay .primary");
+  if (remaining>0) {
+    const days=Math.ceil(remaining/(24*60*60*1000));
+    document.getElementById("nameCooldown").textContent=
+      `تقدر تغيّر اسم المستخدم بعد ${days} يوم تقريبًا.`;
+    field.disabled=true; button.disabled=true; button.style.opacity=".5";
+  } else {
+    document.getElementById("nameCooldown").textContent="اكتب اسم المستخدم الجديد.";
+    field.disabled=false;button.disabled=false;button.style.opacity="1";
+  }
+  showModal("nameOverlay");
+}
+function saveUsername() {
+  const now=Date.now();
+  const last=data.user.lastNameChange||data.user.createdAt;
+  if (now-last<7*24*60*60*1000) return toast("لازم تمر 7 أيام كاملة");
+  const handle=document.getElementById("newHandle").value.trim().replace(/^@/,"").toLowerCase();
+  if (!/^[a-z0-9_.]{3,24}$/.test(handle)) return toast("الاسم لازم يكون 3 إلى 24 حرفًا أو رقمًا");
+  if (handle===FOUNDER) return toast("الاسم ده محجوز");
+  data.user.handle=handle;
+  data.user.lastNameChange=now;
+  save();hideModal("nameOverlay");openProfile();
+  toast("تم تغيير الاسم");
+}
+function showMyVideos() {
+  const mine=data.videos.filter(v=>v.owner===data.user?.handle);
+  document.getElementById("profileContent").innerHTML=mine.length
+    ? mine.map(v=>`<div class="comment">${escapeHTML(v.caption)}<br><small>فيديو محفوظ محليًا للتجربة</small></div>`).join("")
+    : "لسه ما نشرتش فيديوهات. اضغط «إضافة» عشان تختار فيديو من جهازك.";
+}
+function discover() {
+  closeProfile();
+  const term=prompt("اكتب اسم حساب للبحث عنه:");
+  if (!term) return;
+  const found=getVideos().filter(v=>(v.owner+" "+v.display+" "+v.caption).toLowerCase().includes(term.toLowerCase()));
+  if (!found.length) return toast("مفيش نتائج في الفيديوهات التجريبية");
+  toast("تم العثور على "+found.length+" نتيجة");
+  setFeed("all");
+  const first=document.querySelector(`[data-id="${CSS.escape(found[0].id)}"]`);
+  if (first) first.scrollIntoView({behavior:"smooth"});
+}
+function showMessages() {
+  toast("الرسائل الحقيقية تحتاج ربط السيرفر وقاعدة البيانات");
+}
+function logout() {
+  if (!confirm("تسجيل الخروج من الحساب على هذا الجهاز؟")) return;
+  data.user=null;
+  save();
+  closeProfile();
+  showModal("signupOverlay");
+}
 renderFeed();
-if(!state.profile){
-  setTimeout(()=>openAccount(),300);
-}
+if (!data.user) showModal("signupOverlay");
 </script>
 </body>
 </html>
