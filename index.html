@@ -1,898 +1,817 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#07090e">
-  <title>الملك لايف - البث المباشر</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0e12">
+<meta name="description" content="عبده توك - اكتشف الفيديوهات وشارك لحظاتك">
+<title>عبده توك | AbdoTok</title>
 
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
-
-  <style>
-    :root {
-      --bg: #07090e;
-      --card: #111622;
-      --accent: #00e676;
-      --gold: #ffd700;
-      --text: #fff;
-      --muted: #999;
-      --border: #1f283d;
-      --danger: #ff1744;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    button, input { font: inherit; }
-
-    button { cursor: pointer; }
-
-    button:focus-visible,
-    input:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
-    }
-
-    .wrap {
-      width: 100%;
-      max-width: 600px;
-      margin-inline: auto;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 15px;
-    }
-
-    .logo {
-      color: var(--accent);
-      font-size: 16px;
-      font-weight: 800;
-    }
-
-    .user-name {
-      color: var(--accent);
-      font-size: 12px;
-      overflow-wrap: anywhere;
-    }
-
-    .owner-panel {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px;
-      border: 1px solid var(--gold);
-      border-radius: 12px;
-      color: var(--gold);
-      background: #241d08;
-      font-size: 13px;
-      text-align: center;
-    }
-
-    .player {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      overflow: hidden;
-      background: #000;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .player video,
-    .player iframe {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      background: #000;
-      object-fit: contain;
-    }
-
-    .placeholder {
-      padding: 20px;
-      text-align: center;
-      color: var(--muted);
-      line-height: 1.9;
-    }
-
-    .placeholder i {
-      display: block;
-      font-size: 42px;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-
-    .player-label {
-      position: absolute;
-      z-index: 2;
-      top: 8px;
-      right: 8px;
-      max-width: calc(100% - 16px);
-      padding: 6px 10px;
-      color: var(--accent);
-      background: #000c;
-      border-radius: 8px;
-      font-size: 11px;
-      pointer-events: none;
-    }
-
-    .status {
-      color: var(--muted);
-      font-size: 12px;
-      text-align: center;
-      min-height: 18px;
-      overflow-wrap: anywhere;
-    }
-
-    .status.error { color: #ff7272; }
-    .status.success { color: var(--accent); }
-
-    .categories {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 3px 2px 8px;
-      scrollbar-width: thin;
-    }
-
-    .cat-btn {
-      flex: 0 0 auto;
-      padding: 9px 15px;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      background: var(--card);
-      color: #ddd;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .cat-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #000;
-    }
-
-    .section-heading {
-      margin-bottom: 10px;
-      font-size: 15px;
-    }
-
-    .channels {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .channel-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--card);
-      color: var(--text);
-      text-align: right;
-      width: 100%;
-      transition: border-color .2s;
-    }
-
-    .channel-card:hover,
-    .channel-card:focus-visible {
-      border-color: var(--accent);
-    }
-
-    .channel-card.selected { border-color: var(--accent); }
-
-    .channel-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .channel-icon {
-      flex: 0 0 42px;
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border-radius: 10px;
-      background: #1a2235;
-      color: var(--accent);
-      font-size: 18px;
-    }
-
-    .channel-name {
-      font-size: 14px;
-      font-weight: 750;
-      overflow-wrap: anywhere;
-    }
-
-    .channel-cat {
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .live-badge {
-      flex: 0 0 auto;
-      color: var(--danger);
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .live-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--danger);
-      border-radius: 50%;
-    }
-
-    .empty {
-      padding: 20px;
-      text-align: center;
-      color: var(--muted);
-      background: var(--card);
-      border-radius: 12px;
-    }
-
-    .footer {
-      color: #777;
-      font-size: 12px;
-      text-align: center;
-      padding: 8px 0;
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: #05070cf5;
-    }
-
-    .dialog {
-      width: 100%;
-      max-width: 380px;
-      padding: 24px;
-      text-align: center;
-      border: 1px solid var(--accent);
-      border-radius: 18px;
-      background: var(--card);
-    }
-
-    .dialog h2 { margin-bottom: 10px; }
-
-    .dialog p {
-      color: #bbb;
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    .dialog input {
-      width: 100%;
-      margin: 15px 0;
-      padding: 13px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #04060a;
-      color: #fff;
-      text-align: center;
-    }
-
-    .primary-btn,
-    .secondary-btn {
-      width: 100%;
-      padding: 12px;
-      border: 0;
-      border-radius: 10px;
-      font-weight: 800;
-    }
-
-    .primary-btn {
-      background: var(--accent);
-      color: #000;
-    }
-
-    .secondary-btn {
-      margin-top: 10px;
-      background: #293043;
-      color: #fff;
-    }
-
-    .ad-timer {
-      padding: 15px;
-      color: var(--accent);
-      font-size: 28px;
-      font-weight: 800;
-    }
-
-    [hidden] { display: none !important; }
-
-    @media (max-width: 380px) {
-      body { padding: 10px; }
-      header { padding: 12px; }
-      .logo { font-size: 14px; }
-      .channel-card { padding: 10px; }
-    }
-  </style>
+<style>
+:root {
+  --bg:#0d0e12;
+  --panel:#16181f;
+  --panel2:#20232e;
+  --border:#2a2e3d;
+  --text:#fff;
+  --muted:#999eaf;
+  --pink:#fe2c55;
+  --gold:#ffd700;
+  --radius:16px;
+}
+* {box-sizing:border-box;margin:0;padding:0}
+body {
+  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  background:var(--bg);color:var(--text);
+  padding-bottom:85px;min-height:100vh;
+}
+button,input,textarea {font:inherit}
+button,a { -webkit-tap-highlight-color:transparent }
+button {cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible {
+  outline:2px solid var(--pink);outline-offset:3px
+}
+header {
+  height:65px;position:sticky;top:0;z-index:50;
+  background:rgba(22,24,31,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:0 16px
+}
+.logo {font-size:21px;font-weight:900;color:var(--pink);white-space:nowrap}
+.search {flex:1;max-width:440px}
+.search input {
+  width:100%;background:var(--panel2);color:white;
+  border:1px solid var(--border);border-radius:24px;
+  padding:10px 15px;outline:none
+}
+button {border:0}
+.primary {
+  background:var(--pink);color:white;border-radius:24px;
+  padding:10px 16px;font-weight:750
+}
+.secondary {
+  background:var(--panel2);color:white;border:1px solid var(--border);
+  border-radius:12px;padding:10px 14px
+}
+.page {max-width:680px;margin:auto;padding:14px}
+.king-card {
+  background:linear-gradient(135deg,#201b51,#401039);
+  border:1px solid #806d29;border-radius:var(--radius);
+  padding:17px;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;margin-bottom:18px
+}
+.king-info {display:flex;align-items:center;gap:12px;min-width:0}
+.avatar {
+  width:55px;height:55px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;background:#303342;
+  border:2px solid var(--gold);font-size:27px
+}
+.king-name {font-size:17px;font-weight:850}
+.badge {color:var(--gold);font-size:12px}
+.muted {color:var(--muted);font-size:13px}
+.section-title {font-size:18px;font-weight:850;margin:20px 0 12px}
+.tabs {
+  display:flex;gap:8px;overflow-x:auto;padding:3px 0 12px;
+  scrollbar-width:none
+}
+.tabs button {
+  flex-shrink:0;padding:9px 16px;border-radius:24px;
+  color:var(--muted);background:var(--panel);border:1px solid var(--border)
+}
+.tabs button.active {color:white;background:#33202a;border-color:var(--pink)}
+.post {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;margin-bottom:17px
+}
+.post-head {display:flex;align-items:center;gap:10px;padding:14px}
+.small-avatar {
+  width:40px;height:40px;display:grid;place-items:center;
+  background:var(--panel2);border-radius:50%;font-size:20px;flex-shrink:0
+}
+.post-meta {flex:1;min-width:0}
+.post-meta strong {display:block;overflow-wrap:anywhere}
+.post-meta small {color:var(--muted)}
+.post-text {padding:0 14px 12px;line-height:1.7;overflow-wrap:anywhere}
+.video-box {
+  background:#050505;position:relative;width:100%;
+  aspect-ratio:9/12;max-height:620px;display:grid;place-items:center;
+  overflow:hidden
+}
+.video-box video {
+  display:block;width:100%;height:100%;object-fit:contain;background:#000
+}
+.video-placeholder {text-align:center;color:var(--muted);padding:20px}
+.video-placeholder .big {font-size:44px;margin-bottom:8px}
+.post-actions {
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 14px
+}
+.action {
+  background:transparent;color:var(--muted);
+  border-radius:10px;padding:7px 9px
+}
+.action.liked {color:var(--pink)}
+.comments {padding:0 14px 14px}
+.comments input {
+  width:100%;background:var(--panel2);color:white;
+  border:1px solid var(--border);border-radius:12px;padding:11px
+}
+.comment-list {font-size:13px;color:#ddd;line-height:1.8;margin-bottom:8px}
+.empty {
+  text-align:center;padding:36px 18px;background:var(--panel);
+  border:1px dashed var(--border);border-radius:var(--radius);
+  color:var(--muted);line-height:2
+}
+.bottom-nav {
+  position:fixed;bottom:0;left:0;right:0;z-index:60;
+  display:flex;justify-content:space-around;align-items:center;
+  padding:9px 4px max(9px,env(safe-area-inset-bottom));
+  background:rgba(22,24,31,.97);border-top:1px solid var(--border)
+}
+.nav-item {
+  flex:1;text-align:center;color:var(--muted);text-decoration:none;
+  background:transparent;font-size:11px;padding:5px 1px
+}
+.nav-item span {display:block;font-size:21px;margin-bottom:3px}
+.nav-item.active {color:var(--pink)}
+.nav-add span {font-size:26px}
+.panel {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;margin-bottom:14px
+}
+.panel h3 {margin-bottom:12px}
+.field {margin:12px 0}
+.field label {display:block;font-size:13px;color:var(--muted);margin-bottom:7px}
+.field input,.field textarea {
+  display:block;width:100%;padding:12px;color:white;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:12px;outline:none
+}
+.field textarea {min-height:95px;resize:vertical}
+.row {display:flex;gap:9px;flex-wrap:wrap}
+.row>* {flex:1}
+.notice {
+  background:#202b37;border:1px solid #34485d;color:#d9eaff;
+  border-radius:12px;padding:12px;font-size:13px;line-height:1.8;
+  margin:12px 0
+}
+.hidden {display:none!important}
+footer {text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@media(min-width:700px) {
+  .page {padding-top:22px}
+  .video-box {aspect-ratio:9/11}
+}
+</style>
 </head>
 
 <body>
-  <header class="wrap">
-    <div class="logo">
-      <i class="fa-solid fa-tv"></i>
-      الملك لايف - World TV
-    </div>
-    <span id="header-user-name" class="user-name">زائر</span>
-  </header>
-
-  <div id="owner-panel" class="owner-panel wrap">
-    <i class="fa-solid fa-crown"></i>
-    <span>أهلًا بك في الملك لايف</span>
+<header>
+  <div class="logo">📱 عبده توك</div>
+  <div class="search">
+    <input id="searchInput" type="search" placeholder="🔍 ابحث عن فيديو أو مستخدم..." aria-label="بحث">
   </div>
+  <button class="primary" id="headerAdd">＋</button>
+</header>
 
-  <main class="wrap">
-    <section class="player" id="player-container"
-      aria-label="مشغل البث المباشر">
-      <div class="placeholder" id="placeholder">
-        <i class="fa-solid fa-circle-play"></i>
-        اختر قناة من القائمة لبدء التشغيل
+<main class="page">
+  <section class="king-card">
+    <div class="king-info">
+      <div class="avatar">👑</div>
+      <div>
+        <div class="king-name">عبده <span class="badge">👑 المؤسس</span></div>
+        <div class="muted">أهلاً بك في مجتمع عبده توك</div>
       </div>
-    </section>
-
-    <p id="player-status" class="status" role="status" aria-live="polite">
-      جاهز للتشغيل
-    </p>
-
-    <nav class="categories" aria-label="تصنيفات القنوات">
-      <button class="cat-btn active" data-category="all">الكل</button>
-      <button class="cat-btn" data-category="bein">بي إن سبورت</button>
-      <button class="cat-btn" data-category="egypt">القنوات المصرية</button>
-      <button class="cat-btn" data-category="world">قنوات العالم</button>
-      <button class="cat-btn" data-category="kids">أطفال وكرتون</button>
-      <button class="cat-btn" data-category="test">تجريبية</button>
-    </nav>
-
-    <h2 class="section-heading">القنوات المتاحة</h2>
-    <section id="channels-list" class="channels"
-      aria-label="قائمة القنوات"></section>
-  </main>
-
-  <footer class="footer wrap">
-    الملك لايف © 2026
-  </footer>
-
-  <div class="overlay" id="register-modal">
-    <div class="dialog">
-      <h2>📺 الملك لايف</h2>
-      <p>أدخل اسم العرض للمتابعة.</p>
-      <form id="register-form">
-        <input id="user-name-input" type="text"
-          maxlength="40" autocomplete="nickname"
-          placeholder="اسم العرض" required>
-        <button class="primary-btn" type="submit">دخول للمنصة</button>
-      </form>
     </div>
-  </div>
+    <button class="primary" id="kingLive">🔴 لايف</button>
+  </section>
 
-  <div class="overlay" id="hourly-ad-modal">
-    <div class="dialog">
-      <h2 style="color:var(--gold)">إعلان</h2>
-      <p>يمكن عرض إعلان هنا عند ربط الموقع بمزود إعلانات مناسب.</p>
-      <div id="ad-timer" class="ad-timer">00:10</div>
-      <button id="skip-ad-btn" class="primary-btn" disabled>
-        يرجى الانتظار
-      </button>
+  <nav class="tabs" aria-label="تصنيف الفيديوهات">
+    <button class="active" data-filter="all">لك</button>
+    <button data-filter="popular">الأكثر إعجابًا</button>
+    <button data-filter="mine">منشوراتي</button>
+  </nav>
+
+  <section id="feed"></section>
+
+  <section id="discoverPage" class="hidden">
+    <h2 class="section-title">اكتشف</h2>
+    <div class="panel">
+      <p>ابحث عن الفيديوهات والمستخدمين باستخدام مربع البحث بالأعلى.</p>
+      <p class="muted" style="margin-top:8px">ستظهر هنا المنشورات المطابقة لما تبحث عنه.</p>
     </div>
-  </div>
+  </section>
 
-  <script>
-    "use strict";
+  <section id="addPage" class="hidden">
+    <h2 class="section-title">➕ إضافة منشور</h2>
+    <div class="panel">
+      <div class="field">
+        <label for="postCaption">وصف الفيديو</label>
+        <textarea id="postCaption" placeholder="اكتب وصف الفيديو..."></textarea>
+      </div>
+      <div class="field">
+        <label for="postUrl">رابط فيديو مباشر (اختياري)</label>
+        <input id="postUrl" type="url" placeholder="https://example.com/video.mp4" dir="ltr">
+      </div>
+      <div class="field">
+        <label for="postFile">أو اختر فيديو من جهازك</label>
+        <input id="postFile" type="file" accept="video/*">
+      </div>
+      <div class="notice">
+        روابط الفيديو المباشرة وملفات MP4 المدعومة تعمل عادةً داخل المشغّل.
+        ملفات الجهاز تُعرض محليًا في هذه النسخة، ولا تُرفع إلى السيرفر تلقائيًا.
+      </div>
+      <button class="primary" id="publishBtn" style="width:100%">نشر المنشور</button>
+    </div>
+  </section>
 
-    /*
-      أضف روابط البث الرسمية المصرح باستخدامها داخل url.
-      اترك url فارغًا إلى أن تحصل على الرابط الصحيح.
-      type: hls للمصادر التي تنتهي عادةً بـ m3u8.
-      type: embed لصفحات التضمين التي يسمح مزودها بذلك.
+  <section id="livePage" class="hidden">
+    <h2 class="section-title">🔴 البث المباشر</h2>
+    <div class="panel">
+      <h3>مشاهدة بث</h3>
+      <div class="field">
+        <label for="liveUrl">رابط البث المباشر</label>
+        <input id="liveUrl" type="url" placeholder="https://example.com/live.m3u8" dir="ltr">
+      </div>
+      <button class="primary" id="watchBtn">تشغيل البث</button>
+      <div id="livePlayer" class="video-box hidden" style="margin-top:14px">
+        <video id="liveVideo" controls playsinline></video>
+      </div>
+      <div class="notice">
+        روابط HLS بصيغة M3U8 لا تعمل مباشرةً في كل المتصفحات.
+        قد تحتاج إلى مشغّل HLS مثل hls.js. استخدم روابط تملك حق بثها.
+      </div>
+    </div>
 
-      قناة الاختبار ليست قناة تلفزيونية رسمية.
-    */
+    <div class="panel">
+      <h3>البث بكاميرتك</h3>
+      <p class="muted">يسمح هذا الخيار بمعاينة الكاميرا والميكروفون على جهازك فقط.</p>
+      <div class="row" style="margin-top:12px">
+        <button class="primary" id="cameraStart">فتح الكاميرا</button>
+        <button class="secondary" id="cameraStop">إيقاف الكاميرا</button>
+      </div>
+      <video id="cameraPreview" autoplay muted playsinline
+        style="display:none;width:100%;max-height:400px;background:#000;border-radius:12px;margin-top:12px"></video>
+      <p id="cameraStatus" class="muted" style="margin-top:10px"></p>
+      <div class="notice">
+        تحتاج الكاميرا إلى HTTPS أو localhost وإذن المستخدم.
+        لإرسال بث حقيقي للمشاهدين، اربط هذا الجزء بخادم WebRTC أو منصة بث تدعم استقبال الإرسال.
+      </div>
+    </div>
+  </section>
 
-    const channels = [
-      {
-        id: "bein1",
-        name: "beIN Sports 1 HD",
-        cat: "bein",
-        icon: "fa-futbol",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "bein2",
-        name: "beIN Sports 2 HD",
-        cat: "bein",
-        icon: "fa-futbol",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "bein-premium",
-        name: "beIN Sports Premium 1",
-        cat: "bein",
-        icon: "fa-trophy",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "alnahar",
-        name: "النهار المصرية",
-        cat: "egypt",
-        icon: "fa-tv",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "cbc",
-        name: "CBC المصرية",
-        cat: "egypt",
-        icon: "fa-clapperboard",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "ontime",
-        name: "أون تايم سبورت",
-        cat: "egypt",
-        icon: "fa-futbol",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "nile-news",
-        name: "قناة النيل للأخبار",
-        cat: "egypt",
-        icon: "fa-newspaper",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "bbc",
-        name: "BBC News",
-        cat: "world",
-        icon: "fa-globe",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "sky-arabia",
-        name: "Sky News Arabia",
-        cat: "world",
-        icon: "fa-satellite-dish",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "spacetoon",
-        name: "سبيستون",
-        cat: "kids",
-        icon: "fa-child",
-        type: "hls",
-        url: ""
-      },
-      {
-        id: "demo",
-        name: "قناة اختبار المشغل",
-        cat: "test",
-        icon: "fa-circle-play",
-        type: "hls",
-        url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
-      }
-    ];
+  <section id="profilePage" class="hidden">
+    <h2 class="section-title">👤 صفحتي</h2>
+    <div class="panel" style="text-align:center">
+      <div class="avatar" style="margin:0 auto 12px;width:75px;height:75px">👤</div>
+      <h3 id="profileName">مستخدم عبده توك</h3>
+      <p class="muted">حساب محلي على هذا الجهاز</p>
+      <div class="row" style="margin-top:15px">
+        <div><strong id="myPostCount">0</strong><p class="muted">منشورات</p></div>
+        <div><strong id="myLikesCount">0</strong><p class="muted">إعجابات</p></div>
+      </div>
+      <div class="field" style="text-align:right">
+        <label for="changeName">تغيير الاسم</label>
+        <input id="changeName" maxlength="40" placeholder="اسم المستخدم">
+      </div>
+      <button class="primary" id="saveName" style="width:100%">حفظ الاسم</button>
+    </div>
+    <h3 class="section-title">منشوراتي</h3>
+    <div id="myPosts"></div>
+  </section>
 
-    const STORAGE_NAME = "malik_live_display_name_v1";
-    const AD_INTERVAL = 60 * 60 * 1000;
-    const AD_DURATION = 10;
+  <footer>عبده توك © <span id="year"></span></footer>
+</main>
 
-    let currentHls = null;
-    let adInterval = null;
-    let adCountdown = null;
-    let selectedChannelId = null;
-    let adNextAt = Date.now() + AD_INTERVAL;
+<nav class="bottom-nav" aria-label="التنقل الرئيسي">
+  <button class="nav-item active" data-page="home"><span>🏠</span>الرئيسية</button>
+  <button class="nav-item" data-page="discover"><span>🔍</span>اكتشف</button>
+  <button class="nav-item nav-add" data-page="add"><span>➕</span>إضافة</button>
+  <button class="nav-item" data-page="live"><span>🔴</span>لايف</button>
+  <button class="nav-item" data-page="profile"><span>👤</span>صفحتي</button>
+</nav>
 
-    const $ = (id) => document.getElementById(id);
+<script>
+"use strict";
 
-    function setStatus(message, kind = "") {
-      const status = $("player-status");
-      status.textContent = message;
-      status.className = "status" + (kind ? " " + kind : "");
+/*
+ * إعدادات ربط السيرفر
+ * ضع عنوان API الحقيقي عند تجهيز المسارات في الباك إند.
+ * اتركه فارغًا لاستخدام الوضع المحلي التجريبي.
+ */
+const CONFIG = {
+  apiBase: "",
+  endpoints: {
+    posts: "/api/posts",
+    login: "/api/auth/login",
+    upload: "/api/videos/upload"
+  }
+};
+
+const STORAGE = {
+  name: "abdotok_user_v2",
+  posts: "abdotok_posts_v2",
+  likes: "abdotok_likes_v2"
+};
+
+const $ = id => document.getElementById(id);
+
+let currentFilter = "all";
+let currentPage = "home";
+let cameraStream = null;
+let localFileUrl = null;
+let posts = [];
+let likedIds = new Set();
+
+function readJSON(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveLocal() {
+  try {
+    // ملفات الجهاز لا تُحفظ هنا، والروابط المؤقتة لا تصلح للتخزين الدائم.
+    const persistentPosts = posts.filter(p => !p.localOnly);
+    localStorage.setItem(STORAGE.posts, JSON.stringify(persistentPosts));
+    localStorage.setItem(STORAGE.likes, JSON.stringify([...likedIds]));
+    return true;
+  } catch (error) {
+    alert("تعذر حفظ البيانات محليًا. قد تكون مساحة التخزين ممتلئة.");
+    return false;
+  }
+}
+
+function getName() {
+  return localStorage.getItem(STORAGE.name) || "عبده";
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  })[char]);
+}
+
+function safeMediaUrl(value) {
+  try {
+    const url = new URL(value, location.href);
+    if (!["http:", "https:", "blob:"].includes(url.protocol)) return "";
+    return url.href;
+  } catch {
+    return "";
+  }
+}
+
+function createId() {
+  return "p_" + Date.now().toString(36) + "_" +
+    Math.random().toString(36).slice(2, 9);
+}
+
+function seedPosts() {
+  return [
+    {
+      id: "welcome",
+      user: "عبده توك",
+      caption: "أهلاً بيكم في عبده توك 👑 شاركونا فيديوهاتكم!",
+      url: "",
+      likes: 0,
+      comments: [],
+      createdAt: Date.now(),
+      owner: false
     }
+  ];
+}
 
-    function safeHttpUrl(rawUrl) {
-      if (typeof rawUrl !== "string" || !rawUrl.trim()) {
-        return null;
-      }
+function loadLocal() {
+  const stored = readJSON(STORAGE.posts, null);
+  posts = Array.isArray(stored) ? stored : seedPosts();
+  likedIds = new Set(readJSON(STORAGE.likes, []));
+  renderAll();
+}
 
-      try {
-        const url = new URL(rawUrl.trim());
+async function apiRequest(path, options = {}) {
+  if (!CONFIG.apiBase) throw new Error("API غير مضبوط");
+  const response = await fetch(CONFIG.apiBase.replace(/\/$/, "") + path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    },
+    credentials: "include"
+  });
+  if (!response.ok) throw new Error("فشل الاتصال بالسيرفر: " + response.status);
+  return response.json();
+}
 
-        if (url.protocol !== "https:" && url.protocol !== "http:") {
-          return null;
-        }
-
-        return url.href;
-      } catch {
-        return null;
-      }
+/*
+ * ربط قراءة المنشورات بالسيرفر عند إعداد API.
+ * يتطلب أن يعيد GET /api/posts قائمة منشورات بصيغة JSON.
+ */
+async function syncPostsFromServer() {
+  if (!CONFIG.apiBase) return;
+  try {
+    const result = await apiRequest(CONFIG.endpoints.posts);
+    if (Array.isArray(result)) {
+      posts = result.map(p => ({
+        id: String(p.id),
+        user: String(p.user || p.username || "مستخدم"),
+        caption: String(p.caption || p.description || ""),
+        url: safeMediaUrl(p.url || p.videoUrl || ""),
+        likes: Number(p.likes || 0),
+        comments: Array.isArray(p.comments) ? p.comments : [],
+        createdAt: Number(p.createdAt || Date.now()),
+        owner: false
+      }));
+      renderAll();
     }
+  } catch (error) {
+    console.error(error);
+    showMessage("تعذر تحميل المنشورات من السيرفر. يتم عرض البيانات المحلية.");
+  }
+}
 
-    function destroyPlayer() {
-      if (currentHls) {
-        currentHls.destroy();
-        currentHls = null;
-      }
+function showMessage(message) {
+  alert(message);
+}
 
-      const container = $("player-container");
-      const video = container.querySelector("video");
+function navigate(page) {
+  currentPage = page;
 
-      if (video) {
-        video.pause();
-        video.removeAttribute("src");
-        video.load();
-      }
+  const sections = {
+    home: $("feed"),
+    discover: $("discoverPage"),
+    add: $("addPage"),
+    live: $("livePage"),
+    profile: $("profilePage")
+  };
 
-      container.replaceChildren();
-
-      const placeholder = document.createElement("div");
-      placeholder.className = "placeholder";
-      placeholder.id = "placeholder";
-
-      const icon = document.createElement("i");
-      icon.className = "fa-solid fa-circle-play";
-
-      const text = document.createElement("span");
-      text.textContent = "اختر قناة من القائمة لبدء التشغيل";
-
-      placeholder.append(icon, text);
-      container.appendChild(placeholder);
+  Object.entries(sections).forEach(([key, section]) => {
+    if (key === "home") {
+      section.classList.toggle("hidden", page !== "home");
+    } else {
+      section.classList.toggle("hidden", page !== key);
     }
+  });
 
-    function showPlayerLabel(name) {
-      const label = document.createElement("div");
-      label.className = "player-label";
-      label.textContent = name;
-      $("player-container").appendChild(label);
+  document.querySelectorAll(".nav-item").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === page);
+  });
+
+  if (page === "profile") renderProfile();
+  if (page === "discover") renderFeed();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function getVisiblePosts() {
+  let list = [...posts];
+  const query = $("searchInput").value.trim().toLowerCase();
+
+  if (query) {
+    list = list.filter(post =>
+      String(post.user).toLowerCase().includes(query) ||
+      String(post.caption).toLowerCase().includes(query)
+    );
+  }
+
+  if (currentFilter === "mine") {
+    list = list.filter(post => post.owner);
+  } else if (currentFilter === "popular") {
+    list.sort((a,b) => Number(b.likes || 0) - Number(a.likes || 0));
+  } else {
+    list.sort((a,b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+  }
+
+  return list;
+}
+
+function renderPost(post) {
+  const id = escapeHTML(post.id);
+  const user = escapeHTML(post.user || "مستخدم");
+  const caption = escapeHTML(post.caption || "");
+  const url = safeMediaUrl(post.url || "");
+  const comments = Array.isArray(post.comments) ? post.comments : [];
+  const liked = likedIds.has(post.id);
+
+  const media = url
+    ? `<div class="video-box">
+         <video controls playsinline preload="metadata"
+           src="${escapeHTML(url)}"></video>
+       </div>`
+    : `<div class="video-box">
+         <div class="video-placeholder">
+           <div class="big">🎬</div>
+           <div>لا يوجد فيديو مرفق</div>
+           <small>أضف رابط فيديو مباشر لعرضه هنا</small>
+         </div>
+       </div>`;
+
+  const commentHTML = comments.map(comment => {
+    if (typeof comment === "string") {
+      return `<div>${escapeHTML(comment)}</div>`;
     }
+    return `<div><strong>${escapeHTML(comment.user || "مستخدم")}:</strong>
+      ${escapeHTML(comment.text || "")}</div>`;
+  }).join("");
 
-    function playChannel(channel) {
-      destroyPlayer();
-      selectedChannelId = channel.id;
+  return `
+    <article class="post" data-id="${id}">
+      <div class="post-head">
+        <div class="small-avatar">👤</div>
+        <div class="post-meta">
+          <strong>${user}${post.owner ? ' <span class="badge">✓</span>' : ''}</strong>
+          <small>${post.owner ? "منشورك" : "عضو في عبده توك"}</small>
+        </div>
+      </div>
+      ${caption ? `<div class="post-text">${caption}</div>` : ""}
+      ${media}
+      <div class="post-actions">
+        <button class="action ${liked ? "liked" : ""}" data-like="${id}">
+          ${liked ? "❤️" : "🤍"} ${Number(post.likes || 0)}
+        </button>
+        <button class="action" data-focus-comment="${id}">💬 ${comments.length}</button>
+        <button class="action" data-share="${id}">↗ مشاركة</button>
+        ${post.owner ? `<button class="action" data-delete="${id}">🗑 حذف</button>` : ""}
+      </div>
+      <div class="comments">
+        <div class="comment-list">${commentHTML}</div>
+        <form data-comment-form="${id}" class="row">
+          <input name="comment" maxlength="500" placeholder="اكتب تعليقًا..." required aria-label="تعليق">
+          <button class="secondary" type="submit">إرسال</button>
+        </form>
+      </div>
+    </article>`;
+}
 
-      renderChannels(
-        document.querySelector(".cat-btn.active")?.dataset.category || "all"
-      );
+function renderFeed() {
+  const list = getVisiblePosts();
+  $("feed").innerHTML = list.length
+    ? list.map(renderPost).join("")
+    : `<div class="empty">لا توجد منشورات مطابقة.<br>جرّب كلمة بحث مختلفة أو أضف فيديو جديدًا.</div>`;
 
-      const container = $("player-container");
-      const source = safeHttpUrl(channel.url);
+  if (currentPage === "profile") renderProfile();
+}
 
-      if (!source) {
-        setStatus(
-          "رابط هذه القناة غير مُعدّ بعد. أضف رابط البث الصحيح في إعدادات القنوات.",
-          "error"
-        );
-        return;
-      }
+function renderProfile() {
+  const mine = posts.filter(p => p.owner);
+  $("profileName").textContent = getName();
+  $("changeName").value = getName();
+  $("myPostCount").textContent = mine.length;
+  $("myLikesCount").textContent = mine.reduce((sum,p) => sum + Number(p.likes || 0), 0);
+  $("myPosts").innerHTML = mine.length
+    ? mine.map(renderPost).join("")
+    : `<div class="empty">لم تنشر أي فيديو بعد.<br>اضغط على إضافة لبدء النشر.</div>`;
+}
 
-      if (channel.type === "embed") {
-        const frame = document.createElement("iframe");
-        frame.src = source;
-        frame.title = channel.name;
-        frame.allow = "autoplay; encrypted-media; fullscreen; picture-in-picture";
-        frame.allowFullscreen = true;
-        frame.referrerPolicy = "strict-origin-when-cross-origin";
+function renderAll() {
+  renderFeed();
+  renderProfile();
+}
 
-        container.replaceChildren(frame);
-        showPlayerLabel(channel.name);
-        setStatus(
-          "تم فتح مشغل التضمين. قد يمنع مزود الخدمة التشغيل داخل الموقع."
-        );
-        return;
-      }
+function publishPost() {
+  const caption = $("postCaption").value.trim();
+  const urlInput = $("postUrl").value.trim();
+  const file = $("postFile").files[0];
 
-      if (channel.type !== "hls") {
-        setStatus("نوع البث غير مدعوم في الإعدادات.", "error");
-        return;
-      }
+  if (!caption && !urlInput && !file) {
+    showMessage("اكتب وصفًا أو أضف رابط فيديو أو اختر ملفًا.");
+    return;
+  }
 
-      const video = document.createElement("video");
-      video.controls = true;
-      video.autoplay = true;
-      video.playsInline = true;
-      video.preload = "metadata";
-      video.setAttribute("aria-label", channel.name);
+  let mediaUrl = "";
+  let localOnly = false;
 
-      container.replaceChildren(video);
-      showPlayerLabel(channel.name);
-      setStatus("جارٍ الاتصال بمصدر البث...");
-
-      video.addEventListener("playing", () => {
-        setStatus("يعمل البث الآن: " + channel.name, "success");
-      });
-
-      video.addEventListener("waiting", () => {
-        setStatus("جارٍ تحميل البث...");
-      });
-
-      video.addEventListener("error", () => {
-        setStatus(
-          "تعذر تشغيل الفيديو. تحقق من الرابط، وصلاحية الوصول، ودعم CORS.",
-          "error"
-        );
-      });
-
-      if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = source;
-        video.play().catch(() => {
-          setStatus("اضغط زر التشغيل داخل الفيديو لبدء المشاهدة.");
-        });
-        return;
-      }
-
-      if (window.Hls && Hls.isSupported()) {
-        currentHls = new Hls({
-          enableWorker: true,
-          backBufferLength: 30,
-          maxBufferLength: 30
-        });
-
-        currentHls.loadSource(source);
-        currentHls.attachMedia(video);
-
-        currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play().catch(() => {
-            setStatus("اضغط زر التشغيل داخل الفيديو لبدء المشاهدة.");
-          });
-        });
-
-        currentHls.on(Hls.Events.ERROR, (_event, data) => {
-          if (!data.fatal) return;
-
-          if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-            setStatus("تعذر الوصول إلى البث. تحقق من الرابط والاتصال.", "error");
-            currentHls?.startLoad();
-          } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-            setStatus("خطأ في الوسائط؛ جارٍ محاولة الإصلاح...", "error");
-            currentHls?.recoverMediaError();
-          } else {
-            setStatus("تعذر تشغيل المصدر. تحقق من إعدادات البث.", "error");
-            currentHls?.destroy();
-            currentHls = null;
-          }
-        });
-
-        return;
-      }
-
-      setStatus(
-        "هذا المتصفح لا يدعم تشغيل HLS بهذا المصدر. جرّب متصفحًا حديثًا.",
-        "error"
-      );
+  if (file) {
+    if (!file.type.startsWith("video/")) {
+      showMessage("الرجاء اختيار ملف فيديو صالح.");
+      return;
     }
-
-    function renderChannels(category = "all") {
-      const list = $("channels-list");
-      list.replaceChildren();
-
-      const filtered = channels.filter(channel =>
-        category === "all" || channel.cat === category
-      );
-
-      if (filtered.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = "لا توجد قنوات في هذا التصنيف.";
-        list.appendChild(empty);
-        return;
-      }
-
-      filtered.forEach(channel => {
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = "channel-card" +
-          (selectedChannelId === channel.id ? " selected" : "");
-        card.setAttribute("aria-label", "تشغيل " + channel.name);
-
-        const info = document.createElement("div");
-        info.className = "channel-info";
-
-        const iconBox = document.createElement("div");
-        iconBox.className = "channel-icon";
-
-        const icon = document.createElement("i");
-        icon.className = "fa-solid " + channel.icon;
-        iconBox.appendChild(icon);
-
-        const details = document.createElement("div");
-
-        const name = document.createElement("div");
-        name.className = "channel-name";
-        name.textContent = channel.name;
-
-        const sub = document.createElement("div");
-        sub.className = "channel-cat";
-        sub.textContent = channel.url
-          ? "مصدر مُعدّ"
-          : "في انتظار إضافة رابط البث";
-
-        details.append(name, sub);
-        info.append(iconBox, details);
-
-        const badge = document.createElement("div");
-        badge.className = "live-badge";
-
-        const dot = document.createElement("span");
-        dot.className = "live-dot";
-
-        const badgeText = document.createElement("span");
-        badgeText.textContent = channel.url ? "متاح" : "غير مُعدّ";
-
-        badge.append(dot, badgeText);
-        card.append(info, badge);
-
-        card.addEventListener("click", () => playChannel(channel));
-        list.appendChild(card);
-      });
+    if (file.size > 150 * 1024 * 1024) {
+      showMessage("حجم الملف أكبر من 150 ميجابايت في هذه النسخة.");
+      return;
     }
-
-    function setupCategories() {
-      document.querySelectorAll(".cat-btn").forEach(button => {
-        button.addEventListener("click", () => {
-          document.querySelectorAll(".cat-btn").forEach(btn => {
-            btn.classList.remove("active");
-          });
-
-          button.classList.add("active");
-          renderChannels(button.dataset.category);
-        });
-      });
+    if (localFileUrl) URL.revokeObjectURL(localFileUrl);
+    localFileUrl = URL.createObjectURL(file);
+    mediaUrl = localFileUrl;
+    localOnly = true;
+  } else if (urlInput) {
+    mediaUrl = safeMediaUrl(urlInput);
+    if (!mediaUrl) {
+      showMessage("رابط الفيديو غير صالح. استخدم رابط HTTPS أو HTTP مباشر.");
+      return;
     }
+  }
 
-    function setupUser(name) {
-      $("header-user-name").textContent = name;
+  const post = {
+    id: createId(),
+    user: getName(),
+    caption,
+    url: mediaUrl,
+    likes: 0,
+    comments: [],
+    createdAt: Date.now(),
+    owner: true,
+    localOnly
+  };
 
-      /*
-        الاسم هنا اسم عرض فقط، وليس إثباتًا لهوية المالك.
-        لا تستخدمه لمنح صلاحيات إدارية أو تجاوز إعلانات مدفوعة.
-        حماية المالك الحقيقية تحتاج تسجيل دخول موثوقًا من الخادم.
-      */
-      $("owner-panel").style.display = "none";
+  posts.unshift(post);
+  saveLocal();
+  $("postCaption").value = "";
+  $("postUrl").value = "";
+  $("postFile").value = "";
+  currentFilter = "all";
+  document.querySelectorAll(".tabs button").forEach(button =>
+    button.classList.toggle("active", button.dataset.filter === "all")
+  );
+  navigate("home");
+  renderAll();
+
+  if (CONFIG.apiBase) {
+    showMessage("أُضيف المنشور إلى الواجهة. يلزم تنفيذ مسار النشر ورفع الملفات في الباك إند حتى يصبح متاحًا لجميع المستخدمين.");
+  }
+}
+
+function toggleLike(id) {
+  const post = posts.find(p => p.id === id);
+  if (!post) return;
+
+  if (likedIds.has(id)) {
+    likedIds.delete(id);
+    post.likes = Math.max(0, Number(post.likes || 0) - 1);
+  } else {
+    likedIds.add(id);
+    post.likes = Number(post.likes || 0) + 1;
+  }
+  saveLocal();
+  renderAll();
+}
+
+function deletePost(id) {
+  const post = posts.find(p => p.id === id);
+  if (!post || !post.owner) return;
+  if (!confirm("هل تريد حذف المنشور؟")) return;
+
+  posts = posts.filter(p => p.id !== id);
+  likedIds.delete(id);
+  saveLocal();
+  renderAll();
+}
+
+function addComment(id, text) {
+  const post = posts.find(p => p.id === id);
+  if (!post || !text.trim()) return;
+
+  if (!Array.isArray(post.comments)) post.comments = [];
+  post.comments.push({user:getName(), text:text.trim()});
+  saveLocal();
+  renderAll();
+}
+
+async function sharePost(id) {
+  const post = posts.find(p => p.id === id);
+  if (!post) return;
+
+  const text = `${post.user}: ${post.caption}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({title:"عبده توك", text});
+    } else if (navigator.clipboard) {
+      await navigator.clipboard.writeText(text);
+      showMessage("تم نسخ نص المنشور.");
+    } else {
+      showMessage(text);
     }
+  } catch (error) {
+    if (error.name !== "AbortError") showMessage("تعذرت المشاركة.");
+  }
+}
 
-    function startAdCountdown() {
-      if (adCountdown) clearInterval(adCountdown);
+async function startCamera() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showMessage("الكاميرا غير مدعومة هنا. افتح الموقع عبر HTTPS في متصفح حديث.");
+    return;
+  }
 
-      let seconds = AD_DURATION;
-      const modal = $("hourly-ad-modal");
-      const button = $("skip-ad-btn");
-
-      button.disabled = true;
-      button.textContent = "يرجى الانتظار";
-      $("ad-timer").textContent = "00:" + String(seconds).padStart(2, "0");
-      modal.style.display = "flex";
-
-      adCountdown = setInterval(() => {
-        seconds -= 1;
-
-        $("ad-timer").textContent =
-          "00:" + String(Math.max(seconds, 0)).padStart(2, "0");
-
-        if (seconds <= 0) {
-          clearInterval(adCountdown);
-          adCountdown = null;
-
-          button.disabled = false;
-          button.textContent = "إغلاق الإعلان";
-        }
-      }, 1000);
-    }
-
-    $("skip-ad-btn").addEventListener("click", () => {
-      if ($("skip-ad-btn").disabled) return;
-
-      $("hourly-ad-modal").style.display = "none";
-      adNextAt = Date.now() + AD_INTERVAL;
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video:true,
+      audio:true
     });
+    $("cameraPreview").srcObject = cameraStream;
+    $("cameraPreview").style.display = "block";
+    $("cameraStatus").textContent = "الكاميرا تعمل محليًا. لم يتم إرسال الفيديو إلى السيرفر.";
+  } catch (error) {
+    $("cameraStatus").textContent = "تعذر فتح الكاميرا: " + error.message;
+  }
+}
 
-    function checkAdSchedule() {
-      if (Date.now() < adNextAt) return;
-      if ($("hourly-ad-modal").style.display === "flex") return;
-      startAdCountdown();
-    }
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => track.stop());
+    cameraStream = null;
+  }
+  $("cameraPreview").srcObject = null;
+  $("cameraPreview").style.display = "none";
+  $("cameraStatus").textContent = "تم إيقاف الكاميرا.";
+}
 
-    $("register-form").addEventListener("submit", event => {
-      event.preventDefault();
+function watchLive() {
+  const input = $("liveUrl").value.trim();
+  const url = safeMediaUrl(input);
 
-      const name = $("user-name-input").value.trim().slice(0, 40);
-      if (!name) return;
+  if (!url) {
+    showMessage("أدخل رابط بث صالحًا.");
+    return;
+  }
 
-      try {
-        localStorage.setItem(STORAGE_NAME, name);
-      } catch {
-        // يستمر الموقع في العمل حتى لو كان التخزين المحلي غير متاح.
-      }
+  const video = $("liveVideo");
+  $("livePlayer").classList.remove("hidden");
+  video.src = url;
+  video.play().catch(() => {
+    $("cameraStatus").textContent = "اضغط تشغيل داخل مشغّل الفيديو إذا لم يبدأ تلقائيًا.";
+  });
+}
 
-      $("register-modal").style.display = "none";
-      setupUser(name);
-    });
+document.querySelectorAll(".nav-item").forEach(button => {
+  button.addEventListener("click", () => navigate(button.dataset.page));
+});
 
-    function init() {
-      let savedName = "";
+document.querySelectorAll(".tabs button").forEach(button => {
+  button.addEventListener("click", () => {
+    currentFilter = button.dataset.filter;
+    document.querySelectorAll(".tabs button").forEach(item =>
+      item.classList.toggle("active", item === button)
+    );
+    renderFeed();
+  });
+});
 
-      try {
-        savedName = localStorage.getItem(STORAGE_NAME) || "";
-      } catch {
-        savedName = "";
-      }
+$("searchInput").addEventListener("input", () => {
+  renderFeed();
+  if ($("searchInput").value.trim()) navigate("discover");
+});
 
-      if (savedName.trim()) {
-        setupUser(savedName.trim().slice(0, 40));
-      } else {
-        $("register-modal").style.display = "flex";
-      }
+$("headerAdd").addEventListener("click", () => navigate("add"));
+$("kingLive").addEventListener("click", () => navigate("live"));
+$("publishBtn").addEventListener("click", publishPost);
+$("cameraStart").addEventListener("click", startCamera);
+$("cameraStop").addEventListener("click", stopCamera);
+$("watchBtn").addEventListener("click", watchLive);
 
-      setupCategories();
-      renderChannels();
+$("saveName").addEventListener("click", () => {
+  const name = $("changeName").value.trim();
+  if (!name || name.length > 40) {
+    showMessage("اكتب اسمًا من حرف واحد إلى 40 حرفًا.");
+    return;
+  }
+  localStorage.setItem(STORAGE.name, name);
+  renderAll();
+  showMessage("تم حفظ الاسم على هذا الجهاز.");
+});
 
-      adInterval = setInterval(checkAdSchedule, 15000);
+document.addEventListener("click", event => {
+  const likeButton = event.target.closest("[data-like]");
+  const deleteButton = event.target.closest("[data-delete]");
+  const shareButton = event.target.closest("[data-share]");
+  const focusButton = event.target.closest("[data-focus-comment]");
 
-      window.addEventListener("pagehide", () => {
-        if (currentHls) {
-          currentHls.destroy();
-          currentHls = null;
-        }
+  if (likeButton) toggleLike(likeButton.dataset.like);
+  if (deleteButton) deletePost(deleteButton.dataset.delete);
+  if (shareButton) sharePost(shareButton.dataset.share);
 
-        if (adCountdown) clearInterval(adCountdown);
-        if (adInterval) clearInterval(adInterval);
-      });
-    }
+  if (focusButton) {
+    const form = document.querySelector(
+      `[data-comment-form="${CSS.escape(focusButton.dataset.focusComment)}"]`
+    );
+    if (form) form.querySelector("input").focus();
+  }
+});
 
-    init();
-  </script>
+document.addEventListener("submit", event => {
+  const form = event.target.closest("[data-comment-form]");
+  if (!form) return;
+  event.preventDefault();
+
+  const id = form.dataset.commentForm;
+  const input = form.querySelector('input[name="comment"]');
+  addComment(id, input.value);
+});
+
+window.addEventListener("beforeunload", () => {
+  if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
+  if (localFileUrl) URL.revokeObjectURL(localFileUrl);
+});
+
+$("year").textContent = new Date().getFullYear();
+
+if (!localStorage.getItem(STORAGE.name)) {
+  const name = prompt("أهلاً بك في عبده توك! أدخل اسمك:") || "عبده";
+  localStorage.setItem(STORAGE.name, name.trim().slice(0,40) || "عبده");
+}
+
+loadLocal();
+syncPostsFromServer();
+</script>
 </body>
 </html>
