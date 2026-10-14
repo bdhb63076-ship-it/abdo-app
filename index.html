@@ -1,494 +1,624 @@
 
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#08080b">
-<title>عبده توك | AbdoTok</title>
-<style>
-:root {
-  --bg:#08080b; --panel:#17171d; --pink:#fe2c55;
-  --text:#fff; --muted:#aaaab5;
+const express = require("express");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const Database = require("better-sqlite3");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const crypto = require("crypto");
+
+const app = express();
+const PORT = Number(process.env.PORT || 3000);
+const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || "abdo").toLowerCase();
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, "abdotok.sqlite");
+const UPLOAD_DIR = path.join(__dirname, "uploads");
+
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  console.error("يجب ضبط JWT_SECRET بطول 32 حرفًا على الأقل.");
+  process.exit(1);
 }
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);
-font-family:Arial,Tahoma,sans-serif}
-body{overflow:hidden}
-button,input,textarea{font:inherit}
-button{cursor:pointer;color:white;border:0}
-.app{height:100dvh;width:100%;display:flex;flex-direction:column}
-.topbar{height:52px;flex-shrink:0;display:flex;align-items:center;
-justify-content:space-between;padding:0 15px;background:#08080beF;z-index:5}
-.brand{font-size:20px;font-weight:900}
-.brand span{color:var(--pink)}
-.top-tabs{display:flex;gap:18px;color:#999;font-size:14px}
-.top-tabs button{background:none;padding:8px 0;color:#999}
-.top-tabs button.active{color:white;font-weight:bold;border-bottom:2px solid white}
-.feed{position:relative;flex:1;min-height:0;overflow-y:auto;scroll-snap-type:y mandatory;
-overscroll-behavior-y:contain;scrollbar-width:none}
-.feed::-webkit-scrollbar{display:none}
-.video-card{position:relative;width:100%;height:100%;min-height:300px;
-scroll-snap-align:start;scroll-snap-stop:always;background:#17171d;overflow:hidden}
-.video-card video,.video-poster{position:absolute;width:100%;height:100%;inset:0;
-object-fit:cover}
-.video-card video{background:#101015}
-.video-poster{display:flex;align-items:center;justify-content:center;
-background:linear-gradient(150deg,#241d37,#09090e 60%,#3c1327)}
-.poster-content{text-align:center;padding:30px;max-width:340px}
-.poster-content .play{font-size:65px;text-shadow:0 0 35px #fe2c5580}
-.poster-content h2{font-size:25px}
-.poster-content p{color:#ddd;line-height:1.8}
-.video-shade{position:absolute;inset:35% 0 0;pointer-events:none;
-background:linear-gradient(transparent,#0009)}
-.video-info{position:absolute;bottom:20px;right:14px;left:76px;z-index:2;
-text-shadow:0 1px 4px #000}
-.username{font-weight:bold;font-size:16px;margin-bottom:10px}
-.caption{font-size:14px;line-height:1.7;margin-bottom:10px}
-.music{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.actions{position:absolute;bottom:95px;left:10px;z-index:3;
-display:flex;flex-direction:column;align-items:center;gap:17px}
-.avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;
-justify-content:center;background:linear-gradient(135deg,#fe2c55,#5b40a8);
-font-size:20px;font-weight:bold;border:2px solid white}
-.action{display:flex;flex-direction:column;align-items:center;gap:4px;
-background:transparent;font-size:25px;min-width:44px}
-.action small{font-size:11px;text-shadow:0 1px 4px black}
-.action.liked{color:var(--pink)}
-.follow-dot{margin-top:-24px;background:var(--pink);border-radius:50%;
-width:22px;height:22px;font-size:17px;line-height:22px;text-align:center}
-.bottomnav{height:62px;padding-bottom:env(safe-area-inset-bottom);
-flex-shrink:0;display:flex;justify-content:space-around;align-items:center;
-background:#08080b;border-top:1px solid #24242b;z-index:5}
-.navbtn{background:transparent;color:#a6a6b1;display:flex;flex-direction:column;
-align-items:center;gap:4px;font-size:10px;min-width:50px}
-.navbtn .ico{font-size:22px;color:white}
-.navbtn.active{color:white}
-.create-btn{background:white;color:#111;border-radius:9px;padding:2px 13px;
-font-size:24px;box-shadow:-3px 0 var(--pink),3px 0 #43d9f7}
-.overlay{position:fixed;inset:0;background:#000b;z-index:20;
-display:none;align-items:center;justify-content:center;padding:18px}
-.overlay.show{display:flex}
-.modal{background:#17171d;border:1px solid #30303a;border-radius:20px;
-width:100%;max-width:400px;padding:24px}
-.modal h2{margin:0 0 10px;font-size:22px}
-.modal p{color:var(--muted);line-height:1.7;font-size:14px}
-.field{width:100%;background:#0d0d12;color:white;border:1px solid #393944;
-border-radius:10px;padding:13px;margin:8px 0;outline:none}
-.field:focus{border-color:var(--pink)}
-.primary{width:100%;padding:13px;border-radius:10px;background:var(--pink);
-color:white;font-weight:bold;margin-top:10px}
-.secondary{background:#2b2b34;border-radius:10px;padding:11px 14px}
-.close{float:left;background:transparent;font-size:22px;color:#bbb}
-.profile-panel{position:absolute;inset:0;background:var(--bg);z-index:10;
-overflow:auto;padding:20px;display:none}
-.profile-panel.show{display:block}
-.profile-head{text-align:center;padding:25px 0}
-.profile-avatar{width:90px;height:90px;margin:auto;border-radius:50%;
-display:flex;align-items:center;justify-content:center;background:#292039;
-font-size:35px;border:2px solid var(--pink)}
-.stats{display:flex;justify-content:center;gap:35px;margin:22px 0}
-.stats strong{display:block;font-size:19px}
-.stats small{color:var(--muted)}
-.empty{text-align:center;color:var(--muted);padding:35px 10px;line-height:2}
-#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
-background:#272730;padding:12px 18px;border-radius:12px;z-index:50;
-display:none;white-space:nowrap;font-size:13px}
-#commentsList{max-height:220px;overflow:auto}
-.comment{padding:10px 0;border-bottom:1px solid #333}
-@media(min-width:700px){
- .app{max-width:480px;margin:auto;border-left:1px solid #292930;
- border-right:1px solid #292930}
- body{background:#030305}
- .topbar{height:56px}
+if (ADMIN_PASSWORD.length < 12) {
+  console.error("يجب ضبط ADMIN_PASSWORD بطول 12 حرفًا على الأقل.");
+  process.exit(1);
 }
-</style>
-</head>
-<body>
-<div class="app">
-  <header class="topbar">
-    <div class="brand"><span>عبده</span> توك</div>
-    <div class="top-tabs">
-      <button id="followingTab" onclick="setFeed('following')">المتابَعون</button>
-      <button id="forYouTab" class="active" onclick="setFeed('all')">لك</button>
-    </div>
-    <button style="background:none;font-size:22px" onclick="openProfile()">☻</button>
-  </header>
 
-  <main id="feed" class="feed"></main>
+fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
-  <section id="profile" class="profile-panel">
-    <button class="secondary" onclick="closeProfile()">→ رجوع</button>
-    <div class="profile-head">
-      <div class="profile-avatar">ع</div>
-      <h2 id="profileName">عبده توك</h2>
-      <p id="profileHandle" style="color:#aaa">@user</p>
-      <div class="stats">
-        <div><strong id="likesStat">0</strong><small>الإعجابات</small></div>
-        <div><strong id="followersStat">0</strong><small>المتابعون</small></div>
-        <div><strong id="followingStat">1</strong><small>يتابع</small></div>
-      </div>
-      <button class="secondary" onclick="changeUsername()">تغيير اسم المستخدم</button>
-      <button class="secondary" onclick="showMyVideos()">فيديوهاتي</button>
-    </div>
-    <div id="profileContent" class="empty">أهلًا بيك في عبده توك 👋</div>
-    <button class="primary" onclick="logout()">تسجيل الخروج</button>
-  </section>
+const db = new Database(DB_PATH);
+db.pragma("journal_mode = WAL");
+db.pragma("foreign_keys = ON");
 
-  <nav class="bottomnav">
-    <button class="navbtn active" onclick="goHome()"><span class="ico">⌂</span>الرئيسية</button>
-    <button class="navbtn" onclick="discover()"><span class="ico">⌕</span>اكتشف</button>
-    <button class="navbtn" onclick="uploadVideo()"><span class="create-btn">＋</span>إضافة</button>
-    <button class="navbtn" onclick="showMessages()"><span class="ico">▤</span>الوارد</button>
-    <button class="navbtn" onclick="openProfile()"><span class="ico">♙</span>حسابي</button>
-  </nav>
-</div>
+db.exec(`
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT NOT NULL UNIQUE COLLATE NOCASE,
+  display_name TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  is_admin INTEGER NOT NULL DEFAULT 0,
+  created_at INTEGER NOT NULL
+);
 
-<input id="videoFile" type="file" accept="video/*" hidden onchange="handleUpload(event)">
+CREATE TABLE IF NOT EXISTS follows (
+  follower_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  followed_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (follower_id, followed_id)
+);
 
-<div class="overlay" id="signupOverlay">
-  <div class="modal">
-    <div style="text-align:center;font-size:40px">♪</div>
-    <h2 style="text-align:center">أهلًا بيك في عبده توك</h2>
-    <p style="text-align:center">أنشئ اسمك وابدأ مشاهدة الفيديوهات ومتابعة الحسابات.</p>
-    <input id="displayName" class="field" maxlength="30" placeholder="اسم العرض">
-    <input id="handle" class="field" maxlength="24" placeholder="اسم المستخدم بالإنجليزية">
-    <button class="primary" onclick="register()">إنشاء الحساب والمتابعة</button>
-    <p>بتسجيلك، أنت توافق على الالتزام بقواعد المجتمع.</p>
-  </div>
-</div>
+CREATE TABLE IF NOT EXISTS posts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  caption TEXT NOT NULL DEFAULT '',
+  video_path TEXT,
+  created_at INTEGER NOT NULL
+);
 
-<div class="overlay" id="commentsOverlay">
-  <div class="modal">
-    <button class="close" onclick="hideModal('commentsOverlay')">×</button>
-    <h2>التعليقات</h2>
-    <div id="commentsList"></div>
-    <input id="commentInput" class="field" placeholder="اكتب تعليقًا...">
-    <button class="primary" onclick="sendComment()">إرسال التعليق</button>
-  </div>
-</div>
+CREATE TABLE IF NOT EXISTS likes (
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (user_id, post_id)
+);
 
-<div class="overlay" id="nameOverlay">
-  <div class="modal">
-    <button class="close" onclick="hideModal('nameOverlay')">×</button>
-    <h2>تغيير اسم المستخدم</h2>
-    <p id="nameCooldown"></p>
-    <input id="newHandle" class="field" maxlength="24" placeholder="اسم المستخدم الجديد">
-    <button class="primary" onclick="saveUsername()">حفظ الاسم</button>
-  </div>
-</div>
+CREATE TABLE IF NOT EXISTS comments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  body TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+);
 
-<div id="toast"></div>
+CREATE INDEX IF NOT EXISTS idx_posts_created
+ON posts(created_at DESC);
+`);
 
-<script>
-const KEY = "abdotok_demo_v1";
-const FOUNDER = "abdo";
-let data = loadData();
-let activeCommentVideo = null;
-let feedMode = "all";
-let toastTimer;
+const now = () => Date.now();
 
-function loadData() {
-  try {
-    const saved = localStorage.getItem(KEY);
-    return saved ? JSON.parse(saved) : {
-      user:null, following:[FOUNDER], likes:[], videos:[], comments:{}
-    };
-  } catch {
-    return {user:null, following:[FOUNDER], likes:[], videos:[], comments:{}};
-  }
+function tokenFor(user) {
+  return jwt.sign(
+    { sub: user.id },
+    JWT_SECRET,
+    { expiresIn: "7d", issuer: "abdotok" }
+  );
 }
-function save() {
-  localStorage.setItem(KEY, JSON.stringify(data));
-}
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
-}
-function toast(message) {
-  const el = document.getElementById("toast");
-  el.textContent = message;
-  el.style.display = "block";
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.style.display="none", 2400);
-}
-function showModal(id) {
-  document.getElementById(id).classList.add("show");
-}
-function hideModal(id) {
-  document.getElementById(id).classList.remove("show");
-}
-function register() {
-  const display = document.getElementById("displayName").value.trim();
-  const handle = document.getElementById("handle").value.trim().replace(/^@/,"").toLowerCase();
-  if (!display || !/^[a-z0-9_.]{3,24}$/.test(handle)) {
-    toast("اكتب اسم العرض واسم مستخدم من 3 إلى 24 حرفًا أو رقمًا");
-    return;
-  }
-  data.user = {
-    displayName:display,
-    handle:handle,
-    createdAt:Date.now(),
-    lastNameChange:Date.now()
+
+function publicUser(user, viewerId = null) {
+  return {
+    id: user.id,
+    username: user.username,
+    displayName: user.display_name,
+    isAdmin: Boolean(user.is_admin),
+    followers: db.prepare(
+      "SELECT COUNT(*) AS n FROM follows WHERE followed_id = ?"
+    ).get(user.id).n,
+    following: db.prepare(
+      "SELECT COUNT(*) AS n FROM follows WHERE follower_id = ?"
+    ).get(user.id).n,
+    isFollowing: viewerId
+      ? Boolean(db.prepare(
+          "SELECT 1 FROM follows WHERE follower_id = ? AND followed_id = ?"
+        ).get(viewerId, user.id))
+      : false,
+    createdAt: user.created_at
   };
-  if (!data.following.includes(FOUNDER)) data.following.push(FOUNDER);
-  save();
-  hideModal("signupOverlay");
-  renderFeed();
-  toast("أهلًا بيك! أنت بتتابع عبده تلقائيًا");
 }
-function ensureUser() {
-  if (!data.user) showModal("signupOverlay");
-}
-function setFeed(mode) {
-  feedMode = mode;
-  document.getElementById("forYouTab").classList.toggle("active",mode==="all");
-  document.getElementById("followingTab").classList.toggle("active",mode==="following");
-  renderFeed();
-}
-function getVideos() {
-  const samples = [
-    {
-      id:"demo1", owner:"abdo", display:"عبده", caption:"أهلًا بيكم في عبده توك ❤️ أول فيديو في منصتنا الجديدة!",
-      music:"♪ الصوت الأصلي - عبده", demo:true, color:1
-    },
-    {
-      id:"demo2", owner:"abdotok", display:"عبده توك", caption:"شارك فيديوهاتك ولحظاتك مع الجميع ✨",
-      music:"♪ اكتشف أصوات جديدة", demo:true, color:2
-    },
-    {
-      id:"demo3", owner:"abdo", display:"عبده", caption:"تابعنا عشان تشوف كل جديد 🔥",
-      music:"♪ الصوت الأصلي - عبده", demo:true, color:3
-    }
-  ];
-  let all = [...samples,...data.videos];
-  if (feedMode==="following" && data.user) {
-    all = all.filter(v => data.following.includes(v.owner) || v.owner===data.user.handle);
-  }
-  return all;
-}
-function renderFeed() {
-  const feed = document.getElementById("feed");
-  const oldTop = feed.scrollTop;
-  const videos = getVideos();
-  feed.innerHTML = "";
-  videos.forEach((v,index) => {
-    const liked = data.likes.includes(v.id);
-    const comments = data.comments[v.id] || [];
-    const card = document.createElement("article");
-    card.className = "video-card";
-    card.dataset.id = v.id;
-    const poster = v.demo ? `
-      <div class="video-poster" style="background:${
-        v.color===1 ? "linear-gradient(145deg,#23153b,#101019 55%,#701c40)" :
-        v.color===2 ? "linear-gradient(145deg,#092f3a,#101019 55%,#4c1740)" :
-        "linear-gradient(145deg,#4a241a,#11101a 60%,#251b48)"
-      }">
-        <div class="poster-content">
-          <div class="play">♪</div>
-          <h2>${escapeHTML(v.display)}</h2>
-          <p>${escapeHTML(v.caption)}</p>
-          <small>عبده توك • فيديو تجريبي</small>
-        </div>
-      </div>` : `<video src="${v.url}" playsinline loop muted controls></video>`;
-    card.innerHTML = `
-      ${poster}
-      <div class="video-shade"></div>
-      <div class="video-info">
-        <div class="username">@${escapeHTML(v.owner)}</div>
-        <div class="caption">${escapeHTML(v.caption)}</div>
-        <div class="music">${escapeHTML(v.music || "♪ الصوت الأصلي")}</div>
-      </div>
-      <div class="actions">
-        <div style="display:flex;flex-direction:column;align-items:center">
-          <div class="avatar">${escapeHTML((v.display||"ع").slice(0,1))}</div>
-          ${v.owner!==data.user?.handle ? `<button class="follow-dot" onclick="toggleFollow('${v.owner}',this)">${data.following.includes(v.owner)?"✓":"+"}</button>` : ""}
-        </div>
-        <button class="action ${liked?"liked":""}" onclick="toggleLike('${v.id}',this)">
-          <span>${liked?"♥":"♡"}</span><small>${liked?"أعجبك":"إعجاب"}</small>
-        </button>
-        <button class="action" onclick="openComments('${v.id}')"><span>▢</span><small>${comments.length} تعليق</small></button>
-        <button class="action" onclick="shareVideo('${v.id}')"><span>➦</span><small>مشاركة</small></button>
-      </div>`;
-    feed.appendChild(card);
-  });
-  if (!videos.length) feed.innerHTML='<div class="empty">مفيش فيديوهات هنا لسه. ارجع لتبويب «لك» أو انشر أول فيديو!</div>';
-  feed.scrollTop = oldTop;
-  activateVisibleVideo();
-}
-function activateVisibleVideo() {
-  const cards = [...document.querySelectorAll(".video-card")];
-  if (!("IntersectionObserver" in window)) return;
-  if (window.videoObserver) window.videoObserver.disconnect();
-  window.videoObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const video = entry.target.querySelector("video");
-      if (!video) return;
-      if (entry.isIntersecting && entry.intersectionRatio > .65) {
-        video.play().catch(()=>{});
-      } else {
-        video.pause();
-      }
+
+function auth(req, res, next) {
+  const header = req.headers.authorization || "";
+  const token = header.startsWith("Bearer ")
+    ? header.slice(7)
+    : "";
+
+  if (!token) {
+    return res.status(401).json({
+      error: "سجّل الدخول أولًا."
     });
-  },{root:document.getElementById("feed"),threshold:[0,.65,1]});
-  cards.forEach(card=>window.videoObserver.observe(card));
-}
-function toggleLike(id,button) {
-  if (!data.user) return ensureUser();
-  const index = data.likes.indexOf(id);
-  if (index>=0) data.likes.splice(index,1);
-  else data.likes.push(id);
-  save();
-  button.classList.toggle("liked",data.likes.includes(id));
-  button.querySelector("span").textContent = data.likes.includes(id)?"♥":"♡";
-  button.querySelector("small").textContent = data.likes.includes(id)?"أعجبك":"إعجاب";
-}
-function toggleFollow(owner,button) {
-  if (!data.user) return ensureUser();
-  if (owner===FOUNDER && data.following.includes(owner)) {
-    toast("أنت بتتابع عبده تلقائيًا");
-    return;
   }
-  if (data.following.includes(owner)) {
-    data.following=data.following.filter(x=>x!==owner);
-    button.textContent="+";
-    toast("تم إلغاء المتابعة");
-  } else {
-    data.following.push(owner);
-    button.textContent="✓";
-    toast("تمت المتابعة");
-  }
-  save();
-}
-function openComments(id) {
-  activeCommentVideo=id;
-  document.getElementById("commentInput").value="";
-  const list=document.getElementById("commentsList");
-  const comments=data.comments[id]||[];
-  list.innerHTML=comments.length ? comments.map(c=>`
-    <div class="comment"><strong>@${escapeHTML(c.user)}</strong><br>${escapeHTML(c.text)}</div>
-  `).join("") : '<p style="color:#aaa">لسه مفيش تعليقات. ابدأ أنت!</p>';
-  showModal("commentsOverlay");
-}
-function sendComment() {
-  if (!data.user) return ensureUser();
-  const input=document.getElementById("commentInput");
-  const text=input.value.trim();
-  if (!text) return;
-  if (!data.comments[activeCommentVideo]) data.comments[activeCommentVideo]=[];
-  data.comments[activeCommentVideo].push({user:data.user.handle,text,at:Date.now()});
-  save();
-  openComments(activeCommentVideo);
-  toast("تم حفظ التعليق على جهازك");
-}
-async function shareVideo(id) {
-  const shareURL=location.href.split("#")[0]+"#video-"+encodeURIComponent(id);
+
   try {
-    if (navigator.share) await navigator.share({title:"عبده توك",text:"شوف الفيديو على عبده توك",url:shareURL});
-    else if (navigator.clipboard) {
-      await navigator.clipboard.writeText(shareURL);
-      toast("تم نسخ الرابط");
-    } else toast("انسخ رابط الموقع من المتصفح");
-  } catch(e) {}
-}
-function uploadVideo() {
-  if (!data.user) return ensureUser();
-  document.getElementById("videoFile").click();
-}
-function handleUpload(event) {
-  const file=event.target.files[0];
-  if (!file) return;
-  if (!file.type.startsWith("video/")) return toast("اختار ملف فيديو");
-  if (file.size>50*1024*1024) return toast("الحد التجريبي 50 ميجابايت");
-  const url=URL.createObjectURL(file);
-  const caption=prompt("اكتب وصف الفيديو:")||"فيديو جديد";
-  data.videos.unshift({
-    id:"local_"+Date.now(),owner:data.user.handle,display:data.user.displayName,
-    caption,music:"♪ الصوت الأصلي",url,localOnly:true
-  });
-  save();
-  setFeed("all");
-  document.getElementById("feed").scrollTop=0;
-  toast("تمت إضافة الفيديو للتجربة على جهازك");
-  event.target.value="";
-}
-function openProfile() {
-  if (!data.user) return ensureUser();
-  document.getElementById("profileName").textContent=data.user.displayName;
-  document.getElementById("profileHandle").textContent="@"+data.user.handle;
-  document.getElementById("likesStat").textContent=data.likes.length;
-  document.getElementById("followingStat").textContent=data.following.length;
-  document.getElementById("followersStat").textContent="—";
-  document.getElementById("profile").classList.add("show");
-}
-function closeProfile() {
-  document.getElementById("profile").classList.remove("show");
-}
-function goHome() {
-  closeProfile();
-  setFeed("all");
-  document.getElementById("feed").scrollTop=0;
-}
-function changeUsername() {
-  const now=Date.now();
-  const last=data.user.lastNameChange||data.user.createdAt;
-  const remaining=7*24*60*60*1000-(now-last);
-  const field=document.getElementById("newHandle");
-  field.value="";
-  const button=document.querySelector("#nameOverlay .primary");
-  if (remaining>0) {
-    const days=Math.ceil(remaining/(24*60*60*1000));
-    document.getElementById("nameCooldown").textContent=
-      `تقدر تغيّر اسم المستخدم بعد ${days} يوم تقريبًا.`;
-    field.disabled=true; button.disabled=true; button.style.opacity=".5";
-  } else {
-    document.getElementById("nameCooldown").textContent="اكتب اسم المستخدم الجديد.";
-    field.disabled=false;button.disabled=false;button.style.opacity="1";
+    const payload = jwt.verify(token, JWT_SECRET, {
+      issuer: "abdotok"
+    });
+
+    const user = db.prepare(`
+      SELECT id, username, display_name, is_admin, created_at
+      FROM users WHERE id = ?
+    `).get(payload.sub);
+
+    if (!user) {
+      return res.status(401).json({
+        error: "الحساب غير موجود."
+      });
+    }
+
+    req.user = user;
+    next();
+  } catch {
+    return res.status(401).json({
+      error: "انتهت الجلسة. سجّل الدخول مجددًا."
+    });
   }
-  showModal("nameOverlay");
 }
-function saveUsername() {
-  const now=Date.now();
-  const last=data.user.lastNameChange||data.user.createdAt;
-  if (now-last<7*24*60*60*1000) return toast("لازم تمر 7 أيام كاملة");
-  const handle=document.getElementById("newHandle").value.trim().replace(/^@/,"").toLowerCase();
-  if (!/^[a-z0-9_.]{3,24}$/.test(handle)) return toast("الاسم لازم يكون 3 إلى 24 حرفًا أو رقمًا");
-  if (handle===FOUNDER) return toast("الاسم ده محجوز");
-  data.user.handle=handle;
-  data.user.lastNameChange=now;
-  save();hideModal("nameOverlay");openProfile();
-  toast("تم تغيير الاسم");
+
+function adminOnly(req, res, next) {
+  if (!req.user || !req.user.is_admin) {
+    return res.status(403).json({
+      error: "هذه العملية خاصة بالمؤسس."
+    });
+  }
+  next();
 }
-function showMyVideos() {
-  const mine=data.videos.filter(v=>v.owner===data.user?.handle);
-  document.getElementById("profileContent").innerHTML=mine.length
-    ? mine.map(v=>`<div class="comment">${escapeHTML(v.caption)}<br><small>فيديو محفوظ محليًا للتجربة</small></div>`).join("")
-    : "لسه ما نشرتش فيديوهات. اضغط «إضافة» عشان تختار فيديو من جهازك.";
+
+app.disable("x-powered-by");
+
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      mediaSrc: ["'self'", "blob:", "https:"],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: null
+    }
+  }
+}));
+
+app.use(express.json({ limit: "100kb" }));
+
+app.use("/api/", rateLimit({
+  windowMs: 60 * 1000,
+  limit: 120,
+  standardHeaders: true,
+  legacyHeaders: false
+}));
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.use("/uploads", express.static(UPLOAD_DIR, {
+  setHeaders(res) {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+  }
+}));
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 12,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+/* إعداد حساب المؤسس */
+const existingFounder = db.prepare(
+  "SELECT id FROM users WHERE username = ? COLLATE NOCASE"
+).get(ADMIN_USERNAME);
+
+if (!existingFounder) {
+  db.prepare(`
+    INSERT INTO users
+    (username, display_name, password_hash, is_admin, created_at)
+    VALUES (?, ?, ?, 1, ?)
+  `).run(
+    ADMIN_USERNAME,
+    "عبده",
+    bcrypt.hashSync(ADMIN_PASSWORD, 12),
+    now()
+  );
+} else {
+  db.prepare(
+    "UPDATE users SET is_admin = 1 WHERE id = ?"
+  ).run(existingFounder.id);
 }
-function discover() {
-  closeProfile();
-  const term=prompt("اكتب اسم حساب للبحث عنه:");
-  if (!term) return;
-  const found=getVideos().filter(v=>(v.owner+" "+v.display+" "+v.caption).toLowerCase().includes(term.toLowerCase()));
-  if (!found.length) return toast("مفيش نتائج في الفيديوهات التجريبية");
-  toast("تم العثور على "+found.length+" نتيجة");
-  setFeed("all");
-  const first=document.querySelector(`[data-id="${CSS.escape(found[0].id)}"]`);
-  if (first) first.scrollIntoView({behavior:"smooth"});
-}
-function showMessages() {
-  toast("الرسائل الحقيقية تحتاج ربط السيرفر وقاعدة البيانات");
-}
-function logout() {
-  if (!confirm("تسجيل الخروج من الحساب على هذا الجهاز؟")) return;
-  data.user=null;
-  save();
-  closeProfile();
-  showModal("signupOverlay");
-}
-renderFeed();
-if (!data.user) showModal("signupOverlay");
-</script>
-</body>
-</html>
+
+/* فحص السيرفر */
+app.get("/api/health", (_req, res) => {
+  res.json({ ok: true, service: "AbdoTok" });
+});
+
+/* إنشاء حساب */
+app.post("/api/auth/register", authLimiter, (req, res) => {
+  const username = String(req.body.username || "").trim();
+  const displayName = String(
+    req.body.displayName || username
+  ).trim().slice(0, 40);
+  const password = String(req.body.password || "");
+
+  if (!/^[a-zA-Z0-9_]{3,24}$/.test(username)) {
+    return res.status(400).json({
+      error: "اسم المستخدم من 3 إلى 24 حرفًا إنجليزيًا أو رقمًا أو _."
+    });
+  }
+
+  if (username.toLowerCase() === ADMIN_USERNAME) {
+    return res.status(409).json({
+      error: "اسم المستخدم الخاص بالمؤسس محجوز."
+    });
+  }
+
+  if (password.length < 10 || password.length > 128) {
+    return res.status(400).json({
+      error: "كلمة المرور يجب أن تكون من 10 إلى 128 حرفًا."
+    });
+  }
+
+  if (!displayName) {
+    return res.status(400).json({
+      error: "اكتب الاسم الظاهر."
+    });
+  }
+
+  try {
+    const result = db.prepare(`
+      INSERT INTO users
+      (username, display_name, password_hash, is_admin, created_at)
+      VALUES (?, ?, ?, 0, ?)
+    `).run(
+      username,
+      displayName,
+      bcrypt.hashSync(password, 12),
+      now()
+    );
+
+    const user = db.prepare(`
+      SELECT id, username, display_name, is_admin, created_at
+      FROM users WHERE id = ?
+    `).get(Number(result.lastInsertRowid));
+
+    const founder = db.prepare(
+      "SELECT id FROM users WHERE username = ? COLLATE NOCASE"
+    ).get(ADMIN_USERNAME);
+
+    if (founder) {
+      db.prepare(`
+        INSERT OR IGNORE INTO follows
+        (follower_id, followed_id, created_at)
+        VALUES (?, ?, ?)
+      `).run(user.id, founder.id, now());
+    }
+
+    res.status(201).json({
+      token: tokenFor(user),
+      user: publicUser(user, user.id),
+      message: "تم إنشاء الحساب بنجاح."
+    });
+  } catch (error) {
+    if (String(error.code || "").includes("SQLITE_CONSTRAINT_UNIQUE")) {
+      return res.status(409).json({
+        error: "اسم المستخدم مستخدم بالفعل."
+      });
+    }
+
+    console.error(error);
+    res.status(500).json({
+      error: "تعذر إنشاء الحساب."
+    });
+  }
+});
+
+/* تسجيل الدخول */
+app.post("/api/auth/login", authLimiter, (req, res) => {
+  const username = String(req.body.username || "").trim();
+  const password = String(req.body.password || "");
+
+  const user = db.prepare(
+    "SELECT * FROM users WHERE username = ? COLLATE NOCASE"
+  ).get(username);
+
+  if (!user || !bcrypt.compareSync(password, user.password_hash)) {
+    return res.status(401).json({
+      error: "اسم المستخدم أو كلمة المرور غير صحيحة."
+    });
+  }
+
+  res.json({
+    token: tokenFor(user),
+    user: publicUser(user, user.id),
+    message: "تم تسجيل الدخول."
+  });
+});
+
+/* بيانات الحساب الحالي */
+app.get("/api/me", auth, (req, res) => {
+  res.json({
+    user: publicUser(req.user, req.user.id)
+  });
+});
+
+/* عرض حساب */
+app.get("/api/users/:username", (req, res) => {
+  const user = db.prepare(`
+    SELECT id, username, display_name, is_admin, created_at
+    FROM users WHERE username = ? COLLATE NOCASE
+  `).get(req.params.username);
+
+  if (!user) {
+    return res.status(404).json({
+      error: "المستخدم غير موجود."
+    });
+  }
+
+  res.json({ user: publicUser(user) });
+});
+
+/* متابعة / إلغاء متابعة */
+app.post("/api/users/:id/follow", auth, (req, res) => {
+  const targetId = Number(req.params.id);
+
+  if (!Number.isSafeInteger(targetId)) {
+    return res.status(400).json({ error: "معرّف غير صالح." });
+  }
+
+  const target = db.prepare(
+    "SELECT id FROM users WHERE id = ?"
+  ).get(targetId);
+
+  if (!target) {
+    return res.status(404).json({ error: "المستخدم غير موجود." });
+  }
+
+  if (targetId === req.user.id) {
+    return res.status(400).json({
+      error: "لا يمكنك متابعة نفسك."
+    });
+  }
+
+  const existing = db.prepare(`
+    SELECT 1 FROM follows
+    WHERE follower_id = ? AND followed_id = ?
+  `).get(req.user.id, targetId);
+
+  if (existing) {
+    db.prepare(`
+      DELETE FROM follows
+      WHERE follower_id = ? AND followed_id = ?
+    `).run(req.user.id, targetId);
+  } else {
+    db.prepare(`
+      INSERT INTO follows
+      (follower_id, followed_id, created_at)
+      VALUES (?, ?, ?)
+    `).run(req.user.id, targetId, now());
+  }
+
+  res.json({ following: !existing });
+});
+
+/* رفع فيديو */
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname || "").toLowerCase();
+    cb(null, Date.now() + "-" + crypto.randomBytes(8).toString("hex") + ext);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 100 * 1024 * 1024, files: 1 },
+  fileFilter: (_req, file, cb) => {
+    const allowed = [
+      "video/mp4",
+      "video/webm",
+      "video/quicktime"
+    ];
+
+    if (!allowed.includes(file.mimetype)) {
+      return cb(new Error("استخدم فيديو MP4 أو WebM أو MOV."));
+    }
+
+    cb(null, true);
+  }
+});
+
+/* إنشاء منشور */
+app.post("/api/posts", auth, (req, res, next) => {
+  upload.single("video")(req, res, err => {
+    if (err) {
+      return res.status(400).json({
+        error: err.message || "تعذر رفع الفيديو."
+      });
+    }
+    next();
+  });
+}, (req, res) => {
+  const caption = String(req.body.caption || "").trim().slice(0, 1000);
+  const videoPath = req.file ? "/uploads/" + req.file.filename : null;
+
+  if (!caption && !videoPath) {
+    return res.status(400).json({
+      error: "اكتب وصفًا أو أرفق فيديو."
+    });
+  }
+
+  const result = db.prepare(`
+    INSERT INTO posts (user_id, caption, video_path, created_at)
+    VALUES (?, ?, ?, ?)
+  `).run(req.user.id, caption, videoPath, now());
+
+  res.status(201).json({
+    postId: Number(result.lastInsertRowid),
+    message: "تم نشر المنشور."
+  });
+});
+
+/* عرض المنشورات */
+app.get("/api/posts", (req, res) => {
+  let viewerId = null;
+
+  try {
+    const header = req.headers.authorization || "";
+    if (header.startsWith("Bearer ")) {
+      const payload = jwt.verify(header.slice(7), JWT_SECRET, {
+        issuer: "abdotok"
+      });
+      viewerId = payload.sub;
+    }
+  } catch {}
+
+  const posts = db.prepare(`
+    SELECT p.id, p.user_id, p.caption, p.video_path, p.created_at,
+      u.username, u.display_name, u.is_admin,
+      (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
+      (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments,
+      (SELECT COUNT(*) FROM likes
+       WHERE post_id = p.id AND user_id = ?) AS liked
+    FROM posts p
+    JOIN users u ON u.id = p.user_id
+    ORDER BY p.created_at DESC
+    LIMIT 100
+  `).all(viewerId || -1);
+
+  res.json({
+    posts: posts.map(p => ({
+      id: p.id,
+      caption: p.caption,
+      videoPath: p.video_path,
+      createdAt: p.created_at,
+      likes: p.likes,
+      comments: p.comments,
+      liked: Boolean(p.liked),
+      user: {
+        id: p.user_id,
+        username: p.username,
+        displayName: p.display_name,
+        isAdmin: Boolean(p.is_admin)
+      }
+    }))
+  });
+});
+
+/* إعجاب */
+app.post("/api/posts/:id/like", auth, (req, res) => {
+  const postId = Number(req.params.id);
+
+  if (!db.prepare("SELECT id FROM posts WHERE id = ?").get(postId)) {
+    return res.status(404).json({ error: "المنشور غير موجود." });
+  }
+
+  const liked = db.prepare(
+    "SELECT 1 FROM likes WHERE user_id = ? AND post_id = ?"
+  ).get(req.user.id, postId);
+
+  if (liked) {
+    db.prepare(
+      "DELETE FROM likes WHERE user_id = ? AND post_id = ?"
+    ).run(req.user.id, postId);
+  } else {
+    db.prepare(`
+      INSERT INTO likes (user_id, post_id, created_at)
+      VALUES (?, ?, ?)
+    `).run(req.user.id, postId, now());
+  }
+
+  res.json({ liked: !liked });
+});
+
+/* عرض التعليقات */
+app.get("/api/posts/:id/comments", (req, res) => {
+  const comments = db.prepare(`
+    SELECT c.id, c.body, c.created_at,
+      u.username, u.display_name, u.is_admin
+    FROM comments c
+    JOIN users u ON u.id = c.user_id
+    WHERE c.post_id = ?
+    ORDER BY c.created_at ASC
+    LIMIT 100
+  `).all(Number(req.params.id));
+
+  res.json({
+    comments: comments.map(c => ({
+      id: c.id,
+      body: c.body,
+      createdAt: c.created_at,
+      user: {
+        username: c.username,
+        displayName: c.display_name,
+        isAdmin: Boolean(c.is_admin)
+      }
+    }))
+  });
+});
+
+/* إضافة تعليق */
+app.post("/api/posts/:id/comments", auth, (req, res) => {
+  const postId = Number(req.params.id);
+  const body = String(req.body.body || "").trim().slice(0, 500);
+
+  if (!body) {
+    return res.status(400).json({ error: "اكتب تعليقًا." });
+  }
+
+  if (!db.prepare("SELECT id FROM posts WHERE id = ?").get(postId)) {
+    return res.status(404).json({ error: "المنشور غير موجود." });
+  }
+
+  db.prepare(`
+    INSERT INTO comments (user_id, post_id, body, created_at)
+    VALUES (?, ?, ?, ?)
+  `).run(req.user.id, postId, body, now());
+
+  res.status(201).json({ message: "تم إضافة التعليق." });
+});
+
+/* إحصاءات المؤسس */
+app.get("/api/admin/stats", auth, adminOnly, (_req, res) => {
+  res.json({
+    users: db.prepare("SELECT COUNT(*) n FROM users").get().n,
+    posts: db.prepare("SELECT COUNT(*) n FROM posts").get().n,
+    comments: db.prepare("SELECT COUNT(*) n FROM comments").get().n
+  });
+});
+
+/* حذف منشور بواسطة المؤسس فقط */
+app.delete("/api/admin/posts/:id", auth, adminOnly, (req, res) => {
+  const postId = Number(req.params.id);
+  const post = db.prepare(
+    "SELECT video_path FROM posts WHERE id = ?"
+  ).get(postId);
+
+  if (!post) {
+    return res.status(404).json({ error: "المنشور غير موجود." });
+  }
+
+  db.prepare("DELETE FROM posts WHERE id = ?").run(postId);
+
+  if (post.video_path) {
+    const filePath = path.join(
+      UPLOAD_DIR,
+      path.basename(post.video_path)
+    );
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  }
+
+  res.json({ message: "تم حذف المنشور." });
+});
+
+/* معالجة الأخطاء */
+app.use((err, _req, res, _next) => {
+  console.error(err);
+
+  if (err && err.code === "LIMIT_FILE_SIZE") {
+    return res.status(413).json({
+      error: "حجم الفيديو أكبر من 100 ميجابايت."
+    });
+  }
+
+  res.status(500).json({
+    error: "حدث خطأ غير متوقع في السيرفر."
+  });
+});
+
+app.listen(PORT, () => {
+  console.log("AbdoTok يعمل على المنفذ " + PORT);
+});
