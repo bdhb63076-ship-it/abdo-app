@@ -13,44 +13,31 @@ const fs = require("fs");
 const crypto = require("crypto");
 
 const app = express();
-
 const PORT = Number(process.env.PORT || 3000);
 const JWT_SECRET = process.env.JWT_SECRET || "";
-const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || "abdo")
-  .trim()
-  .toLowerCase();
+const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || "abdo").trim().toLowerCase();
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
-
-const DB_PATH =
-  process.env.DB_PATH || path.join(__dirname, "abdotok.sqlite");
-
-const UPLOAD_DIR = path.join(__dirname, "uploads");
+const DATA_DIR = process.env.DATA_DIR || __dirname;
+const DB_PATH = process.env.DB_PATH || path.join(DATA_DIR, "abdotok.sqlite");
+const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
 const PUBLIC_DIR = path.join(__dirname, "public");
-
 const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
-const MAX_CAPTION_LENGTH = 1000;
-const MAX_COMMENT_LENGTH = 500;
 
 if (JWT_SECRET.length < 32) {
-  console.error("اضبط JWT_SECRET بطول 32 حرفًا على الأقل.");
-  process.exit(1);
+  throw new Error("JWT_SECRET يجب أن يكون 32 حرفًا على الأقل.");
 }
-
 if (ADMIN_PASSWORD.length < 12) {
-  console.error("اضبط ADMIN_PASSWORD بطول 12 حرفًا على الأقل.");
-  process.exit(1);
+  throw new Error("ADMIN_PASSWORD يجب أن يكون 12 حرفًا على الأقل.");
+}
+if (!/^[a-z0-9_]{3,24}$/.test(ADMIN_USERNAME)) {
+  throw new Error("ADMIN_USERNAME غير صالح.");
 }
 
-if (!/^[a-zA-Z0-9_]{3,24}$/.test(ADMIN_USERNAME)) {
-  console.error("ADMIN_USERNAME غير صالح.");
-  process.exit(1);
+for (const dir of [DATA_DIR, UPLOAD_DIR, PUBLIC_DIR]) {
+  fs.mkdirSync(dir, { recursive: true });
 }
-
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-fs.mkdirSync(PUBLIC_DIR, { recursive: true });
 
 const db = new Database(DB_PATH);
-
 db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
 db.pragma("busy_timeout = 5000");
@@ -58,64 +45,61 @@ db.pragma("busy_timeout = 5000");
 const now = () => Date.now();
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL UNIQUE COLLATE NOCASE,
-    display_name TEXT NOT NULL,
-    password_hash TEXT NOT NULL,
-    is_admin INTEGER NOT NULL DEFAULT 0,
-    created_at INTEGER NOT NULL
-  );
+CREATE TABLE IF NOT EXISTS users (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ username TEXT NOT NULL UNIQUE COLLATE NOCASE,
+ display_name TEXT NOT NULL,
+ password_hash TEXT NOT NULL,
+ is_admin INTEGER NOT NULL DEFAULT 0,
+ verified INTEGER NOT NULL DEFAULT 0,
+ created_at INTEGER NOT NULL
+);
 
-  CREATE TABLE IF NOT EXISTS follows (
-    follower_id INTEGER NOT NULL
-      REFERENCES users(id) ON DELETE CASCADE,
-    followed_id INTEGER NOT NULL
-      REFERENCES users(id) ON DELETE CASCADE,
-    created_at INTEGER NOT NULL,
-    PRIMARY KEY (follower_id, followed_id),
-    CHECK (follower_id <> followed_id)
-  );
+CREATE TABLE IF NOT EXISTS follows (
+ follower_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ followed_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ created_at INTEGER NOT NULL,
+ PRIMARY KEY(follower_id, followed_id),
+ CHECK(follower_id <> followed_id)
+);
 
-  CREATE TABLE IF NOT EXISTS posts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL
-      REFERENCES users(id) ON DELETE CASCADE,
-    caption TEXT NOT NULL DEFAULT '',
-    video_path TEXT,
-    created_at INTEGER NOT NULL
-  );
+CREATE TABLE IF NOT EXISTS posts (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ caption TEXT NOT NULL DEFAULT '',
+ video_path TEXT,
+ created_at INTEGER NOT NULL
+);
 
-  CREATE TABLE IF NOT EXISTS likes (
-    user_id INTEGER NOT NULL
-      REFERENCES users(id) ON DELETE CASCADE,
-    post_id INTEGER NOT NULL
-      REFERENCES posts(id) ON DELETE CASCADE,
-    created_at INTEGER NOT NULL,
-    PRIMARY KEY (user_id, post_id)
-  );
+CREATE TABLE IF NOT EXISTS likes (
+ user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+ created_at INTEGER NOT NULL,
+ PRIMARY KEY(user_id,post_id)
+);
 
-  CREATE TABLE IF NOT EXISTS comments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL
-      REFERENCES users(id) ON DELETE CASCADE,
-    post_id INTEGER NOT NULL
-      REFERENCES posts(id) ON DELETE CASCADE,
-    body TEXT NOT NULL,
-    created_at INTEGER NOT NULL
-  );
+CREATE TABLE IF NOT EXISTS comments (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+ body TEXT NOT NULL,
+ created_at INTEGER NOT NULL
+);
 
-  CREATE INDEX IF NOT EXISTS idx_posts_created
-    ON posts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_created
+ ON posts(created_at DESC);
 
-  CREATE INDEX IF NOT EXISTS idx_comments_post
-    ON comments(post_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_comments_post
+ ON comments(post_id,created_at);
 
-  CREATE INDEX IF NOT EXISTS idx_follows_followed
-    ON follows(followed_id);
+CREATE INDEX IF NOT EXISTS idx_follows_followed
+ ON follows(followed_id);
 `);
 
-/* أدوات مساعدة */
+const cols = db.prepare("PRAGMA table_info(users)").all();
+if (!cols.some(c => c.name === "verified")) {
+  db.exec("ALTER TABLE users ADD COLUMN verified INTEGER NOT NULL DEFAULT 0");
+}
 
 function sendError(res, status, message) {
   return res.status(status).json({ error: message });
@@ -126,37 +110,30 @@ function validId(value) {
   return Number.isSafeInteger(id) && id > 0 ? id : null;
 }
 
-function getUserById(id) {
+function getUser(id) {
   return db.prepare(`
-    SELECT id, username, display_name, is_admin, created_at
-    FROM users
-    WHERE id = ?
+    SELECT id, username, display_name, is_admin, verified, created_at
+    FROM users WHERE id = ?
   `).get(id);
 }
 
 function tokenFor(user) {
-  return jwt.sign(
-    {},
-    JWT_SECRET,
-    {
-      subject: String(user.id),
-      expiresIn: "7d",
-      issuer: "abdotok",
-      audience: "abdotok-users"
-    }
-  );
+  return jwt.sign({}, JWT_SECRET, {
+    subject: String(user.id),
+    expiresIn: "7d",
+    issuer: "abdotok",
+    audience: "abdotok-users"
+  });
 }
 
 function publicUser(user, viewerId = null) {
   const counts = db.prepare(`
     SELECT
-      (SELECT COUNT(*) FROM follows
-       WHERE followed_id = ?) AS followers,
-      (SELECT COUNT(*) FROM follows
-       WHERE follower_id = ?) AS following
+      (SELECT COUNT(*) FROM follows WHERE followed_id = ?) AS followers,
+      (SELECT COUNT(*) FROM follows WHERE follower_id = ?) AS following
   `).get(user.id, user.id);
 
-  const isFollowing = viewerId
+  const isFollowing = viewerId && viewerId !== user.id
     ? Boolean(db.prepare(`
         SELECT 1 FROM follows
         WHERE follower_id = ? AND followed_id = ?
@@ -168,7 +145,7 @@ function publicUser(user, viewerId = null) {
     username: user.username,
     displayName: user.display_name,
     isAdmin: Boolean(user.is_admin),
-    verified: Boolean(user.is_admin),
+    verified: Boolean(user.verified),
     followers: counts.followers,
     following: counts.following,
     isFollowing,
@@ -176,88 +153,35 @@ function publicUser(user, viewerId = null) {
   };
 }
 
-/* المصادقة */
-
-function auth(req, res, next) {
-  const header = req.headers.authorization || "";
-
-  if (!header.startsWith("Bearer ")) {
-    return sendError(res, 401, "سجّل الدخول أولًا.");
-  }
-
-  const token = header.slice(7).trim();
-
-  if (!token) {
-    return sendError(res, 401, "رمز الدخول غير موجود.");
-  }
-
-  try {
-    const payload = jwt.verify(token, JWT_SECRET, {
-      issuer: "abdotok",
-      audience: "abdotok-users"
-    });
-
-    const id = validId(payload.sub);
-
-    if (!id) {
-      return sendError(res, 401, "رمز الدخول غير صالح.");
-    }
-
-    const user = getUserById(id);
-
-    if (!user) {
-      return sendError(res, 401, "الحساب غير موجود.");
-    }
-
-    req.user = user;
-    next();
-  } catch {
-    return sendError(
-      res,
-      401,
-      "انتهت الجلسة أو رمز الدخول غير صالح. سجّل الدخول مجددًا."
-    );
-  }
-}
-
-function adminOnly(req, res, next) {
-  if (!req.user || !req.user.is_admin) {
-    return sendError(res, 403, "هذه العملية خاصة بالمؤسس.");
-  }
-
-  next();
-}
-
 /* إعداد حساب المؤسس */
-
-const founderHash = bcrypt.hashSync(ADMIN_PASSWORD, 12);
 
 const founder = db.prepare(`
   SELECT id FROM users
   WHERE username = ? COLLATE NOCASE
 `).get(ADMIN_USERNAME);
 
+const founderHash = bcrypt.hashSync(ADMIN_PASSWORD, 12);
+
 if (!founder) {
   db.prepare(`
     INSERT INTO users
-      (username, display_name, password_hash, is_admin, created_at)
-    VALUES (?, ?, ?, 1, ?)
+      (username, display_name, password_hash, is_admin, verified, created_at)
+    VALUES (?, ?, ?, 1, 1, ?)
   `).run(ADMIN_USERNAME, "عبده", founderHash, now());
 } else {
-  // كلمة المرور الموجودة في إعدادات السيرفر هي المعتمدة.
   db.prepare(`
     UPDATE users
     SET is_admin = 1,
-        password_hash = ?,
-        display_name = 'عبده'
+        verified = 1,
+        display_name = 'عبده',
+        password_hash = ?
     WHERE id = ?
   `).run(founderHash, founder.id);
 }
 
-/* إعدادات السيرفر والحماية */
+/* الحماية */
 
 app.disable("x-powered-by");
-app.disable("etag");
 
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "same-origin" },
@@ -266,8 +190,8 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "blob:"],
-      mediaSrc: ["'self'", "blob:", "https:"],
+      imgSrc: ["'self'", "data:"],
+      mediaSrc: ["'self'", "blob:"],
       connectSrc: ["'self'"],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
@@ -279,7 +203,7 @@ app.use(helmet({
 
 app.use(express.json({ limit: "100kb" }));
 
-app.use("/api/", rateLimit({
+app.use("/api", rateLimit({
   windowMs: 60 * 1000,
   limit: 120,
   standardHeaders: true,
@@ -304,6 +228,65 @@ app.use("/uploads", express.static(UPLOAD_DIR, {
   }
 }));
 
+/* المصادقة */
+
+function auth(req, res, next) {
+  const header = req.headers.authorization || "";
+
+  if (!header.startsWith("Bearer ")) {
+    return sendError(res, 401, "سجّل الدخول أولًا.");
+  }
+
+  try {
+    const payload = jwt.verify(
+      header.slice(7).trim(),
+      JWT_SECRET,
+      {
+        issuer: "abdotok",
+        audience: "abdotok-users"
+      }
+    );
+
+    const id = validId(payload.sub);
+    const user = id ? getUser(id) : null;
+
+    if (!user) {
+      return sendError(res, 401, "جلسة الدخول غير صالحة.");
+    }
+
+    req.user = user;
+    next();
+  } catch {
+    return sendError(res, 401, "انتهت الجلسة. سجّل الدخول مجددًا.");
+  }
+}
+
+function optionalAuth(req, res, next) {
+  req.viewerId = null;
+  const header = req.headers.authorization || "";
+
+  if (header.startsWith("Bearer ")) {
+    try {
+      const payload = jwt.verify(header.slice(7).trim(), JWT_SECRET, {
+        issuer: "abdotok",
+        audience: "abdotok-users"
+      });
+      req.viewerId = validId(payload.sub);
+    } catch {
+      req.viewerId = null;
+    }
+  }
+
+  next();
+}
+
+function adminOnly(req, res, next) {
+  if (!req.user || !req.user.is_admin) {
+    return sendError(res, 403, "هذه العملية خاصة بالمؤسس.");
+  }
+  next();
+}
+
 /* فحص السيرفر */
 
 app.get("/api/health", (_req, res) => {
@@ -324,11 +307,7 @@ app.post("/api/auth/register", authLimiter, (req, res) => {
   const password = String(req.body?.password || "");
 
   if (!/^[a-zA-Z0-9_]{3,24}$/.test(username)) {
-    return sendError(
-      res,
-      400,
-      "اسم المستخدم من 3 إلى 24 حرفًا إنجليزيًا أو رقمًا أو _."
-    );
+    return sendError(res, 400, "اسم المستخدم يجب أن يكون من 3 إلى 24 حرفًا أو رقمًا أو _.");
   }
 
   if (username.toLowerCase() === ADMIN_USERNAME) {
@@ -336,11 +315,7 @@ app.post("/api/auth/register", authLimiter, (req, res) => {
   }
 
   if (password.length < 10 || password.length > 128) {
-    return sendError(
-      res,
-      400,
-      "كلمة المرور يجب أن تكون من 10 إلى 128 حرفًا."
-    );
+    return sendError(res, 400, "كلمة المرور يجب أن تكون من 10 إلى 128 حرفًا.");
   }
 
   if (!displayName) {
@@ -350,8 +325,8 @@ app.post("/api/auth/register", authLimiter, (req, res) => {
   try {
     const result = db.prepare(`
       INSERT INTO users
-        (username, display_name, password_hash, is_admin, created_at)
-      VALUES (?, ?, ?, 0, ?)
+        (username, display_name, password_hash, is_admin, verified, created_at)
+      VALUES (?, ?, ?, 0, 0, ?)
     `).run(
       username,
       displayName,
@@ -359,8 +334,7 @@ app.post("/api/auth/register", authLimiter, (req, res) => {
       now()
     );
 
-    const user = getUserById(Number(result.lastInsertRowid));
-
+    const user = getUser(Number(result.lastInsertRowid));
     const founderUser = db.prepare(`
       SELECT id FROM users
       WHERE username = ? COLLATE NOCASE
@@ -377,7 +351,7 @@ app.post("/api/auth/register", authLimiter, (req, res) => {
     return res.status(201).json({
       token: tokenFor(user),
       user: publicUser(user, user.id),
-      message: "تم إنشاء الحساب بنجاح."
+      message: "تم إنشاء الحساب."
     });
   } catch (error) {
     if (String(error.code || "").includes("SQLITE_CONSTRAINT")) {
@@ -399,101 +373,80 @@ app.post("/api/auth/login", authLimiter, (req, res) => {
     return sendError(res, 400, "اكتب اسم المستخدم وكلمة المرور.");
   }
 
-  const userWithPassword = db.prepare(`
-    SELECT * FROM users
+  const found = db.prepare(`
+    SELECT id, password_hash FROM users
     WHERE username = ? COLLATE NOCASE
   `).get(username);
 
-  if (
-    !userWithPassword ||
-    !bcrypt.compareSync(password, userWithPassword.password_hash)
-  ) {
-    return sendError(
-      res,
-      401,
-      "اسم المستخدم أو كلمة المرور غير صحيحة."
-    );
+  if (!found || !bcrypt.compareSync(password, found.password_hash)) {
+    return sendError(res, 401, "اسم المستخدم أو كلمة المرور غير صحيحة.");
   }
 
-  const user = getUserById(userWithPassword.id);
+  const user = getUser(found.id);
 
-  return res.json({
+  res.json({
     token: tokenFor(user),
     user: publicUser(user, user.id),
     message: "تم تسجيل الدخول."
   });
 });
 
-/* الحساب الحالي */
-
 app.get("/api/me", auth, (req, res) => {
-  res.json({
-    user: publicUser(req.user, req.user.id)
-  });
+  res.json({ user: publicUser(req.user, req.user.id) });
 });
 
-/* عرض حساب */
+/* عرض الحسابات */
 
-app.get("/api/users/:username", (req, res) => {
-  const username = String(req.params.username || "").trim();
-
+app.get("/api/users/:username", optionalAuth, (req, res) => {
   const user = db.prepare(`
-    SELECT id, username, display_name, is_admin, created_at
-    FROM users
-    WHERE username = ? COLLATE NOCASE
-  `).get(username);
+    SELECT id, username, display_name, is_admin, verified, created_at
+    FROM users WHERE username = ? COLLATE NOCASE
+  `).get(String(req.params.username || "").trim());
 
   if (!user) {
     return sendError(res, 404, "المستخدم غير موجود.");
   }
 
-  res.json({ user: publicUser(user) });
+  res.json({ user: publicUser(user, req.viewerId) });
 });
 
 /* متابعة وإلغاء متابعة */
 
 app.post("/api/users/:id/follow", auth, (req, res) => {
-  const targetId = validId(req.params.id);
+  const id = validId(req.params.id);
 
-  if (!targetId) {
-    return sendError(res, 400, "معرّف المستخدم غير صالح.");
-  }
+  if (!id) return sendError(res, 400, "معرّف المستخدم غير صالح.");
 
-  const target = getUserById(targetId);
+  const target = getUser(id);
 
-  if (!target) {
-    return sendError(res, 404, "المستخدم غير موجود.");
-  }
+  if (!target) return sendError(res, 404, "المستخدم غير موجود.");
+  if (id === req.user.id) return sendError(res, 400, "لا يمكنك متابعة نفسك.");
 
-  if (targetId === req.user.id) {
-    return sendError(res, 400, "لا يمكنك متابعة نفسك.");
-  }
-
-  const existing = db.prepare(`
+  const exists = db.prepare(`
     SELECT 1 FROM follows
     WHERE follower_id = ? AND followed_id = ?
-  `).get(req.user.id, targetId);
+  `).get(req.user.id, id);
 
-  if (existing) {
+  if (exists) {
     db.prepare(`
       DELETE FROM follows
       WHERE follower_id = ? AND followed_id = ?
-    `).run(req.user.id, targetId);
+    `).run(req.user.id, id);
   } else {
     db.prepare(`
       INSERT OR IGNORE INTO follows
         (follower_id, followed_id, created_at)
       VALUES (?, ?, ?)
-    `).run(req.user.id, targetId, now());
+    `).run(req.user.id, id, now());
   }
 
   res.json({
-    following: !existing,
+    following: !exists,
     user: publicUser(target, req.user.id)
   });
 });
 
-/* رفع الفيديو: تخزين مؤقت ثم فحص محتوى الملف */
+/* رفع الفيديو */
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
@@ -511,19 +464,41 @@ const upload = multer({
     parts: 6
   },
   fileFilter: (_req, file, cb) => {
-    const allowedMimeTypes = [
-      "video/mp4",
-      "video/webm",
-      "video/quicktime"
-    ];
-
-    if (!allowedMimeTypes.includes(file.mimetype)) {
+    if (!["video/mp4", "video/webm", "video/quicktime"].includes(file.mimetype)) {
       return cb(new Error("استخدم فيديو MP4 أو WebM أو MOV."));
     }
-
     cb(null, true);
   }
 });
+
+function removeFile(filePath) {
+  if (!filePath) return;
+  try {
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  } catch (error) {
+    console.error("File cleanup error:", error);
+  }
+}
+
+function receiveVideo(req, res, next) {
+  upload.single("video")(req, res, error => {
+    if (error) {
+      if (req.file?.path) removeFile(req.file.path);
+
+      if (error.code === "LIMIT_FILE_SIZE") {
+        return sendError(res, 413, "حجم الفيديو أكبر من 100 ميجابايت.");
+      }
+
+      if (error.code === "LIMIT_UNEXPECTED_FILE") {
+        return sendError(res, 400, "حقل الفيديو غير صالح.");
+      }
+
+      return sendError(res, 400, error.message || "تعذر رفع الفيديو.");
+    }
+
+    next();
+  });
+}
 
 function detectVideoType(filePath) {
   const fd = fs.openSync(filePath, "r");
@@ -532,11 +507,8 @@ function detectVideoType(filePath) {
     const header = Buffer.alloc(16);
     const bytesRead = fs.readSync(fd, header, 0, 16, 0);
 
-    if (bytesRead >= 8) {
-      // MP4 وMOV يحتويان عادةً على ftyp عند الإزاحة 4.
-      if (header.toString("ascii", 4, 8) === "ftyp") {
-        return "mp4";
-      }
+    if (bytesRead >= 8 && header.toString("ascii", 4, 8) === "ftyp") {
+      return "mp4";
     }
 
     if (
@@ -555,71 +527,27 @@ function detectVideoType(filePath) {
   }
 }
 
-function removeFile(filePath) {
-  if (!filePath) return;
-
-  try {
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-  } catch (error) {
-    console.error("File cleanup error:", error);
-  }
-}
-
-function receiveVideo(req, res, next) {
-  upload.single("video")(req, res, error => {
-    if (error) {
-      if (error.code === "LIMIT_FILE_SIZE") {
-        return sendError(res, 413, "حجم الفيديو أكبر من 100 ميجابايت.");
-      }
-
-      if (error.code === "LIMIT_UNEXPECTED_FILE") {
-        return sendError(res, 400, "حقل الفيديو غير صالح.");
-      }
-
-      return sendError(
-        res,
-        400,
-        error.message || "تعذر رفع الفيديو."
-      );
-    }
-
-    next();
-  });
-}
-
-/* إنشاء منشور */
+/* نشر منشور */
 
 app.post("/api/posts", auth, receiveVideo, (req, res) => {
   let finalPath = null;
 
   try {
-    const caption = String(req.body?.caption || "")
-      .trim()
-      .slice(0, MAX_CAPTION_LENGTH);
-
+    const caption = String(req.body?.caption || "").trim().slice(0, 1000);
     let videoPath = null;
 
     if (req.file) {
-      const detectedType = detectVideoType(req.file.path);
+      const type = detectVideoType(req.file.path);
 
-      if (!detectedType) {
+      if (!type) {
         removeFile(req.file.path);
-        return sendError(
-          res,
-          400,
-          "محتوى الفيديو غير صالح أو نوعه غير مدعوم."
-        );
+        return sendError(res, 400, "محتوى الفيديو غير صالح أو غير مدعوم.");
       }
 
       const filename =
-        Date.now() + "-" +
-        crypto.randomBytes(12).toString("hex") +
-        "." + detectedType;
+        Date.now() + "-" + crypto.randomBytes(12).toString("hex") + "." + type;
 
       finalPath = path.join(UPLOAD_DIR, filename);
-
       fs.renameSync(req.file.path, finalPath);
       videoPath = "/uploads/" + filename;
     }
@@ -630,21 +558,17 @@ app.post("/api/posts", auth, receiveVideo, (req, res) => {
     }
 
     const result = db.prepare(`
-      INSERT INTO posts (user_id, caption, video_path, created_at)
+      INSERT INTO posts(user_id, caption, video_path, created_at)
       VALUES (?, ?, ?, ?)
     `).run(req.user.id, caption, videoPath, now());
 
-    return res.status(201).json({
+    res.status(201).json({
       postId: Number(result.lastInsertRowid),
       message: "تم نشر المنشور."
     });
   } catch (error) {
     removeFile(finalPath);
-
-    if (req.file) {
-      removeFile(req.file.path);
-    }
-
+    if (req.file) removeFile(req.file.path);
     console.error("Create post error:", error);
     return sendError(res, 500, "تعذر إنشاء المنشور.");
   }
@@ -652,60 +576,35 @@ app.post("/api/posts", auth, receiveVideo, (req, res) => {
 
 /* عرض المنشورات */
 
-app.get("/api/posts", (req, res) => {
-  let viewerId = null;
-  const header = req.headers.authorization || "";
-
-  if (header.startsWith("Bearer ")) {
-    try {
-      const payload = jwt.verify(header.slice(7), JWT_SECRET, {
-        issuer: "abdotok",
-        audience: "abdotok-users"
-      });
-
-      viewerId = validId(payload.sub);
-    } catch {
-      viewerId = null;
-    }
-  }
-
+app.get("/api/posts", optionalAuth, (req, res) => {
   const posts = db.prepare(`
-    SELECT
-      p.id,
-      p.user_id,
-      p.caption,
-      p.video_path,
-      p.created_at,
-      u.username,
-      u.display_name,
-      u.is_admin,
-      (SELECT COUNT(*) FROM likes
-       WHERE post_id = p.id) AS likes,
-      (SELECT COUNT(*) FROM comments
-       WHERE post_id = p.id) AS comments,
+    SELECT p.id, p.user_id, p.caption, p.video_path, p.created_at,
+      u.username, u.display_name, u.is_admin, u.verified,
+      (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS likes,
+      (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments,
       (SELECT COUNT(*) FROM likes
        WHERE post_id = p.id AND user_id = ?) AS liked
     FROM posts p
     JOIN users u ON u.id = p.user_id
     ORDER BY p.created_at DESC, p.id DESC
     LIMIT 100
-  `).all(viewerId || -1);
+  `).all(req.viewerId || -1);
 
   res.json({
-    posts: posts.map(post => ({
-      id: post.id,
-      caption: post.caption,
-      videoPath: post.video_path,
-      createdAt: post.created_at,
-      likes: post.likes,
-      comments: post.comments,
-      liked: Boolean(post.liked),
+    posts: posts.map(p => ({
+      id: p.id,
+      caption: p.caption,
+      videoPath: p.video_path,
+      createdAt: p.created_at,
+      likes: p.likes,
+      comments: p.comments,
+      liked: Boolean(p.liked),
       user: {
-        id: post.user_id,
-        username: post.username,
-        displayName: post.display_name,
-        isAdmin: Boolean(post.is_admin),
-        verified: Boolean(post.is_admin)
+        id: p.user_id,
+        username: p.username,
+        displayName: p.display_name,
+        isAdmin: Boolean(p.is_admin),
+        verified: Boolean(p.verified)
       }
     }))
   });
@@ -714,268 +613,184 @@ app.get("/api/posts", (req, res) => {
 /* إعجاب وإلغاء إعجاب */
 
 app.post("/api/posts/:id/like", auth, (req, res) => {
-  const postId = validId(req.params.id);
+  const id = validId(req.params.id);
+  if (!id) return sendError(res, 400, "معرّف المنشور غير صالح.");
 
-  if (!postId) {
-    return sendError(res, 400, "معرّف المنشور غير صالح.");
-  }
-
-  const post = db.prepare(
-    "SELECT id FROM posts WHERE id = ?"
-  ).get(postId);
-
-  if (!post) {
+  if (!db.prepare("SELECT id FROM posts WHERE id = ?").get(id)) {
     return sendError(res, 404, "المنشور غير موجود.");
   }
 
-  const existing = db.prepare(`
-    SELECT 1 FROM likes
-    WHERE user_id = ? AND post_id = ?
-  `).get(req.user.id, postId);
+  const exists = db.prepare(`
+    SELECT 1 FROM likes WHERE user_id = ? AND post_id = ?
+  `).get(req.user.id, id);
 
-  if (existing) {
-    db.prepare(`
-      DELETE FROM likes
-      WHERE user_id = ? AND post_id = ?
-    `).run(req.user.id, postId);
+  if (exists) {
+    db.prepare("DELETE FROM likes WHERE user_id = ? AND post_id = ?")
+      .run(req.user.id, id);
   } else {
     db.prepare(`
-      INSERT OR IGNORE INTO likes (user_id, post_id, created_at)
+      INSERT OR IGNORE INTO likes(user_id, post_id, created_at)
       VALUES (?, ?, ?)
-    `).run(req.user.id, postId, now());
+    `).run(req.user.id, id, now());
   }
 
-  const count = db.prepare(`
+  const likes = db.prepare(`
     SELECT COUNT(*) AS n FROM likes WHERE post_id = ?
-  `).get(postId).n;
+  `).get(id).n;
 
-  res.json({
-    liked: !existing,
-    likes: count
-  });
+  res.json({ liked: !exists, likes });
 });
 
-/* عرض التعليقات */
+/* التعليقات */
 
 app.get("/api/posts/:id/comments", (req, res) => {
-  const postId = validId(req.params.id);
+  const id = validId(req.params.id);
+  if (!id) return sendError(res, 400, "معرّف المنشور غير صالح.");
 
-  if (!postId) {
-    return sendError(res, 400, "معرّف المنشور غير صالح.");
-  }
-
-  if (!db.prepare("SELECT id FROM posts WHERE id = ?").get(postId)) {
+  if (!db.prepare("SELECT id FROM posts WHERE id = ?").get(id)) {
     return sendError(res, 404, "المنشور غير موجود.");
   }
 
   const comments = db.prepare(`
-    SELECT
-      c.id,
-      c.body,
-      c.created_at,
-      u.id AS user_id,
-      u.username,
-      u.display_name,
-      u.is_admin
+    SELECT c.id, c.body, c.created_at,
+      u.id AS user_id, u.username, u.display_name, u.is_admin, u.verified
     FROM comments c
     JOIN users u ON u.id = c.user_id
     WHERE c.post_id = ?
     ORDER BY c.created_at ASC, c.id ASC
     LIMIT 100
-  `).all(postId);
+  `).all(id);
 
   res.json({
-    comments: comments.map(comment => ({
-      id: comment.id,
-      body: comment.body,
-      createdAt: comment.created_at,
+    comments: comments.map(c => ({
+      id: c.id,
+      body: c.body,
+      createdAt: c.created_at,
       user: {
-        id: comment.user_id,
-        username: comment.username,
-        displayName: comment.display_name,
-        isAdmin: Boolean(comment.is_admin),
-        verified: Boolean(comment.is_admin)
+        id: c.user_id,
+        username: c.username,
+        displayName: c.display_name,
+        isAdmin: Boolean(c.is_admin),
+        verified: Boolean(c.verified)
       }
     }))
   });
 });
 
-/* إضافة تعليق */
-
 app.post("/api/posts/:id/comments", auth, (req, res) => {
-  const postId = validId(req.params.id);
-  const body = String(req.body?.body || "")
-    .trim()
-    .slice(0, MAX_COMMENT_LENGTH);
+  const id = validId(req.params.id);
+  const body = String(req.body?.body || "").trim().slice(0, 500);
 
-  if (!postId) {
-    return sendError(res, 400, "معرّف المنشور غير صالح.");
-  }
+  if (!id) return sendError(res, 400, "معرّف المنشور غير صالح.");
+  if (!body) return sendError(res, 400, "اكتب تعليقًا.");
 
-  if (!body) {
-    return sendError(res, 400, "اكتب تعليقًا.");
-  }
-
-  if (!db.prepare("SELECT id FROM posts WHERE id = ?").get(postId)) {
+  if (!db.prepare("SELECT id FROM posts WHERE id = ?").get(id)) {
     return sendError(res, 404, "المنشور غير موجود.");
   }
 
   const result = db.prepare(`
-    INSERT INTO comments (user_id, post_id, body, created_at)
+    INSERT INTO comments(user_id, post_id, body, created_at)
     VALUES (?, ?, ?, ?)
-  `).run(req.user.id, postId, body, now());
+  `).run(req.user.id, id, body, now());
 
   res.status(201).json({
     commentId: Number(result.lastInsertRowid),
-    message: "تم إضافة التعليق."
+    message: "تمت إضافة التعليق."
   });
 });
 
-/* إحصاءات لوحة المؤسس */
+/* لوحة المؤسس */
 
 app.get("/api/admin/stats", auth, adminOnly, (_req, res) => {
-  const users = db.prepare(
-    "SELECT COUNT(*) AS n FROM users"
-  ).get().n;
-
-  const posts = db.prepare(
-    "SELECT COUNT(*) AS n FROM posts"
-  ).get().n;
-
-  const comments = db.prepare(
-    "SELECT COUNT(*) AS n FROM comments"
-  ).get().n;
-
-  const likes = db.prepare(
-    "SELECT COUNT(*) AS n FROM likes"
+  const count = table => db.prepare(
+    `SELECT COUNT(*) AS n FROM ${table}`
   ).get().n;
 
   res.json({
-    users,
-    posts,
-    comments,
-    likes,
+    users: count("users"),
+    posts: count("posts"),
+    comments: count("comments"),
+    likes: count("likes"),
     generatedAt: now()
   });
 });
 
-/* قائمة المنشورات للإدارة */
-
 app.get("/api/admin/posts", auth, adminOnly, (req, res) => {
-  const requestedLimit = Number(req.query.limit || 50);
-  const limit = Number.isSafeInteger(requestedLimit)
-    ? Math.min(Math.max(requestedLimit, 1), 100)
+  const requested = Number(req.query.limit || 50);
+  const limit = Number.isSafeInteger(requested)
+    ? Math.min(Math.max(requested, 1), 100)
     : 50;
 
-  const posts = db.prepare(`
-    SELECT
-      p.id,
-      p.caption,
-      p.video_path,
-      p.created_at,
-      u.username,
-      u.display_name,
-      (SELECT COUNT(*) FROM likes
-       WHERE post_id = p.id) AS likes,
-      (SELECT COUNT(*) FROM comments
-       WHERE post_id = p.id) AS comments
-    FROM posts p
-    JOIN users u ON u.id = p.user_id
-    ORDER BY p.created_at DESC, p.id DESC
-    LIMIT ?
-  `).all(limit);
-
-  res.json({ posts });
+  res.json({
+    posts: db.prepare(`
+      SELECT p.id, p.caption, p.video_path, p.created_at,
+        u.id AS user_id, u.username, u.display_name
+      FROM posts p
+      JOIN users u ON u.id = p.user_id
+      ORDER BY p.created_at DESC, p.id DESC
+      LIMIT ?
+    `).all(limit)
+  });
 });
-
-/* حذف منشور بواسطة المؤسس */
 
 app.delete("/api/admin/posts/:id", auth, adminOnly, (req, res) => {
-  const postId = validId(req.params.id);
-
-  if (!postId) {
-    return sendError(res, 400, "معرّف المنشور غير صالح.");
-  }
+  const id = validId(req.params.id);
+  if (!id) return sendError(res, 400, "معرّف المنشور غير صالح.");
 
   const post = db.prepare(`
-    SELECT video_path FROM posts WHERE id = ?
-  `).get(postId);
+    SELECT id, video_path FROM posts WHERE id = ?
+  `).get(id);
 
-  if (!post) {
-    return sendError(res, 404, "المنشور غير موجود.");
+  if (!post) return sendError(res, 404, "المنشور غير موجود.");
+
+  db.prepare("DELETE FROM posts WHERE id = ?").run(id);
+
+  if (post.video_path && post.video_path.startsWith("/uploads/")) {
+    removeFile(path.join(UPLOAD_DIR, path.basename(post.video_path)));
   }
 
-  const deletePost = db.transaction(() => {
-    db.prepare("DELETE FROM posts WHERE id = ?").run(postId);
-  });
-
-  deletePost();
-
-  if (post.video_path) {
-    const filename = path.basename(post.video_path);
-    const filePath = path.join(UPLOAD_DIR, filename);
-
-    removeFile(filePath);
-  }
-
-  res.json({ message: "تم حذف المنشور." });
+  res.json({ ok: true, message: "تم حذف المنشور." });
 });
 
-/* حذف تعليق بواسطة المؤسس */
+app.get("/api/admin/users", auth, adminOnly, (req, res) => {
+  const requested = Number(req.query.limit || 100);
+  const limit = Number.isSafeInteger(requested)
+    ? Math.min(Math.max(requested, 1), 200)
+    : 100;
 
-app.delete(
-  "/api/admin/comments/:id",
-  auth,
-  adminOnly,
-  (req, res) => {
-    const commentId = validId(req.params.id);
+  const users = db.prepare(`
+    SELECT id, username, display_name, is_admin, verified, created_at
+    FROM users
+    ORDER BY id DESC LIMIT ?
+  `).all(limit);
 
-    if (!commentId) {
-      return sendError(res, 400, "معرّف التعليق غير صالح.");
-    }
+  res.json({
+    users: users.map(u => ({
+      id: u.id,
+      username: u.username,
+      displayName: u.display_name,
+      isAdmin: Boolean(u.is_admin),
+      verified: Boolean(u.verified),
+      createdAt: u.created_at
+    }))
+  });
+});
 
-    const result = db.prepare(
-      "DELETE FROM comments WHERE id = ?"
-    ).run(commentId);
-
-    if (!result.changes) {
-      return sendError(res, 404, "التعليق غير موجود.");
-    }
-
-    res.json({ message: "تم حذف التعليق." });
-  }
-);
-
-/* معالجة المسارات غير الموجودة */
+/* معالجة الأخطاء */
 
 app.use("/api", (_req, res) => {
   sendError(res, 404, "مسار API غير موجود.");
 });
 
-/* معالجة أخطاء السيرفر */
-
 app.use((err, _req, res, _next) => {
-  console.error("Unhandled server error:", err);
-
-  if (res.headersSent) {
-    return;
+  console.error("Request error:", err);
+  if (!res.headersSent) {
+    sendError(res, 500, "حدث خطأ داخلي في السيرفر.");
   }
-
-  if (err && err.code === "SQLITE_BUSY") {
-    return sendError(
-      res,
-      503,
-      "قاعدة البيانات مشغولة حاليًا. حاول مرة أخرى."
-    );
-  }
-
-  return sendError(res, 500, "حدث خطأ غير متوقع في السيرفر.");
 });
 
-/* بدء التشغيل والإغلاق */
-
-const server = app.listen(PORT, () => {
-  console.log("AbdoTok يعمل على المنفذ " + PORT);
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`AbdoTok يعمل على المنفذ ${PORT}`);
 });
 
 function shutdown() {
