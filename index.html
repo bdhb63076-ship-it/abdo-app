@@ -1,817 +1,297 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d0e12">
-<meta name="description" content="عبده توك - اكتشف الفيديوهات وشارك لحظاتك">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>عبده توك | AbdoTok</title>
-
 <style>
-:root {
-  --bg:#0d0e12;
-  --panel:#16181f;
-  --panel2:#20232e;
-  --border:#2a2e3d;
-  --text:#fff;
-  --muted:#999eaf;
-  --pink:#fe2c55;
-  --gold:#ffd700;
-  --radius:16px;
-}
-* {box-sizing:border-box;margin:0;padding:0}
-body {
-  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
-  background:var(--bg);color:var(--text);
-  padding-bottom:85px;min-height:100vh;
-}
-button,input,textarea {font:inherit}
-button,a { -webkit-tap-highlight-color:transparent }
-button {cursor:pointer}
-button:focus-visible,input:focus-visible,a:focus-visible {
-  outline:2px solid var(--pink);outline-offset:3px
-}
-header {
-  height:65px;position:sticky;top:0;z-index:50;
-  background:rgba(22,24,31,.96);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;padding:0 16px
-}
-.logo {font-size:21px;font-weight:900;color:var(--pink);white-space:nowrap}
-.search {flex:1;max-width:440px}
-.search input {
-  width:100%;background:var(--panel2);color:white;
-  border:1px solid var(--border);border-radius:24px;
-  padding:10px 15px;outline:none
-}
-button {border:0}
-.primary {
-  background:var(--pink);color:white;border-radius:24px;
-  padding:10px 16px;font-weight:750
-}
-.secondary {
-  background:var(--panel2);color:white;border:1px solid var(--border);
-  border-radius:12px;padding:10px 14px
-}
-.page {max-width:680px;margin:auto;padding:14px}
-.king-card {
-  background:linear-gradient(135deg,#201b51,#401039);
-  border:1px solid #806d29;border-radius:var(--radius);
-  padding:17px;display:flex;align-items:center;
-  justify-content:space-between;gap:12px;margin-bottom:18px
-}
-.king-info {display:flex;align-items:center;gap:12px;min-width:0}
-.avatar {
-  width:55px;height:55px;border-radius:50%;flex-shrink:0;
-  display:grid;place-items:center;background:#303342;
-  border:2px solid var(--gold);font-size:27px
-}
-.king-name {font-size:17px;font-weight:850}
-.badge {color:var(--gold);font-size:12px}
-.muted {color:var(--muted);font-size:13px}
-.section-title {font-size:18px;font-weight:850;margin:20px 0 12px}
-.tabs {
-  display:flex;gap:8px;overflow-x:auto;padding:3px 0 12px;
-  scrollbar-width:none
-}
-.tabs button {
-  flex-shrink:0;padding:9px 16px;border-radius:24px;
-  color:var(--muted);background:var(--panel);border:1px solid var(--border)
-}
-.tabs button.active {color:white;background:#33202a;border-color:var(--pink)}
-.post {
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:var(--radius);overflow:hidden;margin-bottom:17px
-}
-.post-head {display:flex;align-items:center;gap:10px;padding:14px}
-.small-avatar {
-  width:40px;height:40px;display:grid;place-items:center;
-  background:var(--panel2);border-radius:50%;font-size:20px;flex-shrink:0
-}
-.post-meta {flex:1;min-width:0}
-.post-meta strong {display:block;overflow-wrap:anywhere}
-.post-meta small {color:var(--muted)}
-.post-text {padding:0 14px 12px;line-height:1.7;overflow-wrap:anywhere}
-.video-box {
-  background:#050505;position:relative;width:100%;
-  aspect-ratio:9/12;max-height:620px;display:grid;place-items:center;
-  overflow:hidden
-}
-.video-box video {
-  display:block;width:100%;height:100%;object-fit:contain;background:#000
-}
-.video-placeholder {text-align:center;color:var(--muted);padding:20px}
-.video-placeholder .big {font-size:44px;margin-bottom:8px}
-.post-actions {
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 14px
-}
-.action {
-  background:transparent;color:var(--muted);
-  border-radius:10px;padding:7px 9px
-}
-.action.liked {color:var(--pink)}
-.comments {padding:0 14px 14px}
-.comments input {
-  width:100%;background:var(--panel2);color:white;
-  border:1px solid var(--border);border-radius:12px;padding:11px
-}
-.comment-list {font-size:13px;color:#ddd;line-height:1.8;margin-bottom:8px}
-.empty {
-  text-align:center;padding:36px 18px;background:var(--panel);
-  border:1px dashed var(--border);border-radius:var(--radius);
-  color:var(--muted);line-height:2
-}
-.bottom-nav {
-  position:fixed;bottom:0;left:0;right:0;z-index:60;
-  display:flex;justify-content:space-around;align-items:center;
-  padding:9px 4px max(9px,env(safe-area-inset-bottom));
-  background:rgba(22,24,31,.97);border-top:1px solid var(--border)
-}
-.nav-item {
-  flex:1;text-align:center;color:var(--muted);text-decoration:none;
-  background:transparent;font-size:11px;padding:5px 1px
-}
-.nav-item span {display:block;font-size:21px;margin-bottom:3px}
-.nav-item.active {color:var(--pink)}
-.nav-add span {font-size:26px}
-.panel {
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:var(--radius);padding:16px;margin-bottom:14px
-}
-.panel h3 {margin-bottom:12px}
-.field {margin:12px 0}
-.field label {display:block;font-size:13px;color:var(--muted);margin-bottom:7px}
-.field input,.field textarea {
-  display:block;width:100%;padding:12px;color:white;
-  background:var(--bg);border:1px solid var(--border);
-  border-radius:12px;outline:none
-}
-.field textarea {min-height:95px;resize:vertical}
-.row {display:flex;gap:9px;flex-wrap:wrap}
-.row>* {flex:1}
-.notice {
-  background:#202b37;border:1px solid #34485d;color:#d9eaff;
-  border-radius:12px;padding:12px;font-size:13px;line-height:1.8;
-  margin:12px 0
-}
-.hidden {display:none!important}
-footer {text-align:center;color:var(--muted);font-size:12px;padding:20px}
-@media(min-width:700px) {
-  .page {padding-top:22px}
-  .video-box {aspect-ratio:9/11}
-}
+:root{--bg:#101014;--panel:#1b1b22;--text:#fff;--muted:#aaa;--pink:#fe2c55;--blue:#25d9e8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Tahoma,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:bold}
+.top{height:65px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#18181e;border-bottom:1px solid #303039;position:sticky;top:0;z-index:5}
+.logo{font-size:24px;font-weight:900;color:var(--pink)}.logo span{color:var(--blue)}
+.search{width:min(40%,360px);padding:11px;border:0;border-radius:24px;background:#303039;color:white;outline:none}
+.layout{max-width:1100px;margin:auto;display:grid;grid-template-columns:210px minmax(0,600px) 210px;gap:18px;padding:18px}
+.side,.card{background:var(--panel);border:1px solid #303039;border-radius:16px;padding:15px;height:max-content}
+.side button{display:block;width:100%;text-align:right;margin:6px 0;background:transparent;color:white}
+.side button:hover{background:#303039}
+.primary{background:var(--pink);color:white}
+.secondary{background:#33333d;color:white}
+.feed-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.post{background:#1b1b22;border:1px solid #303039;border-radius:16px;margin-bottom:18px;overflow:hidden}
+.post-head{padding:14px;display:flex;align-items:center;gap:10px}
+.avatar{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,var(--pink),#7d39ff);font-size:21px;font-weight:bold;flex-shrink:0}
+.username{font-weight:bold}.muted{color:var(--muted);font-size:13px;margin-top:4px}
+video,.placeholder{width:100%;display:block;max-height:620px;aspect-ratio:9/12;object-fit:contain;background:#08080b}
+.placeholder{display:grid;place-items:center;text-align:center;padding:30px;background:radial-gradient(circle at top,#343443,#09090d)}
+.placeholder strong{font-size:30px;color:var(--pink)}
+.post-caption{padding:12px 14px;line-height:1.7}
+.actions{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 14px}
+.actions button{background:#303039;color:white}
+.actions .liked{color:#ff426b}
+.comments{padding:0 14px 14px}
+.comments p{font-size:14px;margin:8px 0}
+.comment-form{display:flex;gap:8px;margin-top:10px}
+.comment-form input{min-width:0;flex:1;background:#303039;color:white;border:0;border-radius:9px;padding:10px}
+input[type=text],input[type=password],textarea{background:#303039;color:white;border:1px solid #444451;border-radius:10px;padding:11px;width:100%;margin:7px 0}
+label{font-size:14px;color:#ddd}
+.modal{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:16px;z-index:10}
+.modal.open{display:grid}
+.modal-content{background:#202028;border:1px solid #444;border-radius:16px;padding:22px;width:min(100%,440px);max-height:90vh;overflow:auto}
+.modal h2{margin-top:0}.notice{font-size:13px;color:#bbb;line-height:1.7}
+.empty{text-align:center;padding:30px;color:#bbb}
+footer{text-align:center;color:#777;font-size:12px;padding:20px}
+.mobile-nav{display:none}
+@media(max-width:850px){.layout{grid-template-columns:minmax(0,600px);justify-content:center}.left,.right{display:none}.search{width:42%}}
+@media(max-width:520px){.top{padding:0 10px;height:58px}.logo{font-size:20px}.search{width:40%;padding:9px;font-size:13px}.layout{padding:10px;display:block}.post{border-radius:12px}.mobile-nav{position:sticky;bottom:0;display:flex;justify-content:space-around;background:#18181e;padding:8px 2px;border-top:1px solid #333;z-index:4}.mobile-nav button{background:transparent;color:white;padding:8px;font-size:12px}.post video,.placeholder{max-height:68vh}}
 </style>
 </head>
-
 <body>
-<header>
-  <div class="logo">📱 عبده توك</div>
-  <div class="search">
-    <input id="searchInput" type="search" placeholder="🔍 ابحث عن فيديو أو مستخدم..." aria-label="بحث">
-  </div>
-  <button class="primary" id="headerAdd">＋</button>
+
+<header class="top">
+  <div class="logo">عبده<span>توك</span></div>
+  <input class="search" id="search" placeholder="ابحث عن فيديو أو مستخدم..." oninput="renderFeed()">
+  <button class="primary" onclick="openAccount()">حسابي</button>
 </header>
 
-<main class="page">
-  <section class="king-card">
-    <div class="king-info">
-      <div class="avatar">👑</div>
-      <div>
-        <div class="king-name">عبده <span class="badge">👑 المؤسس</span></div>
-        <div class="muted">أهلاً بك في مجتمع عبده توك</div>
-      </div>
+<div class="layout">
+  <aside class="side left">
+    <h3>القائمة</h3>
+    <button onclick="setMode('all')">🏠 الرئيسية</button>
+    <button onclick="setMode('following')">👥 أتابعهم</button>
+    <button onclick="openUpload()">➕ نشر فيديو</button>
+    <button onclick="openAccount()">👤 حسابي</button>
+    <hr style="border-color:#333">
+    <p class="muted">أهلاً بيك في مجتمع عبده توك ❤️</p>
+  </aside>
+
+  <main>
+    <div class="feed-title">
+      <h3 style="margin:5px 0">لك 🎬</h3>
+      <button class="secondary" onclick="openUpload()">＋ فيديو</button>
     </div>
-    <button class="primary" id="kingLive">🔴 لايف</button>
-  </section>
+    <section id="feed"></section>
+  </main>
 
-  <nav class="tabs" aria-label="تصنيف الفيديوهات">
-    <button class="active" data-filter="all">لك</button>
-    <button data-filter="popular">الأكثر إعجابًا</button>
-    <button data-filter="mine">منشوراتي</button>
-  </nav>
+  <aside class="side right">
+    <div class="avatar" style="width:58px;height:58px;margin:auto">ع</div>
+    <h3 style="text-align:center">الملك عبده</h3>
+    <p class="muted" style="text-align:center">مؤسس عبده توك 👑</p>
+    <p style="font-size:13px;line-height:1.8">شارك فيديوهاتك، تفاعل مع الناس، وخلي مجتمعنا يكبر يوم بعد يوم.</p>
+    <button class="primary" style="width:100%" onclick="followFounder()">متابعة المؤسس ⭐</button>
+    <hr style="border-color:#333;margin:18px 0">
+    <p class="muted">اسمك بيتحفظ على الجهاز. تغيير الاسم متاح بعد مرور 7 أيام.</p>
+  </aside>
+</div>
 
-  <section id="feed"></section>
-
-  <section id="discoverPage" class="hidden">
-    <h2 class="section-title">اكتشف</h2>
-    <div class="panel">
-      <p>ابحث عن الفيديوهات والمستخدمين باستخدام مربع البحث بالأعلى.</p>
-      <p class="muted" style="margin-top:8px">ستظهر هنا المنشورات المطابقة لما تبحث عنه.</p>
-    </div>
-  </section>
-
-  <section id="addPage" class="hidden">
-    <h2 class="section-title">➕ إضافة منشور</h2>
-    <div class="panel">
-      <div class="field">
-        <label for="postCaption">وصف الفيديو</label>
-        <textarea id="postCaption" placeholder="اكتب وصف الفيديو..."></textarea>
-      </div>
-      <div class="field">
-        <label for="postUrl">رابط فيديو مباشر (اختياري)</label>
-        <input id="postUrl" type="url" placeholder="https://example.com/video.mp4" dir="ltr">
-      </div>
-      <div class="field">
-        <label for="postFile">أو اختر فيديو من جهازك</label>
-        <input id="postFile" type="file" accept="video/*">
-      </div>
-      <div class="notice">
-        روابط الفيديو المباشرة وملفات MP4 المدعومة تعمل عادةً داخل المشغّل.
-        ملفات الجهاز تُعرض محليًا في هذه النسخة، ولا تُرفع إلى السيرفر تلقائيًا.
-      </div>
-      <button class="primary" id="publishBtn" style="width:100%">نشر المنشور</button>
-    </div>
-  </section>
-
-  <section id="livePage" class="hidden">
-    <h2 class="section-title">🔴 البث المباشر</h2>
-    <div class="panel">
-      <h3>مشاهدة بث</h3>
-      <div class="field">
-        <label for="liveUrl">رابط البث المباشر</label>
-        <input id="liveUrl" type="url" placeholder="https://example.com/live.m3u8" dir="ltr">
-      </div>
-      <button class="primary" id="watchBtn">تشغيل البث</button>
-      <div id="livePlayer" class="video-box hidden" style="margin-top:14px">
-        <video id="liveVideo" controls playsinline></video>
-      </div>
-      <div class="notice">
-        روابط HLS بصيغة M3U8 لا تعمل مباشرةً في كل المتصفحات.
-        قد تحتاج إلى مشغّل HLS مثل hls.js. استخدم روابط تملك حق بثها.
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>البث بكاميرتك</h3>
-      <p class="muted">يسمح هذا الخيار بمعاينة الكاميرا والميكروفون على جهازك فقط.</p>
-      <div class="row" style="margin-top:12px">
-        <button class="primary" id="cameraStart">فتح الكاميرا</button>
-        <button class="secondary" id="cameraStop">إيقاف الكاميرا</button>
-      </div>
-      <video id="cameraPreview" autoplay muted playsinline
-        style="display:none;width:100%;max-height:400px;background:#000;border-radius:12px;margin-top:12px"></video>
-      <p id="cameraStatus" class="muted" style="margin-top:10px"></p>
-      <div class="notice">
-        تحتاج الكاميرا إلى HTTPS أو localhost وإذن المستخدم.
-        لإرسال بث حقيقي للمشاهدين، اربط هذا الجزء بخادم WebRTC أو منصة بث تدعم استقبال الإرسال.
-      </div>
-    </div>
-  </section>
-
-  <section id="profilePage" class="hidden">
-    <h2 class="section-title">👤 صفحتي</h2>
-    <div class="panel" style="text-align:center">
-      <div class="avatar" style="margin:0 auto 12px;width:75px;height:75px">👤</div>
-      <h3 id="profileName">مستخدم عبده توك</h3>
-      <p class="muted">حساب محلي على هذا الجهاز</p>
-      <div class="row" style="margin-top:15px">
-        <div><strong id="myPostCount">0</strong><p class="muted">منشورات</p></div>
-        <div><strong id="myLikesCount">0</strong><p class="muted">إعجابات</p></div>
-      </div>
-      <div class="field" style="text-align:right">
-        <label for="changeName">تغيير الاسم</label>
-        <input id="changeName" maxlength="40" placeholder="اسم المستخدم">
-      </div>
-      <button class="primary" id="saveName" style="width:100%">حفظ الاسم</button>
-    </div>
-    <h3 class="section-title">منشوراتي</h3>
-    <div id="myPosts"></div>
-  </section>
-
-  <footer>عبده توك © <span id="year"></span></footer>
-</main>
-
-<nav class="bottom-nav" aria-label="التنقل الرئيسي">
-  <button class="nav-item active" data-page="home"><span>🏠</span>الرئيسية</button>
-  <button class="nav-item" data-page="discover"><span>🔍</span>اكتشف</button>
-  <button class="nav-item nav-add" data-page="add"><span>➕</span>إضافة</button>
-  <button class="nav-item" data-page="live"><span>🔴</span>لايف</button>
-  <button class="nav-item" data-page="profile"><span>👤</span>صفحتي</button>
+<nav class="mobile-nav">
+  <button onclick="setMode('all')">🏠 الرئيسية</button>
+  <button onclick="setMode('following')">👥 أتابعهم</button>
+  <button onclick="openUpload()">➕ نشر</button>
+  <button onclick="openAccount()">👤 حسابي</button>
 </nav>
 
+<footer>AbdoTok © <span id="year"></span> — منصة الفيديوهات بتاعتك</footer>
+
+<div class="modal" id="accountModal">
+ <div class="modal-content">
+  <h2 id="accountTitle">حسابك على عبده توك</h2>
+  <label>اسم العرض</label>
+  <input id="displayName" type="text" maxlength="30" placeholder="اكتب اسمك">
+  <p class="notice" id="nameNotice">أول اسم بتختاره بيتحفظ على الجهاز.</p>
+  <label>اسم المستخدم</label>
+  <input id="handle" type="text" maxlength="24" placeholder="مثال: abdo123">
+  <p class="notice">النسخة دي لا تنشئ حسابًا سحابيًا؛ البيانات محفوظة في متصفحك فقط.</p>
+  <button class="primary" onclick="saveAccount()">حفظ البيانات</button>
+  <button class="secondary" onclick="closeModal('accountModal')">إغلاق</button>
+ </div>
+</div>
+
+<div class="modal" id="uploadModal">
+ <div class="modal-content">
+  <h2>انشر فيديو جديد 🎬</h2>
+  <label>اختار فيديو من جهازك</label>
+  <input id="videoFile" type="file" accept="video/*">
+  <label>اكتب وصف الفيديو</label>
+  <textarea id="videoCaption" rows="3" maxlength="500" placeholder="بتقدم إيه في الفيديو؟"></textarea>
+  <p class="notice">الفيديوهات المضافة هنا محلية على جهازك، ولا تُرفع تلقائيًا إلى السيرفر.</p>
+  <button class="primary" onclick="publishVideo()">نشر الفيديو</button>
+  <button class="secondary" onclick="closeModal('uploadModal')">إلغاء</button>
+ </div>
+</div>
+
 <script>
-"use strict";
+const KEY='abdotok_single_file_v1';
+const SEVEN_DAYS=7*24*60*60*1000;
+let mode='all';
+let state=loadState();
+let objectUrls=[];
 
-/*
- * إعدادات ربط السيرفر
- * ضع عنوان API الحقيقي عند تجهيز المسارات في الباك إند.
- * اتركه فارغًا لاستخدام الوضع المحلي التجريبي.
- */
-const CONFIG = {
-  apiBase: "",
-  endpoints: {
-    posts: "/api/posts",
-    login: "/api/auth/login",
-    upload: "/api/videos/upload"
-  }
-};
-
-const STORAGE = {
-  name: "abdotok_user_v2",
-  posts: "abdotok_posts_v2",
-  likes: "abdotok_likes_v2"
-};
-
-const $ = id => document.getElementById(id);
-
-let currentFilter = "all";
-let currentPage = "home";
-let cameraStream = null;
-let localFileUrl = null;
-let posts = [];
-let likedIds = new Set();
-
-function readJSON(key, fallback) {
-  try {
-    const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : fallback;
-  } catch {
-    return fallback;
+function loadState(){
+  try{
+    const s=JSON.parse(localStorage.getItem(KEY)||'{}');
+    return {
+      profile:s.profile||null,
+      follows:s.follows||[],
+      posts:Array.isArray(s.posts)?s.posts:[],
+      likes:s.likes||[],
+      comments:s.comments||{}
+    };
+  }catch(e){
+    return {profile:null,follows:[],posts:[],likes:[],comments:{}};
   }
 }
-
-function saveLocal() {
-  try {
-    // ملفات الجهاز لا تُحفظ هنا، والروابط المؤقتة لا تصلح للتخزين الدائم.
-    const persistentPosts = posts.filter(p => !p.localOnly);
-    localStorage.setItem(STORAGE.posts, JSON.stringify(persistentPosts));
-    localStorage.setItem(STORAGE.likes, JSON.stringify([...likedIds]));
-    return true;
-  } catch (error) {
-    alert("تعذر حفظ البيانات محليًا. قد تكون مساحة التخزين ممتلئة.");
-    return false;
+function persist(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(state));
+  }catch(e){
+    alert('مساحة التخزين ممتلئة. جرّب فيديو أصغر أو امسح بعض البيانات.');
   }
 }
-
-function getName() {
-  return localStorage.getItem(STORAGE.name) || "عبده";
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-  })[char]);
-}
-
-function safeMediaUrl(value) {
-  try {
-    const url = new URL(value, location.href);
-    if (!["http:", "https:", "blob:"].includes(url.protocol)) return "";
-    return url.href;
-  } catch {
-    return "";
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function openAccount(){
+  const p=state.profile;
+  document.getElementById('displayName').value=p?.name||'';
+  document.getElementById('handle').value=p?.handle||'';
+  document.getElementById('accountTitle').textContent=p?'حسابك':'أهلاً بيك في عبده توك';
+  const notice=document.getElementById('nameNotice');
+  if(p){
+    const remaining=SEVEN_DAYS-(Date.now()-p.nameChangedAt);
+    notice.textContent=remaining>0
+      ?'تقدر تغيّر اسم العرض بعد '+formatRemaining(remaining)+'.'
+      :'مرّت 7 أيام؛ تقدر تغيّر اسم العرض دلوقتي.';
+    document.getElementById('handle').disabled=true;
+  }else{
+    notice.textContent='اختار اسم العرض واسم المستخدم. اسم المستخدم لا يمكن تغييره في هذه النسخة.';
+    document.getElementById('handle').disabled=false;
   }
+  openModal('accountModal');
 }
-
-function createId() {
-  return "p_" + Date.now().toString(36) + "_" +
-    Math.random().toString(36).slice(2, 9);
+function formatRemaining(ms){
+  const days=Math.floor(ms/86400000);
+  const hours=Math.floor((ms%86400000)/3600000);
+  return days+' يوم و'+hours+' ساعة';
 }
-
-function seedPosts() {
-  return [
-    {
-      id: "welcome",
-      user: "عبده توك",
-      caption: "أهلاً بيكم في عبده توك 👑 شاركونا فيديوهاتكم!",
-      url: "",
-      likes: 0,
-      comments: [],
-      createdAt: Date.now(),
-      owner: false
+function saveAccount(){
+  const name=document.getElementById('displayName').value.trim();
+  let handle=document.getElementById('handle').value.trim().replace(/^@/,'');
+  if(name.length<2){alert('اكتب اسمًا من حرفين على الأقل.');return}
+  if(!state.profile){
+    if(!/^[a-zA-Z0-9_]{3,24}$/.test(handle)){
+      alert('اسم المستخدم لازم يكون من 3 إلى 24 حرفًا إنجليزيًا أو رقمًا أو _.');return;
     }
-  ];
+    state.profile={name,handle,nameChangedAt:Date.now()};
+    if(!state.follows.includes('founder'))state.follows.push('founder');
+  }else if(name!==state.profile.name){
+    const elapsed=Date.now()-state.profile.nameChangedAt;
+    if(elapsed<SEVEN_DAYS){
+      alert('لسه ما مرّش 7 أيام على آخر تغيير للاسم.');return;
+    }
+    state.profile.name=name;
+    state.profile.nameChangedAt=Date.now();
+  }
+  persist();closeModal('accountModal');renderFeed();
 }
-
-function loadLocal() {
-  const stored = readJSON(STORAGE.posts, null);
-  posts = Array.isArray(stored) ? stored : seedPosts();
-  likedIds = new Set(readJSON(STORAGE.likes, []));
-  renderAll();
+function followFounder(){
+  if(!state.profile){openAccount();return}
+  if(state.follows.includes('founder')){
+    alert('إنت بالفعل بتتابع المؤسس 👑');
+  }else{
+    state.follows.push('founder');persist();alert('تمت متابعة المؤسس!');renderFeed();
+  }
 }
-
-async function apiRequest(path, options = {}) {
-  if (!CONFIG.apiBase) throw new Error("API غير مضبوط");
-  const response = await fetch(CONFIG.apiBase.replace(/\/$/, "") + path, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    },
-    credentials: "include"
+function setMode(next){mode=next;renderFeed();window.scrollTo({top:0,behavior:'smooth'})}
+function openUpload(){
+  if(!state.profile){alert('اعمل حسابك الأول.');openAccount();return}
+  openModal('uploadModal');
+}
+function publishVideo(){
+  const file=document.getElementById('videoFile').files[0];
+  const caption=document.getElementById('videoCaption').value.trim();
+  if(!file){alert('اختار فيديو الأول.');return}
+  if(!file.type.startsWith('video/')){alert('الملف لازم يكون فيديو.');return}
+  if(file.size>40*1024*1024){
+    alert('اختار فيديو أقل من 40 ميجابايت في هذه النسخة التجريبية.');return;
+  }
+  const url=URL.createObjectURL(file);
+  objectUrls.push(url);
+  state.posts.unshift({
+    id:'p'+Date.now(),name:state.profile.name,handle:state.profile.handle,
+    caption,url,createdAt:Date.now(),local:true
   });
-  if (!response.ok) throw new Error("فشل الاتصال بالسيرفر: " + response.status);
-  return response.json();
+  persist();
+  document.getElementById('videoFile').value='';
+  document.getElementById('videoCaption').value='';
+  closeModal('uploadModal');renderFeed();
 }
-
-/*
- * ربط قراءة المنشورات بالسيرفر عند إعداد API.
- * يتطلب أن يعيد GET /api/posts قائمة منشورات بصيغة JSON.
- */
-async function syncPostsFromServer() {
-  if (!CONFIG.apiBase) return;
-  try {
-    const result = await apiRequest(CONFIG.endpoints.posts);
-    if (Array.isArray(result)) {
-      posts = result.map(p => ({
-        id: String(p.id),
-        user: String(p.user || p.username || "مستخدم"),
-        caption: String(p.caption || p.description || ""),
-        url: safeMediaUrl(p.url || p.videoUrl || ""),
-        likes: Number(p.likes || 0),
-        comments: Array.isArray(p.comments) ? p.comments : [],
-        createdAt: Number(p.createdAt || Date.now()),
-        owner: false
-      }));
-      renderAll();
-    }
-  } catch (error) {
-    console.error(error);
-    showMessage("تعذر تحميل المنشورات من السيرفر. يتم عرض البيانات المحلية.");
-  }
+function toggleLike(id){
+  if(!state.profile){openAccount();return}
+  state.likes=state.likes.includes(id)?state.likes.filter(x=>x!==id):[...state.likes,id];
+  persist();renderFeed();
 }
-
-function showMessage(message) {
-  alert(message);
+function addComment(id){
+  if(!state.profile){openAccount();return}
+  const input=document.getElementById('comment-'+id);
+  const value=input.value.trim();
+  if(!value)return;
+  state.comments[id]=state.comments[id]||[];
+  state.comments[id].push({name:state.profile.name,text:value});
+  persist();renderFeed();
 }
-
-function navigate(page) {
-  currentPage = page;
-
-  const sections = {
-    home: $("feed"),
-    discover: $("discoverPage"),
-    add: $("addPage"),
-    live: $("livePage"),
-    profile: $("profilePage")
+function renderFeed(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  const starter={
+    id:'welcome',name:'الملك عبده',handle:'abdo',caption:'أهلاً بيكم في عبده توك ❤️ دي بداية مجتمعنا. انشر أول فيديو ليك وخلي الناس تتعرف عليك! 👑',
+    starter:true
   };
-
-  Object.entries(sections).forEach(([key, section]) => {
-    if (key === "home") {
-      section.classList.toggle("hidden", page !== "home");
-    } else {
-      section.classList.toggle("hidden", page !== key);
-    }
-  });
-
-  document.querySelectorAll(".nav-item").forEach(button => {
-    button.classList.toggle("active", button.dataset.page === page);
-  });
-
-  if (page === "profile") renderProfile();
-  if (page === "discover") renderFeed();
-  window.scrollTo({top:0, behavior:"smooth"});
-}
-
-function getVisiblePosts() {
-  let list = [...posts];
-  const query = $("searchInput").value.trim().toLowerCase();
-
-  if (query) {
-    list = list.filter(post =>
-      String(post.user).toLowerCase().includes(query) ||
-      String(post.caption).toLowerCase().includes(query)
-    );
+  let posts=[starter,...state.posts];
+  if(mode==='following'&&state.profile){
+    posts=posts.filter(p=>p.starter?state.follows.includes('founder'):state.follows.includes(p.handle));
+  }else if(mode==='following'&&!state.profile){
+    posts=[];
   }
-
-  if (currentFilter === "mine") {
-    list = list.filter(post => post.owner);
-  } else if (currentFilter === "popular") {
-    list.sort((a,b) => Number(b.likes || 0) - Number(a.likes || 0));
-  } else {
-    list.sort((a,b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+  if(q){
+    posts=posts.filter(p=>(p.name+' '+p.handle+' '+(p.caption||'')).toLowerCase().includes(q));
   }
-
-  return list;
-}
-
-function renderPost(post) {
-  const id = escapeHTML(post.id);
-  const user = escapeHTML(post.user || "مستخدم");
-  const caption = escapeHTML(post.caption || "");
-  const url = safeMediaUrl(post.url || "");
-  const comments = Array.isArray(post.comments) ? post.comments : [];
-  const liked = likedIds.has(post.id);
-
-  const media = url
-    ? `<div class="video-box">
-         <video controls playsinline preload="metadata"
-           src="${escapeHTML(url)}"></video>
-       </div>`
-    : `<div class="video-box">
-         <div class="video-placeholder">
-           <div class="big">🎬</div>
-           <div>لا يوجد فيديو مرفق</div>
-           <small>أضف رابط فيديو مباشر لعرضه هنا</small>
-         </div>
-       </div>`;
-
-  const commentHTML = comments.map(comment => {
-    if (typeof comment === "string") {
-      return `<div>${escapeHTML(comment)}</div>`;
-    }
-    return `<div><strong>${escapeHTML(comment.user || "مستخدم")}:</strong>
-      ${escapeHTML(comment.text || "")}</div>`;
-  }).join("");
-
-  return `
-    <article class="post" data-id="${id}">
-      <div class="post-head">
-        <div class="small-avatar">👤</div>
-        <div class="post-meta">
-          <strong>${user}${post.owner ? ' <span class="badge">✓</span>' : ''}</strong>
-          <small>${post.owner ? "منشورك" : "عضو في عبده توك"}</small>
-        </div>
-      </div>
-      ${caption ? `<div class="post-text">${caption}</div>` : ""}
-      ${media}
-      <div class="post-actions">
-        <button class="action ${liked ? "liked" : ""}" data-like="${id}">
-          ${liked ? "❤️" : "🤍"} ${Number(post.likes || 0)}
-        </button>
-        <button class="action" data-focus-comment="${id}">💬 ${comments.length}</button>
-        <button class="action" data-share="${id}">↗ مشاركة</button>
-        ${post.owner ? `<button class="action" data-delete="${id}">🗑 حذف</button>` : ""}
+  const feed=document.getElementById('feed');
+  if(!posts.length){
+    feed.innerHTML='<div class="empty">مفيش فيديوهات هنا لسه. تابع ناس أو ارجع للرئيسية.</div>';return;
+  }
+  feed.innerHTML=posts.map(p=>{
+    const liked=state.likes.includes(p.id);
+    const comments=state.comments[p.id]||[];
+    const video=p.url?`<video src="${p.url}" controls playsinline preload="metadata"></video>`:
+      `<div class="placeholder"><div><strong>عبده توك</strong><p>🎬 مكان الفيديوهات</p><span class="muted">انشر فيديوك وابدأ المشاركة</span></div></div>`;
+    return `<article class="post">
+      <div class="post-head"><div class="avatar">${escapeHTML((p.name||'ع').slice(0,1))}</div>
+      <div><div class="username">${escapeHTML(p.name)} ${p.starter?'👑':''}</div>
+      <div class="muted">@${escapeHTML(p.handle||'abdo')} · ${p.starter?'المؤسس':'عضو في عبده توك'}</div></div></div>
+      ${video}
+      <div class="post-caption">${escapeHTML(p.caption||'')}</div>
+      <div class="actions">
+        <button class="${liked?'liked':''}" onclick="toggleLike('${p.id}')">${liked?'❤️':'🤍'} إعجاب</button>
+        <button onclick="document.getElementById('comment-${p.id}').focus()">💬 ${comments.length} تعليق</button>
+        ${p.starter?'<button onclick="followFounder()">⭐ متابعة المؤسس</button>':''}
       </div>
       <div class="comments">
-        <div class="comment-list">${commentHTML}</div>
-        <form data-comment-form="${id}" class="row">
-          <input name="comment" maxlength="500" placeholder="اكتب تعليقًا..." required aria-label="تعليق">
-          <button class="secondary" type="submit">إرسال</button>
-        </form>
+        ${comments.map(c=>`<p><b>${escapeHTML(c.name)}:</b> ${escapeHTML(c.text)}</p>`).join('')}
+        <div class="comment-form"><input id="comment-${p.id}" placeholder="اكتب تعليق..." maxlength="300" onkeydown="if(event.key==='Enter')addComment('${p.id}')"><button class="secondary" onclick="addComment('${p.id}')">إرسال</button></div>
       </div>
     </article>`;
+  }).join('');
 }
-
-function renderFeed() {
-  const list = getVisiblePosts();
-  $("feed").innerHTML = list.length
-    ? list.map(renderPost).join("")
-    : `<div class="empty">لا توجد منشورات مطابقة.<br>جرّب كلمة بحث مختلفة أو أضف فيديو جديدًا.</div>`;
-
-  if (currentPage === "profile") renderProfile();
+document.getElementById('year').textContent=new Date().getFullYear();
+renderFeed();
+if(!state.profile){
+  setTimeout(()=>openAccount(),300);
 }
-
-function renderProfile() {
-  const mine = posts.filter(p => p.owner);
-  $("profileName").textContent = getName();
-  $("changeName").value = getName();
-  $("myPostCount").textContent = mine.length;
-  $("myLikesCount").textContent = mine.reduce((sum,p) => sum + Number(p.likes || 0), 0);
-  $("myPosts").innerHTML = mine.length
-    ? mine.map(renderPost).join("")
-    : `<div class="empty">لم تنشر أي فيديو بعد.<br>اضغط على إضافة لبدء النشر.</div>`;
-}
-
-function renderAll() {
-  renderFeed();
-  renderProfile();
-}
-
-function publishPost() {
-  const caption = $("postCaption").value.trim();
-  const urlInput = $("postUrl").value.trim();
-  const file = $("postFile").files[0];
-
-  if (!caption && !urlInput && !file) {
-    showMessage("اكتب وصفًا أو أضف رابط فيديو أو اختر ملفًا.");
-    return;
-  }
-
-  let mediaUrl = "";
-  let localOnly = false;
-
-  if (file) {
-    if (!file.type.startsWith("video/")) {
-      showMessage("الرجاء اختيار ملف فيديو صالح.");
-      return;
-    }
-    if (file.size > 150 * 1024 * 1024) {
-      showMessage("حجم الملف أكبر من 150 ميجابايت في هذه النسخة.");
-      return;
-    }
-    if (localFileUrl) URL.revokeObjectURL(localFileUrl);
-    localFileUrl = URL.createObjectURL(file);
-    mediaUrl = localFileUrl;
-    localOnly = true;
-  } else if (urlInput) {
-    mediaUrl = safeMediaUrl(urlInput);
-    if (!mediaUrl) {
-      showMessage("رابط الفيديو غير صالح. استخدم رابط HTTPS أو HTTP مباشر.");
-      return;
-    }
-  }
-
-  const post = {
-    id: createId(),
-    user: getName(),
-    caption,
-    url: mediaUrl,
-    likes: 0,
-    comments: [],
-    createdAt: Date.now(),
-    owner: true,
-    localOnly
-  };
-
-  posts.unshift(post);
-  saveLocal();
-  $("postCaption").value = "";
-  $("postUrl").value = "";
-  $("postFile").value = "";
-  currentFilter = "all";
-  document.querySelectorAll(".tabs button").forEach(button =>
-    button.classList.toggle("active", button.dataset.filter === "all")
-  );
-  navigate("home");
-  renderAll();
-
-  if (CONFIG.apiBase) {
-    showMessage("أُضيف المنشور إلى الواجهة. يلزم تنفيذ مسار النشر ورفع الملفات في الباك إند حتى يصبح متاحًا لجميع المستخدمين.");
-  }
-}
-
-function toggleLike(id) {
-  const post = posts.find(p => p.id === id);
-  if (!post) return;
-
-  if (likedIds.has(id)) {
-    likedIds.delete(id);
-    post.likes = Math.max(0, Number(post.likes || 0) - 1);
-  } else {
-    likedIds.add(id);
-    post.likes = Number(post.likes || 0) + 1;
-  }
-  saveLocal();
-  renderAll();
-}
-
-function deletePost(id) {
-  const post = posts.find(p => p.id === id);
-  if (!post || !post.owner) return;
-  if (!confirm("هل تريد حذف المنشور؟")) return;
-
-  posts = posts.filter(p => p.id !== id);
-  likedIds.delete(id);
-  saveLocal();
-  renderAll();
-}
-
-function addComment(id, text) {
-  const post = posts.find(p => p.id === id);
-  if (!post || !text.trim()) return;
-
-  if (!Array.isArray(post.comments)) post.comments = [];
-  post.comments.push({user:getName(), text:text.trim()});
-  saveLocal();
-  renderAll();
-}
-
-async function sharePost(id) {
-  const post = posts.find(p => p.id === id);
-  if (!post) return;
-
-  const text = `${post.user}: ${post.caption}`;
-  try {
-    if (navigator.share) {
-      await navigator.share({title:"عبده توك", text});
-    } else if (navigator.clipboard) {
-      await navigator.clipboard.writeText(text);
-      showMessage("تم نسخ نص المنشور.");
-    } else {
-      showMessage(text);
-    }
-  } catch (error) {
-    if (error.name !== "AbortError") showMessage("تعذرت المشاركة.");
-  }
-}
-
-async function startCamera() {
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    showMessage("الكاميرا غير مدعومة هنا. افتح الموقع عبر HTTPS في متصفح حديث.");
-    return;
-  }
-
-  try {
-    cameraStream = await navigator.mediaDevices.getUserMedia({
-      video:true,
-      audio:true
-    });
-    $("cameraPreview").srcObject = cameraStream;
-    $("cameraPreview").style.display = "block";
-    $("cameraStatus").textContent = "الكاميرا تعمل محليًا. لم يتم إرسال الفيديو إلى السيرفر.";
-  } catch (error) {
-    $("cameraStatus").textContent = "تعذر فتح الكاميرا: " + error.message;
-  }
-}
-
-function stopCamera() {
-  if (cameraStream) {
-    cameraStream.getTracks().forEach(track => track.stop());
-    cameraStream = null;
-  }
-  $("cameraPreview").srcObject = null;
-  $("cameraPreview").style.display = "none";
-  $("cameraStatus").textContent = "تم إيقاف الكاميرا.";
-}
-
-function watchLive() {
-  const input = $("liveUrl").value.trim();
-  const url = safeMediaUrl(input);
-
-  if (!url) {
-    showMessage("أدخل رابط بث صالحًا.");
-    return;
-  }
-
-  const video = $("liveVideo");
-  $("livePlayer").classList.remove("hidden");
-  video.src = url;
-  video.play().catch(() => {
-    $("cameraStatus").textContent = "اضغط تشغيل داخل مشغّل الفيديو إذا لم يبدأ تلقائيًا.";
-  });
-}
-
-document.querySelectorAll(".nav-item").forEach(button => {
-  button.addEventListener("click", () => navigate(button.dataset.page));
-});
-
-document.querySelectorAll(".tabs button").forEach(button => {
-  button.addEventListener("click", () => {
-    currentFilter = button.dataset.filter;
-    document.querySelectorAll(".tabs button").forEach(item =>
-      item.classList.toggle("active", item === button)
-    );
-    renderFeed();
-  });
-});
-
-$("searchInput").addEventListener("input", () => {
-  renderFeed();
-  if ($("searchInput").value.trim()) navigate("discover");
-});
-
-$("headerAdd").addEventListener("click", () => navigate("add"));
-$("kingLive").addEventListener("click", () => navigate("live"));
-$("publishBtn").addEventListener("click", publishPost);
-$("cameraStart").addEventListener("click", startCamera);
-$("cameraStop").addEventListener("click", stopCamera);
-$("watchBtn").addEventListener("click", watchLive);
-
-$("saveName").addEventListener("click", () => {
-  const name = $("changeName").value.trim();
-  if (!name || name.length > 40) {
-    showMessage("اكتب اسمًا من حرف واحد إلى 40 حرفًا.");
-    return;
-  }
-  localStorage.setItem(STORAGE.name, name);
-  renderAll();
-  showMessage("تم حفظ الاسم على هذا الجهاز.");
-});
-
-document.addEventListener("click", event => {
-  const likeButton = event.target.closest("[data-like]");
-  const deleteButton = event.target.closest("[data-delete]");
-  const shareButton = event.target.closest("[data-share]");
-  const focusButton = event.target.closest("[data-focus-comment]");
-
-  if (likeButton) toggleLike(likeButton.dataset.like);
-  if (deleteButton) deletePost(deleteButton.dataset.delete);
-  if (shareButton) sharePost(shareButton.dataset.share);
-
-  if (focusButton) {
-    const form = document.querySelector(
-      `[data-comment-form="${CSS.escape(focusButton.dataset.focusComment)}"]`
-    );
-    if (form) form.querySelector("input").focus();
-  }
-});
-
-document.addEventListener("submit", event => {
-  const form = event.target.closest("[data-comment-form]");
-  if (!form) return;
-  event.preventDefault();
-
-  const id = form.dataset.commentForm;
-  const input = form.querySelector('input[name="comment"]');
-  addComment(id, input.value);
-});
-
-window.addEventListener("beforeunload", () => {
-  if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
-  if (localFileUrl) URL.revokeObjectURL(localFileUrl);
-});
-
-$("year").textContent = new Date().getFullYear();
-
-if (!localStorage.getItem(STORAGE.name)) {
-  const name = prompt("أهلاً بك في عبده توك! أدخل اسمك:") || "عبده";
-  localStorage.setItem(STORAGE.name, name.trim().slice(0,40) || "عبده");
-}
-
-loadLocal();
-syncPostsFromServer();
 </script>
 </body>
 </html>
