@@ -1,1090 +1,1253 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>عبده يوتيوب - Abdo Tube</title>
+
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --bg: #0f0f0f;
+  --card: #1f1f1f;
+  --border: #303030;
+  --text: #fff;
+  --muted: #aaa;
+  --red: #ff0033;
+  --gold: #ffd700;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  padding-top: 104px;
+  padding-bottom: 72px;
+}
+
+button, input { font: inherit; }
+button { cursor: pointer; }
+.hidden { display: none !important; }
+
+header {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 52px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 19px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logo-area i {
+  color: var(--red);
+  font-size: 26px;
+}
+
+.header-icons {
+  display: flex;
+  gap: 22px;
+  font-size: 19px;
+}
+
+.header-icons i { cursor: pointer; }
+
+.chips-container {
+  position: fixed;
+  z-index: 999;
+  top: 52px;
+  right: 0;
+  left: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 12px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.chip {
+  flex-shrink: 0;
+  background: var(--card);
+  color: white;
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 13px;
+  font-size: 13px;
+}
+
+.chip.active {
+  background: white;
+  color: #111;
+  font-weight: bold;
+}
+
+.search-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1100;
+  inset: 0 0 auto;
+  height: 52px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  background: var(--bg);
+}
+
+.search-overlay.active { display: flex; }
+
+.search-overlay input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  color: white;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  outline: none;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.video-card { cursor: pointer; }
+
+.thumbnail-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #202020;
+  overflow: hidden;
+}
+
+.thumbnail-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+}
+
+.channel-avatar {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #333;
+  font-weight: bold;
+}
+
+.video-title {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: bold;
+}
+
+.sub-meta {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.status-message {
+  padding: 25px 15px;
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.section { padding: 16px; }
+.section h2 { margin-bottom: 16px; font-size: 19px; }
+
+.live-stream-card {
+  margin-bottom: 16px;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.live-stream-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.live-stream-info { padding: 12px; }
+.live-label { color: #ff4545; font-size: 12px; font-weight: bold; }
+.live-stream-info h3 { margin: 8px 0; font-size: 15px; }
+
+.chat-container {
+  height: calc(100dvh - 180px);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+}
+
+.chat-container h2 { margin-bottom: 14px; }
+
+.chat-box {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-msg {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  overflow-wrap: anywhere;
+}
+
+.chat-msg .name {
+  color: #55baff;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.chat-msg .txt {
+  margin-top: 5px;
+  font-size: 14px;
+  white-space: pre-wrap;
+}
+
+.chat-inputs {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.field {
+  width: 100%;
+  padding: 12px;
+  color: white;
+  background: #151515;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+}
+
+.chat-inputs input { flex: 1; min-width: 0; }
+
+.primary-btn {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--red);
+  color: white;
+  font-weight: bold;
+}
+
+.bottom-nav {
+  position: fixed;
+  z-index: 1000;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 62px;
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.nav-item i { font-size: 19px; }
+.nav-item.active { color: white; }
+
+#watch-view {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.watch-header {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.watch-header i { cursor: pointer; font-size: 20px; }
+
+.player-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: black;
+}
+
+.player-container iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.watch-details { padding: 16px; }
+.watch-details h2 { font-size: 17px; line-height: 1.6; }
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.action-btn {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 20px;
+  color: white;
+  background: #292929;
+}
+
+.login-overlay {
+  position: fixed;
+  z-index: 5000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0,0,0,.97);
+}
+
+.login-box {
+  width: 100%;
+  max-width: 350px;
+  padding: 25px;
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.login-box h2 { margin-bottom: 10px; }
+.login-box p { color: var(--muted); font-size: 13px; line-height: 1.8; }
+.login-box input { margin: 16px 0; text-align: center; }
+.login-box button { width: 100%; }
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #333;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+#owner-crown {
+  position: absolute;
+  top: -14px;
+  color: var(--gold);
+}
+
+.owner-panel {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.owner-panel h3 { color: var(--gold); font-size: 16px; }
+.owner-panel p { margin-top: 8px; color: #ddd; font-size: 13px; line-height: 1.8; }
+
+.empty-state { padding: 35px 15px; text-align: center; color: var(--muted); }
+
+@media (min-width: 760px) {
+  .feed {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    padding: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-overlay" id="login-modal">
+  <form class="login-box" id="login-form">
+    <h2>عبده يوتيوب 📺</h2>
+    <p>اكتب اسم العرض للبدء في استخدام التطبيق.</p>
+    <input class="field" id="username-input" maxlength="40"
+           autocomplete="nickname" placeholder="اكتب اسمك هنا" required>
+    <button class="primary-btn" type="submit">دخول للتطبيق</button>
+  </form>
+</div>
+
+<header>
+  <div class="logo-area" id="logo-home">
+    <i class="fa-brands fa-youtube"></i>
+    <span>عبده يوتيوب</span>
+  </div>
+  <div class="header-icons">
+    <i class="fa-solid fa-magnifying-glass" id="open-search" title="بحث"></i>
+    <i class="fa-solid fa-user-pen" id="change-user" title="تغيير الاسم"></i>
+  </div>
+</header>
+
+<div class="search-overlay" id="search-overlay">
+  <i class="fa-solid fa-arrow-right" id="close-search"></i>
+  <input id="search-input" type="search" placeholder="ابحث عن فيديو...">
+  <i class="fa-solid fa-magnifying-glass" id="execute-search"></i>
+</div>
+
+<div class="chips-container" id="category-chips">
+  <button class="chip active" data-category="الكل">كل المحتوى</button>
+  <button class="chip" data-category="ألعاب فيديو">ألعاب فيديو</button>
+  <button class="chip" data-category="كرة القدم">كرة القدم</button>
+  <button class="chip" data-category="موسيقى">موسيقى</button>
+</div>
+
+<main>
+  <section id="home-page" class="page active">
+    <div class="feed" id="video-feed">
+      <div class="status-message">جاري تحميل الفيديوهات...</div>
+    </div>
+  </section>
+
+  <section id="live-page" class="page">
+    <div class="section">
+      <h2>🔴 البثوث المباشرة</h2>
+      <div id="live-streams-list"></div>
+      <p class="status-message">
+        قد لا تكون كل روابط البث متاحة طوال الوقت.
+      </p>
+    </div>
+  </section>
+
+  <section id="chat-page" class="page">
+    <div class="chat-container">
+      <h2><i class="fa-solid fa-comments"></i> دردشة عبده يوتيوب</h2>
+      <div class="chat-box" id="chat-messages-box"></div>
+      <form class="chat-inputs" id="chat-form">
+        <input class="field" id="chat-input-msg" maxlength="500"
+               placeholder="اكتب رسالة..." autocomplete="off" required>
+        <button class="primary-btn" type="submit">إرسال</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="upload-page" class="page">
+    <div class="section">
+      <h2><i class="fa-solid fa-cloud-arrow-up"></i> إنشاء محتوى</h2>
+      <p style="color:var(--muted);margin:10px 0 18px;line-height:1.8">
+        يمكنك إضافة بطاقة تجريبية إلى الصفحة الرئيسية.
+        نشر ملف فيديو فعلي يحتاج إلى خادم وتخزين فيديو.
+      </p>
+      <form id="upload-form">
+        <input class="field" id="custom-video-title" maxlength="150"
+               placeholder="عنوان المحتوى..." required>
+        <button class="primary-btn" style="width:100%;margin-top:12px"
+                type="submit">إضافة محتوى تجريبي</button>
+      </form>
+      <p id="upload-status" class="status-message"></p>
+    </div>
+  </section>
+
+  <section id="profile-page" class="page">
+    <div class="section">
+      <div class="profile-row">
+        <div class="profile-avatar" id="profile-avatar-box">
+          <i class="fa-solid fa-crown hidden" id="owner-crown"></i>
+          <span id="avatar-letter">ز</span>
+        </div>
+        <div>
+          <h2 id="display-user-name">زائر</h2>
+          <p id="badge-container" style="color:var(--muted);font-size:13px;margin-top:6px">
+            مستخدم
+          </p>
+        </div>
+      </div>
+
+      <div class="owner-panel hidden" id="owner-panel">
+        <h3><i class="fa-solid fa-star"></i> مظهر المالك التجريبي</h3>
+        <p>
+          هذه علامة شكلية للعرض فقط، وليست توثيقًا رسميًا أو وسيلة
+          للتحقق من هوية المالك. يجب تطبيق الصلاحيات الحقيقية على الخادم.
+        </p>
+      </div>
+
+      <p style="margin-top:24px;color:var(--muted);font-size:13px">
+        عدد فيديوهات التجربة التي أضفتها:
+        <strong id="custom-video-count">0</strong>
+      </p>
+    </div>
+  </section>
+</main>
+
+<div id="watch-view">
+  <div class="watch-header">
+    <i class="fa-solid fa-arrow-right" id="close-watch"></i>
+    <span>مشغل عبده يوتيوب</span>
+  </div>
+  <div class="player-container">
+    <iframe id="youtube-player"
+      src="about:blank"
+      title="مشغل فيديو يوتيوب"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </div>
+  <div class="watch-details">
+    <h2 id="watch-title"></h2>
+    <p id="watch-channel" class="sub-meta"></p>
+    <div class="action-row">
+      <button class="action-btn" id="like-btn">
+        <i class="fa-solid fa-thumbs-up"></i> إعجاب
+      </button>
+      <button class="action-btn" id="sub-toggle-btn">متابعة القناة</button>
+    </div>
+    <p id="watch-message" class="sub-meta"></p>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-item active" data-tab="home">
+    <i class="fa-solid fa-house"></i><span>الرئيسية</span>
+  </button>
+  <button class="nav-item" data-tab="live">
+    <i class="fa-solid fa-tower-broadcast"></i><span>اللايفات</span>
+  </button>
+  <button class="nav-item" data-tab="chat">
+    <i class="fa-solid fa-comments"></i><span>دردشة</span>
+  </button>
+  <button class="nav-item" data-tab="upload">
+    <i class="fa-solid fa-plus-circle"></i><span>إنشاء</span>
+  </button>
+  <button class="nav-item" data-tab="profile">
+    <i class="fa-solid fa-user"></i><span>أنت</span>
+  </button>
+</nav>
+
+<script>
 "use strict";
 
-const express = require("express");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const Database = require("better-sqlite3");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-const crypto = require("crypto");
+/*
+  ضع مفتاح YouTube Data API v3 الخاص بك هنا.
+  لا تضع مفاتيح سرية للخادم داخل هذا الملف.
+*/
+const API_KEY = "YOUR_YOUTUBE_API_KEY";
 
-const app = express();
-const PORT = Number(process.env.PORT || 3000);
-const JWT_SECRET = process.env.JWT_SECRET || "";
-const ADMIN_USERNAME = (process.env.ADMIN_USERNAME || "abdo").trim().toLowerCase();
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
-const DATA_DIR = process.env.DATA_DIR || __dirname;
-const DB_PATH = process.env.DB_PATH || path.join(DATA_DIR, "abdotok.sqlite");
-const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
-const PUBLIC_DIR = path.join(__dirname, "public");
-const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
+const USER_KEY = "abdo_tube_user";
+const CHAT_KEY = "abdo_tube_chat";
+const CUSTOM_KEY = "abdo_tube_custom_videos";
 
-if (JWT_SECRET.length < 32) {
-  throw new Error("JWT_SECRET يجب أن يكون 32 حرفًا على الأقل.");
-}
+let currentUser = "";
+let currentVideosList = [];
+let currentCategory = "الكل";
+let currentSearch = "";
+let currentVideo = null;
+let currentChannelId = "";
+let subscribed = false;
 
-if (ADMIN_PASSWORD.length < 12) {
-  throw new Error("ADMIN_PASSWORD يجب أن يكون 12 حرفًا على الأقل.");
-}
+const $ = (id) => document.getElementById(id);
 
-if (!/^[a-z0-9_]{3,24}$/.test(ADMIN_USERNAME)) {
-  throw new Error("ADMIN_USERNAME غير صالح.");
-}
-
-for (const dir of [DATA_DIR, UPLOAD_DIR, PUBLIC_DIR]) {
-  fs.mkdirSync(dir, { recursive: true });
-}
-
-const db = new Database(DB_PATH);
-
-db.pragma("journal_mode = WAL");
-db.pragma("foreign_keys = ON");
-db.pragma("busy_timeout = 5000");
-
-const now = () => Date.now();
-
-db.exec(`
-CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT NOT NULL UNIQUE COLLATE NOCASE,
-  display_name TEXT NOT NULL,
-  password_hash TEXT NOT NULL,
-  is_admin INTEGER NOT NULL DEFAULT 0,
-  verified INTEGER NOT NULL DEFAULT 0,
-  created_at INTEGER NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS follows (
-  follower_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  followed_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  created_at INTEGER NOT NULL,
-  PRIMARY KEY (follower_id, followed_id),
-  CHECK (follower_id <> followed_id)
-);
-
-CREATE TABLE IF NOT EXISTS posts (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  caption TEXT NOT NULL DEFAULT '',
-  video_path TEXT,
-  created_at INTEGER NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS likes (
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
-  created_at INTEGER NOT NULL,
-  PRIMARY KEY (user_id, post_id)
-);
-
-CREATE TABLE IF NOT EXISTS comments (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
-  body TEXT NOT NULL,
-  created_at INTEGER NOT NULL
-);
-
-CREATE INDEX IF NOT EXISTS idx_posts_created
-ON posts(created_at DESC);
-
-CREATE INDEX IF NOT EXISTS idx_comments_post
-ON comments(post_id, created_at);
-
-CREATE INDEX IF NOT EXISTS idx_follows_followed
-ON follows(followed_id);
-`);
-
-const cols = db.prepare("PRAGMA table_info(users)").all();
-
-if (!cols.some(c => c.name === "verified")) {
-  db.exec(
-    "ALTER TABLE users ADD COLUMN verified INTEGER NOT NULL DEFAULT 0"
-  );
-}
-
-function sendError(res, status, message) {
-  return res.status(status).json({ error: message });
-}
-
-function validId(value) {
-  const id = Number(value);
-
-  return Number.isSafeInteger(id) && id > 0 ? id : null;
-}
-
-function getUser(id) {
-  return db.prepare(`
-    SELECT id, username, display_name, is_admin, verified, created_at
-    FROM users
-    WHERE id = ?
-  `).get(id);
-}
-
-function tokenFor(user) {
-  return jwt.sign({}, JWT_SECRET, {
-    subject: String(user.id),
-    expiresIn: "7d",
-    issuer: "abdotok",
-    audience: "abdotok-users"
-  });
-}
-
-function publicUser(user, viewerId = null) {
-  const counts = db.prepare(`
-    SELECT
-      (SELECT COUNT(*) FROM follows
-       WHERE followed_id = ?) AS followers,
-      (SELECT COUNT(*) FROM follows
-       WHERE follower_id = ?) AS following
-  `).get(user.id, user.id);
-
-  const isFollowing =
-    viewerId && viewerId !== user.id
-      ? Boolean(
-          db.prepare(`
-            SELECT 1
-            FROM follows
-            WHERE follower_id = ? AND followed_id = ?
-          `).get(viewerId, user.id)
-        )
-      : false;
-
-  return {
-    id: user.id,
-    username: user.username,
-    displayName: user.display_name,
-    isAdmin: Boolean(user.is_admin),
-    verified: Boolean(user.verified),
-    followers: counts.followers,
-    following: counts.following,
-    isFollowing,
-    createdAt: user.created_at
-  };
-}
-
-/* إعداد حساب المؤسس */
-
-const founder = db.prepare(`
-  SELECT id
-  FROM users
-  WHERE username = ? COLLATE NOCASE
-`).get(ADMIN_USERNAME);
-
-const founderHash = bcrypt.hashSync(ADMIN_PASSWORD, 12);
-
-if (!founder) {
-  db.prepare(`
-    INSERT INTO users (
-      username,
-      display_name,
-      password_hash,
-      is_admin,
-      verified,
-      created_at
-    )
-    VALUES (?, ?, ?, 1, 1, ?)
-  `).run(ADMIN_USERNAME, "عبده", founderHash, now());
-} else {
-  db.prepare(`
-    UPDATE users
-    SET is_admin = 1,
-        verified = 1,
-        display_name = 'عبده',
-        password_hash = ?
-    WHERE id = ?
-  `).run(founderHash, founder.id);
-}
-
-/* إعدادات الحماية */
-
-app.disable("x-powered-by");
-
-app.use(
-  helmet({
-    crossOriginResourcePolicy: {
-      policy: "same-origin"
-    },
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", "data:"],
-        mediaSrc: ["'self'", "blob:"],
-        connectSrc: ["'self'"],
-        objectSrc: ["'none'"],
-        baseUri: ["'self'"],
-        frameAncestors: ["'none'"],
-        upgradeInsecureRequests: null
-      }
-    }
-  })
-);
-
-app.use(express.json({ limit: "100kb" }));
-
-app.use(
-  "/api",
-  rateLimit({
-    windowMs: 60 * 1000,
-    limit: 120,
-    standardHeaders: true,
-    legacyHeaders: false
-  })
-);
-
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 12,
-  standardHeaders: true,
-  legacyHeaders: false
-});
-
-/* ملفات الواجهة */
-
-app.use(express.static(PUBLIC_DIR));
-
-app.use(
-  "/uploads",
-  express.static(UPLOAD_DIR, {
-    dotfiles: "deny",
-    index: false,
-    setHeaders(res) {
-      res.setHeader("X-Content-Type-Options", "nosniff");
-      res.setHeader("Cache-Control", "public, max-age=3600");
-    }
-  })
-);
-
-/* المصادقة */
-
-function auth(req, res, next) {
-  const header = req.headers.authorization || "";
-
-  if (!header.startsWith("Bearer ")) {
-    return sendError(res, 401, "سجّل الدخول أولًا.");
+const liveStreams = [
+  {
+    id: "jfKfPfyJRdk",
+    title: "Lofi Girl - بث موسيقى للدراسة والاسترخاء",
+    channel: "Lofi Girl",
+    viewers: "بث مباشر"
+  },
+  {
+    id: "5qap5aO4i9A",
+    title: "بث موسيقى هادئة - رابط تجريبي",
+    channel: "Live Stream",
+    viewers: "قد لا يكون متاحًا"
   }
+];
 
+function readJSON(key, fallback) {
   try {
-    const payload = jwt.verify(
-      header.slice(7).trim(),
-      JWT_SECRET,
-      {
-        issuer: "abdotok",
-        audience: "abdotok-users"
-      }
-    );
-
-    const id = validId(payload.sub);
-    const user = id ? getUser(id) : null;
-
-    if (!user) {
-      return sendError(res, 401, "جلسة الدخول غير صالحة.");
-    }
-
-    req.user = user;
-    next();
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
   } catch {
-    return sendError(
-      res,
-      401,
-      "انتهت الجلسة. سجّل الدخول مجددًا."
-    );
+    return fallback;
   }
 }
 
-function optionalAuth(req, res, next) {
-  req.viewerId = null;
-
-  const header = req.headers.authorization || "";
-
-  if (header.startsWith("Bearer ")) {
-    try {
-      const payload = jwt.verify(
-        header.slice(7).trim(),
-        JWT_SECRET,
-        {
-          issuer: "abdotok",
-          audience: "abdotok-users"
-        }
-      );
-
-      req.viewerId = validId(payload.sub);
-    } catch {
-      req.viewerId = null;
-    }
+function saveJSON(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch {
+    alert("تعذر الحفظ. قد تكون مساحة التخزين ممتلئة.");
+    return false;
   }
-
-  next();
 }
 
-function adminOnly(req, res, next) {
-  if (!req.user || !req.user.is_admin) {
-    return sendError(res, 403, "هذه العملية خاصة بالمؤسس.");
-  }
-
-  next();
+function safeText(value) {
+  return String(value ?? "");
 }
 
-/* فحص السيرفر */
+function showMessage(container, message) {
+  container.replaceChildren();
+  const p = document.createElement("p");
+  p.className = "status-message";
+  p.textContent = message;
+  container.appendChild(p);
+}
 
-app.get("/api/health", (_req, res) => {
-  res.json({
-    ok: true,
-    service: "AbdoTok",
-    timestamp: now()
-  });
-});
+function escapeYouTubeId(id) {
+  return /^[a-zA-Z0-9_-]{11}$/.test(String(id)) ? String(id) : "";
+}
 
-/* إنشاء حساب */
+function getVideoId(item) {
+  if (typeof item.id === "string") return item.id;
+  return item.id?.videoId || "";
+}
 
-app.post("/api/auth/register", authLimiter, (req, res) => {
-  const username = String(req.body?.username || "").trim();
+function getThumbnail(item) {
+  return item.snippet?.thumbnails?.high?.url ||
+         item.snippet?.thumbnails?.medium?.url ||
+         item.snippet?.thumbnails?.default?.url || "";
+}
 
-  const displayName = String(
-    req.body?.displayName || username
-  ).trim().slice(0, 40);
+function getCustomVideos() {
+  return readJSON(CUSTOM_KEY, []);
+}
 
-  const password = String(req.body?.password || "");
+function applyUserRole(name) {
+  currentUser = name;
 
-  if (!/^[a-zA-Z0-9_]{3,24}$/.test(username)) {
-    return sendError(
-      res,
-      400,
-      "اسم المستخدم يجب أن يكون من 3 إلى 24 حرفًا أو رقمًا أو _."
-    );
+  $("display-user-name").textContent = name;
+  $("avatar-letter").textContent = Array.from(name)[0] || "ز";
+
+  /*
+    هذا شرط تجريبي للواجهة فقط.
+    لا تستخدم اسم المستخدم لتحديد صلاحيات حقيقية.
+  */
+  const demoOwner = name.trim().toLowerCase() === "عبده";
+
+  $("owner-crown").classList.toggle("hidden", !demoOwner);
+  $("owner-panel").classList.toggle("hidden", !demoOwner);
+  $("profile-avatar-box").style.background = demoOwner
+    ? "linear-gradient(135deg,#ffd700,#ff8c00)"
+    : "#333";
+
+  $("badge-container").textContent = demoOwner
+    ? "مالك تجريبي — غير موثق رسميًا"
+    : "مشترك في عبده يوتيوب";
+
+  $("login-modal").classList.add("hidden");
+}
+
+function submitUserLogin(event) {
+  event.preventDefault();
+
+  const name = $("username-input").value.trim();
+
+  if (!name) {
+    alert("اكتب اسم العرض أولًا.");
+    return;
   }
 
-  if (username.toLowerCase() === ADMIN_USERNAME) {
-    return sendError(res, 409, "اسم المؤسس محجوز.");
-  }
-
-  if (password.length < 10 || password.length > 128) {
-    return sendError(
-      res,
-      400,
-      "كلمة المرور يجب أن تكون من 10 إلى 128 حرفًا."
-    );
-  }
-
-  if (!displayName) {
-    return sendError(res, 400, "اكتب الاسم الظاهر.");
+  if (name.length > 40) {
+    alert("الاسم طويل جدًا.");
+    return;
   }
 
   try {
-    const result = db.prepare(`
-      INSERT INTO users (
-        username,
-        display_name,
-        password_hash,
-        is_admin,
-        verified,
-        created_at
-      )
-      VALUES (?, ?, ?, 0, 0, ?)
-    `).run(
-      username,
-      displayName,
-      bcrypt.hashSync(password, 12),
-      now()
+    localStorage.setItem(USER_KEY, name);
+  } catch {
+    alert("تعذر حفظ الاسم على هذا الجهاز.");
+    return;
+  }
+
+  applyUserRole(name);
+}
+
+function logoutUser() {
+  localStorage.removeItem(USER_KEY);
+  currentUser = "";
+  $("username-input").value = "";
+  $("login-modal").classList.remove("hidden");
+}
+
+function switchTab(tab) {
+  const allowed = ["home", "live", "chat", "upload", "profile"];
+  if (!allowed.includes(tab)) return;
+
+  $("watch-view").style.display = "none";
+  $("youtube-player").src = "about:blank";
+
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.toggle("active", page.id === tab + "-page");
+  });
+
+  document.querySelectorAll(".nav-item").forEach(button => {
+    button.classList.toggle("active", button.dataset.tab === tab);
+  });
+
+  $("category-chips").style.display = tab === "home" ? "flex" : "none";
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
+function openSearch() {
+  $("search-overlay").classList.add("active");
+  $("search-input").focus();
+}
+
+function closeSearch() {
+  $("search-overlay").classList.remove("active");
+}
+
+function executeSearch() {
+  const query = $("search-input").value.trim();
+  if (!query) {
+    alert("اكتب كلمة البحث أولًا.");
+    return;
+  }
+
+  currentSearch = query;
+  currentCategory = "الكل";
+  document.querySelectorAll(".chip").forEach(chip => {
+    chip.classList.toggle("active", chip.dataset.category === "الكل");
+  });
+
+  closeSearch();
+  switchTab("home");
+  fetchRealVideos(query);
+}
+
+async function fetchRealVideos(query = "") {
+  const feed = $("video-feed");
+  showMessage(feed, "جاري تحميل الفيديوهات...");
+
+  if (!API_KEY || API_KEY === "YOUR_YOUTUBE_API_KEY") {
+    showMessage(
+      feed,
+      "أضف مفتاح YouTube Data API v3 داخل المتغير API_KEY لعرض نتائج يوتيوب الحقيقية."
     );
+    return;
+  }
 
-    const user = getUser(Number(result.lastInsertRowid));
+  let url;
 
-    const founderUser = db.prepare(`
-      SELECT id
-      FROM users
-      WHERE username = ? COLLATE NOCASE
-    `).get(ADMIN_USERNAME);
-
-    if (founderUser) {
-      db.prepare(`
-        INSERT OR IGNORE INTO follows (
-          follower_id,
-          followed_id,
-          created_at
-        )
-        VALUES (?, ?, ?)
-      `).run(user.id, founderUser.id, now());
-    }
-
-    return res.status(201).json({
-      token: tokenFor(user),
-      user: publicUser(user, user.id),
-      message: "تم إنشاء الحساب."
+  if (query === "__popular__" || query === "") {
+    url = new URL("https://www.googleapis.com/youtube/v3/videos");
+    url.search = new URLSearchParams({
+      part: "snippet,statistics",
+      chart: "mostPopular",
+      maxResults: "20",
+      regionCode: "EG",
+      key: API_KEY
     });
-  } catch (error) {
-    if (String(error.code || "").includes("SQLITE_CONSTRAINT")) {
-      return sendError(res, 409, "اسم المستخدم مستخدم بالفعل.");
-    }
-
-    console.error("Register error:", error);
-
-    return sendError(res, 500, "تعذر إنشاء الحساب.");
-  }
-});
-
-/* تسجيل الدخول */
-
-app.post("/api/auth/login", authLimiter, (req, res) => {
-  const username = String(req.body?.username || "").trim();
-  const password = String(req.body?.password || "");
-
-  if (!username || !password) {
-    return sendError(
-      res,
-      400,
-      "اكتب اسم المستخدم وكلمة المرور."
-    );
-  }
-
-  const found = db.prepare(`
-    SELECT id, password_hash
-    FROM users
-    WHERE username = ? COLLATE NOCASE
-  `).get(username);
-
-  if (!found || !bcrypt.compareSync(password, found.password_hash)) {
-    return sendError(
-      res,
-      401,
-      "اسم المستخدم أو كلمة المرور غير صحيحة."
-    );
-  }
-
-  const user = getUser(found.id);
-
-  res.json({
-    token: tokenFor(user),
-    user: publicUser(user, user.id),
-    message: "تم تسجيل الدخول."
-  });
-});
-
-/* بيانات الحساب الحالي */
-
-app.get("/api/me", auth, (req, res) => {
-  res.json({
-    user: publicUser(req.user, req.user.id)
-  });
-});
-
-/* عرض حساب مستخدم */
-
-app.get("/api/users/:username", optionalAuth, (req, res) => {
-  const user = db.prepare(`
-    SELECT id, username, display_name, is_admin, verified, created_at
-    FROM users
-    WHERE username = ? COLLATE NOCASE
-  `).get(String(req.params.username || "").trim());
-
-  if (!user) {
-    return sendError(res, 404, "المستخدم غير موجود.");
-  }
-
-  res.json({
-    user: publicUser(user, req.viewerId)
-  });
-});
-
-/* متابعة وإلغاء متابعة */
-
-app.post("/api/users/:id/follow", auth, (req, res) => {
-  const id = validId(req.params.id);
-
-  if (!id) {
-    return sendError(res, 400, "معرّف المستخدم غير صالح.");
-  }
-
-  const target = getUser(id);
-
-  if (!target) {
-    return sendError(res, 404, "المستخدم غير موجود.");
-  }
-
-  if (id === req.user.id) {
-    return sendError(res, 400, "لا يمكنك متابعة نفسك.");
-  }
-
-  const exists = db.prepare(`
-    SELECT 1
-    FROM follows
-    WHERE follower_id = ? AND followed_id = ?
-  `).get(req.user.id, id);
-
-  if (exists) {
-    db.prepare(`
-      DELETE FROM follows
-      WHERE follower_id = ? AND followed_id = ?
-    `).run(req.user.id, id);
   } else {
-    db.prepare(`
-      INSERT OR IGNORE INTO follows (
-        follower_id,
-        followed_id,
-        created_at
-      )
-      VALUES (?, ?, ?)
-    `).run(req.user.id, id, now());
-  }
-
-  res.json({
-    following: !exists,
-    user: publicUser(target, req.user.id)
-  });
-});
-
-/* رفع الفيديو */
-
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, UPLOAD_DIR);
-  },
-
-  filename: (_req, _file, cb) => {
-    cb(null, crypto.randomBytes(20).toString("hex") + ".tmp");
-  }
-});
-
-const upload = multer({
-  storage,
-
-  limits: {
-    fileSize: MAX_VIDEO_SIZE,
-    files: 1,
-    fields: 5,
-    parts: 6
-  },
-
-  fileFilter: (_req, file, cb) => {
-    const allowedTypes = [
-      "video/mp4",
-      "video/webm",
-      "video/quicktime"
-    ];
-
-    if (!allowedTypes.includes(file.mimetype)) {
-      return cb(
-        new Error("استخدم فيديو MP4 أو WebM أو MOV.")
-      );
-    }
-
-    cb(null, true);
-  }
-});
-
-function removeFile(filePath) {
-  if (!filePath) return;
-
-  try {
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-  } catch (error) {
-    console.error("File cleanup error:", error);
-  }
-}
-
-function receiveVideo(req, res, next) {
-  upload.single("video")(req, res, error => {
-    if (error) {
-      if (req.file?.path) {
-        removeFile(req.file.path);
-      }
-
-      if (error.code === "LIMIT_FILE_SIZE") {
-        return sendError(
-          res,
-          413,
-          "حجم الفيديو أكبر من 100 ميجابايت."
-        );
-      }
-
-      if (error.code === "LIMIT_UNEXPECTED_FILE") {
-        return sendError(res, 400, "حقل الفيديو غير صالح.");
-      }
-
-      return sendError(
-        res,
-        400,
-        error.message || "تعذر رفع الفيديو."
-      );
-    }
-
-    next();
-  });
-}
-
-function detectVideoType(filePath) {
-  const fd = fs.openSync(filePath, "r");
-
-  try {
-    const header = Buffer.alloc(16);
-    const bytesRead = fs.readSync(fd, header, 0, 16, 0);
-
-    if (
-      bytesRead >= 8 &&
-      header.toString("ascii", 4, 8) === "ftyp"
-    ) {
-      return "mp4";
-    }
-
-    if (
-      bytesRead >= 4 &&
-      header[0] === 0x1a &&
-      header[1] === 0x45 &&
-      header[2] === 0xdf &&
-      header[3] === 0xa3
-    ) {
-      return "webm";
-    }
-
-    return null;
-  } finally {
-    fs.closeSync(fd);
-  }
-}
-
-/* نشر منشور */
-
-app.post("/api/posts", auth, receiveVideo, (req, res) => {
-  let finalPath = null;
-
-  try {
-    const caption = String(
-      req.body?.caption || ""
-    ).trim().slice(0, 1000);
-
-    let videoPath = null;
-
-    if (req.file) {
-      const type = detectVideoType(req.file.path);
-
-      if (!type) {
-        removeFile(req.file.path);
-
-        return sendError(
-          res,
-          400,
-          "محتوى الفيديو غير صالح أو غير مدعوم."
-        );
-      }
-
-      const filename =
-        Date.now() +
-        "-" +
-        crypto.randomBytes(12).toString("hex") +
-        "." +
-        type;
-
-      finalPath = path.join(UPLOAD_DIR, filename);
-
-      fs.renameSync(req.file.path, finalPath);
-
-      videoPath = "/uploads/" + filename;
-    }
-
-    if (!caption && !videoPath) {
-      removeFile(finalPath);
-
-      return sendError(
-        res,
-        400,
-        "اكتب وصفًا أو أرفق فيديو."
-      );
-    }
-
-    const result = db.prepare(`
-      INSERT INTO posts (
-        user_id,
-        caption,
-        video_path,
-        created_at
-      )
-      VALUES (?, ?, ?, ?)
-    `).run(req.user.id, caption, videoPath, now());
-
-    res.status(201).json({
-      postId: Number(result.lastInsertRowid),
-      message: "تم نشر المنشور."
+    url = new URL("https://www.googleapis.com/youtube/v3/search");
+    url.search = new URLSearchParams({
+      part: "snippet",
+      maxResults: "20",
+      q: query,
+      type: "video",
+      key: API_KEY
     });
+  }
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error.message || "YouTube API error");
+    }
+
+    currentVideosList = (data.items || []).filter(item => {
+      const id = getVideoId(item);
+      return escapeYouTubeId(id) && item.snippet;
+    });
+
+    renderFeed(currentVideosList);
   } catch (error) {
-    removeFile(finalPath);
-
-    if (req.file) {
-      removeFile(req.file.path);
-    }
-
-    console.error("Create post error:", error);
-
-    return sendError(res, 500, "تعذر إنشاء المنشور.");
-  }
-});
-
-/* عرض المنشورات */
-
-app.get("/api/posts", optionalAuth, (req, res) => {
-  const posts = db.prepare(`
-    SELECT
-      p.id,
-      p.user_id,
-      p.caption,
-      p.video_path,
-      p.created_at,
-      u.username,
-      u.display_name,
-      u.is_admin,
-      u.verified,
-
-      (SELECT COUNT(*)
-       FROM likes
-       WHERE post_id = p.id) AS likes,
-
-      (SELECT COUNT(*)
-       FROM comments
-       WHERE post_id = p.id) AS comments,
-
-      (SELECT COUNT(*)
-       FROM likes
-       WHERE post_id = p.id
-       AND user_id = ?) AS liked
-
-    FROM posts p
-    JOIN users u ON u.id = p.user_id
-    ORDER BY p.created_at DESC, p.id DESC
-    LIMIT 100
-  `).all(req.viewerId || -1);
-
-  res.json({
-    posts: posts.map(p => ({
-      id: p.id,
-      caption: p.caption,
-      videoPath: p.video_path,
-      createdAt: p.created_at,
-      likes: p.likes,
-      comments: p.comments,
-      liked: Boolean(p.liked),
-
-      user: {
-        id: p.user_id,
-        username: p.username,
-        displayName: p.display_name,
-        isAdmin: Boolean(p.is_admin),
-        verified: Boolean(p.verified)
-      }
-    }))
-  });
-});
-
-/* إعجاب وإلغاء إعجاب */
-
-app.post("/api/posts/:id/like", auth, (req, res) => {
-  const id = validId(req.params.id);
-
-  if (!id) {
-    return sendError(res, 400, "معرّف المنشور غير صالح.");
-  }
-
-  const post = db.prepare(
-    "SELECT id FROM posts WHERE id = ?"
-  ).get(id);
-
-  if (!post) {
-    return sendError(res, 404, "المنشور غير موجود.");
-  }
-
-  const exists = db.prepare(`
-    SELECT 1
-    FROM likes
-    WHERE user_id = ? AND post_id = ?
-  `).get(req.user.id, id);
-
-  if (exists) {
-    db.prepare(`
-      DELETE FROM likes
-      WHERE user_id = ? AND post_id = ?
-    `).run(req.user.id, id);
-  } else {
-    db.prepare(`
-      INSERT OR IGNORE INTO likes (
-        user_id,
-        post_id,
-        created_at
-      )
-      VALUES (?, ?, ?)
-    `).run(req.user.id, id, now());
-  }
-
-  const likes = db.prepare(`
-    SELECT COUNT(*) AS n
-    FROM likes
-    WHERE post_id = ?
-  `).get(id).n;
-
-  res.json({
-    liked: !exists,
-    likes
-  });
-});
-
-/* عرض التعليقات */
-
-app.get("/api/posts/:id/comments", (req, res) => {
-  const id = validId(req.params.id);
-
-  if (!id) {
-    return sendError(res, 400, "معرّف المنشور غير صالح.");
-  }
-
-  const post = db.prepare(
-    "SELECT id FROM posts WHERE id = ?"
-  ).get(id);
-
-  if (!post) {
-    return sendError(res, 404, "المنشور غير موجود.");
-  }
-
-  const comments = db.prepare(`
-    SELECT
-      c.id,
-      c.body,
-      c.created_at,
-      u.id AS user_id,
-      u.username,
-      u.display_name,
-      u.is_admin,
-      u.verified
-
-    FROM comments c
-    JOIN users u ON u.id = c.user_id
-
-    WHERE c.post_id = ?
-
-    ORDER BY c.created_at ASC, c.id ASC
-    LIMIT 100
-  `).all(id);
-
-  res.json({
-    comments: comments.map(c => ({
-      id: c.id,
-      body: c.body,
-      createdAt: c.created_at,
-
-      user: {
-        id: c.user_id,
-        username: c.username,
-        displayName: c.display_name,
-        isAdmin: Boolean(c.is_admin),
-        verified: Boolean(c.verified)
-      }
-    }))
-  });
-});
-
-/* إضافة تعليق */
-
-app.post("/api/posts/:id/comments", auth, (req, res) => {
-  const id = validId(req.params.id);
-
-  const body = String(
-    req.body?.body || ""
-  ).trim().slice(0, 500);
-
-  if (!id) {
-    return sendError(res, 400, "معرّف المنشور غير صالح.");
-  }
-
-  if (!body) {
-    return sendError(res, 400, "اكتب تعليقًا.");
-  }
-
-  const post = db.prepare(
-    "SELECT id FROM posts WHERE id = ?"
-  ).get(id);
-
-  if (!post) {
-    return sendError(res, 404, "المنشور غير موجود.");
-  }
-
-  const result = db.prepare(`
-    INSERT INTO comments (
-      user_id,
-      post_id,
-      body,
-      created_at
-    )
-    VALUES (?, ?, ?, ?)
-  `).run(req.user.id, id, body, now());
-
-  res.status(201).json({
-    commentId: Number(result.lastInsertRowid),
-    message: "تمت إضافة التعليق."
-  });
-});
-
-/* لوحة المؤسس: الإحصائيات */
-
-app.get("/api/admin/stats", auth, adminOnly, (_req, res) => {
-  const count = table => {
-    return db.prepare(
-      `SELECT COUNT(*) AS n FROM ${table}`
-    ).get().n;
-  };
-
-  res.json({
-    users: count("users"),
-    posts: count("posts"),
-    comments: count("comments"),
-    likes: count("likes"),
-    generatedAt: now()
-  });
-});
-
-/* لوحة المؤسس: المنشورات */
-
-app.get("/api/admin/posts", auth, adminOnly, (req, res) => {
-  const requested = Number(req.query.limit || 50);
-
-  const limit = Number.isSafeInteger(requested)
-    ? Math.min(Math.max(requested, 1), 100)
-    : 50;
-
-  const posts = db.prepare(`
-    SELECT
-      p.id,
-      p.caption,
-      p.video_path,
-      p.created_at,
-      u.id AS user_id,
-      u.username,
-      u.display_name
-
-    FROM posts p
-    JOIN users u ON u.id = p.user_id
-
-    ORDER BY p.created_at DESC, p.id DESC
-    LIMIT ?
-  `).all(limit);
-
-  res.json({ posts });
-});
-
-/* لوحة المؤسس: حذف منشور */
-
-app.delete("/api/admin/posts/:id", auth, adminOnly, (req, res) => {
-  const id = validId(req.params.id);
-
-  if (!id) {
-    return sendError(res, 400, "معرّف المنشور غير صالح.");
-  }
-
-  const post = db.prepare(`
-    SELECT id, video_path
-    FROM posts
-    WHERE id = ?
-  `).get(id);
-
-  if (!post) {
-    return sendError(res, 404, "المنشور غير موجود.");
-  }
-
-  db.prepare(
-    "DELETE FROM posts WHERE id = ?"
-  ).run(id);
-
-  if (post.video_path && post.video_path.startsWith("/uploads/")) {
-    removeFile(
-      path.join(
-        UPLOAD_DIR,
-        path.basename(post.video_path)
-      )
+    console.error("YouTube API error:", error);
+    showMessage(
+      feed,
+      "تعذر تحميل الفيديوهات. تحقق من مفتاح API، والاتصال بالإنترنت، وحصة الاستخدام."
     );
   }
-
-  res.json({
-    ok: true,
-    message: "تم حذف المنشور."
-  });
-});
-
-/* لوحة المؤسس: عرض المستخدمين */
-
-app.get("/api/admin/users", auth, adminOnly, (req, res) => {
-  const requested = Number(req.query.limit || 100);
-
-  const limit = Number.isSafeInteger(requested)
-    ? Math.min(Math.max(requested, 1), 200)
-    : 100;
-
-  const users = db.prepare(`
-    SELECT
-      id,
-      username,
-      display_name,
-      is_admin,
-      verified,
-      created_at
-
-    FROM users
-    ORDER BY id DESC
-    LIMIT ?
-  `).all(limit);
-
-  res.json({
-    users: users.map(u => ({
-      id: u.id,
-      username: u.username,
-      displayName: u.display_name,
-      isAdmin: Boolean(u.is_admin),
-      verified: Boolean(u.verified),
-      createdAt: u.created_at
-    }))
-  });
-});
-
-/* معالجة مسارات API غير الموجودة */
-
-app.use("/api", (_req, res) => {
-  return sendError(res, 404, "مسار API غير موجود.");
-});
-
-/* معالجة الأخطاء */
-
-app.use((error, _req, res, _next) => {
-  console.error("Request error:", error);
-
-  if (!res.headersSent) {
-    return sendError(
-      res,
-      500,
-      "حدث خطأ داخلي في السيرفر."
-    );
-  }
-});
-
-/* تشغيل السيرفر */
-
-const server = app.listen(PORT, "0.0.0.0", () => {
-  console.log(`AbdoTok يعمل على المنفذ ${PORT}`);
-});
-
-/* إغلاق آمن */
-
-function shutdown() {
-  server.close(() => {
-    try {
-      db.close();
-    } finally {
-      process.exit(0);
-    }
-  });
-
-  setTimeout(() => process.exit(1), 10000).unref();
 }
 
-process.on("SIGTERM", shutdown);
-process.on("SIGINT", shutdown);
+function makeVideoCard(video) {
+  const id = escapeYouTubeId(video.id);
+  if (!id) return null;
+
+  const card = document.createElement("article");
+  card.className = "video-card";
+
+  const thumbnail = document.createElement("div");
+  thumbnail.className = "thumbnail-box";
+
+  const img = document.createElement("img");
+  img.src = video.thumbnail ||
+    "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
+  img.alt = video.title;
+  img.loading = "lazy";
+
+  thumbnail.appendChild(img);
+
+  const info = document.createElement("div");
+  info.className = "video-info-box";
+
+  const avatar = document.createElement("div");
+  avatar.className = "channel-avatar";
+  avatar.textContent = Array.from(video.channel || "ع")[0] || "ع";
+
+  const details = document.createElement("div");
+  const title = document.createElement("div");
+  title.className = "video-title";
+  title.textContent = video.title;
+
+  const meta = document.createElement("div");
+  meta.className = "sub-meta";
+  meta.textContent = (video.channel || "قناة يوتيوب") +
+    " • محتوى من يوتيوب";
+
+  details.append(title, meta);
+  info.append(avatar, details);
+  card.append(thumbnail, info);
+
+  card.addEventListener("click", () => openWatch(
+    video.id,
+    video.title,
+    video.channel,
+    video.channelId || ""
+  ));
+
+  return card;
+}
+
+function renderFeed(items) {
+  const feed = $("video-feed");
+  feed.replaceChildren();
+
+  const customs = getCustomVideos();
+
+  let videos = items.map(item => ({
+    id: getVideoId(item),
+    title: item.snippet.title,
+    channel: item.snippet.channelTitle || "قناة يوتيوب",
+    channelId: item.snippet.channelId || "",
+    thumbnail: getThumbnail(item)
+  }));
+
+  if (currentCategory !== "الكل" && !currentSearch) {
+    const categoryQuery = {
+      "ألعاب فيديو": "ألعاب فيديو",
+      "كرة القدم": "كرة القدم",
+      "موسيقى": "موسيقى"
+    }[currentCategory];
+
+    videos = videos.filter(video =>
+      (video.title + " " + video.channel)
+        .toLowerCase()
+        .includes(categoryQuery.toLowerCase())
+    );
+  }
+
+  const allVideos = [
+    ...customs.map(video => ({
+      ...video,
+      custom: true
+    })),
+    ...videos
+  ];
+
+  if (!allVideos.length) {
+    showMessage(feed, "لا توجد نتائج للعرض حاليًا.");
+    return;
+  }
+
+  allVideos.forEach(video => {
+    if (video.custom) {
+      const card = document.createElement("article");
+      card.className = "video-card";
+
+      const thumb = document.createElement("div");
+      thumb.className = "thumbnail-box";
+      thumb.style.display = "grid";
+      thumb.style.placeItems = "center";
+      thumb.style.color = "white";
+      thumb.style.fontSize = "35px";
+      thumb.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
+
+      const info = document.createElement("div");
+      info.className = "video-info-box";
+
+      const avatar = document.createElement("div");
+      avatar.className = "channel-avatar";
+      avatar.textContent = Array.from(currentUser || "ع")[0] || "ع";
+
+      const details = document.createElement("div");
+      const title = document.createElement("div");
+      title.className = "video-title";
+      title.textContent = video.title;
+
+      const meta = document.createElement("div");
+      meta.className = "sub-meta";
+      meta.textContent = (video.channel || currentUser) +
+        " • بطاقة تجريبية وليست فيديو مرفوعًا";
+
+      details.append(title, meta);
+      info.append(avatar, details);
+      card.append(thumb, info);
+      feed.appendChild(card);
+      return;
+    }
+
+    const card = makeVideoCard(video);
+    if (card) feed.appendChild(card);
+  });
+}
+
+function filterCat(category, button) {
+  currentCategory = category;
+  currentSearch = "";
+
+  document.querySelectorAll(".chip").forEach(chip => {
+    chip.classList.toggle("active", chip === button);
+  });
+
+  if (category === "الكل") {
+    fetchRealVideos("__popular__");
+  } else {
+    const queries = {
+      "ألعاب فيديو": "ألعاب فيديو",
+      "كرة القدم": "كرة القدم",
+      "موسيقى": "موسيقى"
+    };
+    fetchRealVideos(queries[category] || category);
+  }
+}
+
+function renderLiveStreams() {
+  const list = $("live-streams-list");
+  list.replaceChildren();
+
+  liveStreams.forEach(stream => {
+    const id = escapeYouTubeId(stream.id);
+    if (!id) return;
+
+    const card = document.createElement("article");
+    card.className = "live-stream-card";
+
+    const img = document.createElement("img");
+    img.src = "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
+    img.alt = stream.title;
+    img.loading = "lazy";
+
+    const info = document.createElement("div");
+    info.className = "live-stream-info";
+
+    const badge = document.createElement("div");
+    badge.className = "live-label";
+    badge.textContent = "● بث تجريبي";
+
+    const title = document.createElement("h3");
+    title.textContent = stream.title;
+
+    const channel = document.createElement("p");
+    channel.className = "sub-meta";
+    channel.textContent = stream.channel + " • " + stream.viewers;
+
+    info.append(badge, title, channel);
+    card.append(img, info);
+
+    card.addEventListener("click", () => {
+      openWatch(id, stream.title, stream.channel);
+    });
+
+    list.appendChild(card);
+  });
+}
+
+function openWatch(id, title, channel, channelId = "") {
+  const safeId = escapeYouTubeId(id);
+
+  if (!safeId) {
+    alert("معرّف الفيديو غير صالح.");
+    return;
+  }
+
+  currentVideo = { id: safeId, title, channel };
+  currentChannelId = channelId;
+  subscribed = false;
+
+  $("watch-title").textContent = title;
+  $("watch-channel").textContent = channel || "قناة يوتيوب";
+  $("watch-message").textContent = "";
+  $("sub-toggle-btn").textContent = "متابعة القناة";
+
+  $("youtube-player").src =
+    "https://www.youtube-nocookie.com/embed/" +
+    safeId + "?autoplay=1&rel=0";
+
+  $("watch-view").style.display = "flex";
+}
+
+function closeWatch() {
+  $("youtube-player").src = "about:blank";
+  $("watch-view").style.display = "none";
+  currentVideo = null;
+}
+
+function toggleSubscribe() {
+  if (!currentVideo) return;
+
+  subscribed = !subscribed;
+  $("sub-toggle-btn").textContent =
+    subscribed ? "تمت المتابعة ✓" : "متابعة القناة";
+
+  $("watch-message").textContent =
+    "المتابعة هنا تجريبية ومحلية، ولا تغيّر اشتراك حسابك على يوتيوب.";
+}
+
+function loadChatMessages() {
+  const box = $("chat-messages-box");
+  box.replaceChildren();
+
+  const messages = readJSON(CHAT_KEY, []);
+
+  if (!messages.length) {
+    showMessage(box, "لا توجد رسائل بعد. ابدأ المحادثة!");
+    return;
+  }
+
+  messages.forEach(message => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "chat-msg";
+
+    const name = document.createElement("div");
+    name.className = "name";
+    name.textContent = message.name;
+
+    const text = document.createElement("div");
+    text.className = "txt";
+    text.textContent = message.text;
+
+    wrapper.append(name, text);
+    box.appendChild(wrapper);
+  });
+
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendChatMessage(event) {
+  event.preventDefault();
+
+  if (!currentUser) {
+    alert("سجّل اسم العرض أولًا.");
+    return;
+  }
+
+  const input = $("chat-input-msg");
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  const messages = readJSON(CHAT_KEY, []);
+  messages.push({
+    name: currentUser,
+    text: text.slice(0, 500),
+    time: Date.now()
+  });
+
+  if (!saveJSON(CHAT_KEY, messages.slice(-100))) return;
+
+  input.value = "";
+  loadChatMessages();
+}
+
+/*
+  الإضافة هنا بطاقة تجريبية محلية فقط.
+  لا يتم رفع ملف فيديو إلى خادم أو إلى يوتيوب.
+*/
+function uploadMyVideo(event) {
+  event.preventDefault();
+
+  const input = $("custom-video-title");
+  const title = input.value.trim();
+
+  if (!title) {
+    alert("اكتب عنوان المحتوى.");
+    return;
+  }
+
+  const videos = getCustomVideos();
+
+  videos.unshift({
+    id: "custom-" + Date.now(),
+    title: title.slice(0, 150),
+    channel: currentUser,
+    createdAt: Date.now()
+  });
+
+  if (!saveJSON(CUSTOM_KEY, videos.slice(0, 50))) return;
+
+  input.value = "";
+  $("upload-status").textContent =
+    "تمت إضافة بطاقة تجريبية إلى الرئيسية.";
+
+  $("custom-video-count").textContent =
+    String(getCustomVideos().length);
+
+  renderFeed(currentVideosList);
+  switchTab("home");
+}
+
+function initEventListeners() {
+  $("login-form").addEventListener("submit", submitUserLogin);
+  $("change-user").addEventListener("click", logoutUser);
+
+  $("logo-home").addEventListener("click", () => switchTab("home"));
+
+  $("open-search").addEventListener("click", openSearch);
+  $("close-search").addEventListener("click", closeSearch);
+  $("execute-search").addEventListener("click", executeSearch);
+
+  $("search-input").addEventListener("keydown", event => {
+    if (event.key === "Enter") executeSearch();
+    if (event.key === "Escape") closeSearch();
+  });
+
+  $("category-chips").addEventListener("click", event => {
+    const button = event.target.closest(".chip");
+    if (button) filterCat(button.dataset.category, button);
+  });
+
+  document.querySelectorAll(".nav-item").forEach(button => {
+    button.addEventListener("click", () => {
+      switchTab(button.dataset.tab);
+    });
+  });
+
+  $("close-watch").addEventListener("click", closeWatch);
+  $("sub-toggle-btn").addEventListener("click", toggleSubscribe);
+
+  $("like-btn").addEventListener("click", () => {
+    if (!currentVideo) return;
+    $("watch-message").textContent =
+      "زر الإعجاب تجريبي ولا يرسل إعجابًا إلى يوتيوب.";
+  });
+
+  $("chat-form").addEventListener("submit", sendChatMessage);
+  $("upload-form").addEventListener("submit", uploadMyVideo);
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      if ($("watch-view").style.display === "flex") closeWatch();
+      else closeSearch();
+    }
+  });
+}
+
+function init() {
+  initEventListeners();
+  renderLiveStreams();
+  loadChatMessages();
+
+  $("custom-video-count").textContent =
+    String(getCustomVideos().length);
+
+  const savedUser = localStorage.getItem(USER_KEY);
+
+  if (savedUser && savedUser.trim()) {
+    applyUserRole(savedUser.trim());
+  } else {
+    $("login-modal").classList.remove("hidden");
+  }
+
+  fetchRealVideos("__popular__");
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+
+</body>
+</html>
