@@ -2,814 +2,653 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090d16">
-  <title>Kali Linux Web OS | Cyber Lab</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07090e">
+<title>الملك لايف | البث المباشر</title>
 
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <style>
-    :root {
-      --bg: #090d16;
-      --panel: #111827;
-      --panel2: #080c14;
-      --blue: #0ea5e9;
-      --green: #00ff66;
-      --red: #ff1744;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --border: #263247;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: "Courier New", monospace;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      background:
-        radial-gradient(ellipse at top, #101b30 0%, var(--bg) 55%);
-      color: var(--text);
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    button:focus-visible,
-    input:focus-visible {
-      outline: 2px solid var(--blue);
-      outline-offset: 3px;
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(3, 6, 12, .97);
-    }
-
-    .modal-box {
-      width: 100%;
-      max-width: 380px;
-      padding: 26px;
-      text-align: center;
-      background: var(--panel);
-      border: 1px solid var(--blue);
-      border-radius: 18px;
-      box-shadow: 0 0 35px #0ea5e922;
-    }
-
-    .modal-box h2 {
-      color: var(--blue);
-      margin-bottom: 12px;
-    }
-
-    .modal-box p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    .modal-box input {
-      width: 100%;
-      padding: 13px;
-      margin: 16px 0 12px;
-      background: var(--panel2);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      color: white;
-      text-align: center;
-      font-size: 16px;
-    }
-
-    .primary-btn {
-      width: 100%;
-      padding: 13px;
-      border: 0;
-      border-radius: 9px;
-      color: white;
-      background: var(--blue);
-      font-weight: bold;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 14px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-bottom: 2px solid var(--blue);
-      border-radius: 12px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      color: var(--blue);
-      font-size: 15px;
-      font-weight: bold;
-    }
-
-    .user-area {
-      color: var(--muted);
-      font-size: 12px;
-      text-align: left;
-      overflow-wrap: anywhere;
-    }
-
-    .desktop-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin: 14px 0;
-    }
-
-    .section-title {
-      margin-bottom: 8px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .tools-bar {
-      display: flex;
-      gap: 8px;
-      padding: 2px 1px 8px;
-      overflow-x: auto;
-      scrollbar-width: thin;
-    }
-
-    .app-shortcut {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      flex-shrink: 0;
-      padding: 11px 13px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      background: var(--panel);
-      font-size: 12px;
-      transition: border-color .2s, color .2s, transform .2s;
-    }
-
-    .app-shortcut:hover {
-      color: var(--green);
-      border-color: var(--green);
-      transform: translateY(-1px);
-    }
-
-    .terminal-window {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 390px;
-      overflow: hidden;
-      background: #030508;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: 0 10px 35px #0005;
-    }
-
-    .terminal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
-      font-size: 12px;
-    }
-
-    .terminal-header .title {
-      direction: ltr;
-      text-align: left;
-      overflow-wrap: anywhere;
-    }
-
-    .window-dots {
-      display: flex;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    .terminal-body {
-      flex: 1;
-      min-height: 270px;
-      max-height: 55vh;
-      overflow-y: auto;
-      padding: 15px;
-      direction: ltr;
-      text-align: left;
-      color: var(--green);
-      font-size: 13px;
-      line-height: 1.7;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
-    }
-
-    .terminal-line {
-      margin-bottom: 5px;
-    }
-
-    .terminal-input-area {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px;
-      background: #070b12;
-      border-top: 1px solid var(--border);
-      direction: ltr;
-    }
-
-    #prompt-label {
-      flex-shrink: 0;
-      color: var(--blue);
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    #terminal-input {
-      width: 100%;
-      min-width: 0;
-      border: 0;
-      outline: none;
-      background: transparent;
-      color: white;
-      font-size: 16px;
-      direction: ltr;
-    }
-
-    #terminal-input::placeholder {
-      color: #64748b;
-    }
-
-    .terminal-send {
-      flex-shrink: 0;
-      padding: 8px 10px;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      color: var(--blue);
-      background: var(--panel);
-    }
-
-    .info-panel {
-      padding: 13px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--panel);
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.8;
-    }
-
-    .info-panel strong {
-      color: var(--green);
-    }
-
-    .footer-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 10px 4px 4px;
-      color: #64748b;
-      font-size: 11px;
-    }
-
-    .footer-actions {
-      display: flex;
-      gap: 12px;
-    }
-
-    .footer-btn {
-      padding: 5px;
-      background: transparent;
-      border: 0;
-      color: var(--blue);
-      font-size: 11px;
-    }
-
-    .footer-btn.danger {
-      color: var(--red);
-    }
-
-    @media (min-width: 800px) {
-      body {
-        max-width: 1100px;
-        width: 100%;
-        margin: auto;
-        padding: 22px;
-      }
-
-      .terminal-window {
-        min-height: 500px;
-      }
-
-      .terminal-body {
-        max-height: 65vh;
-        font-size: 14px;
-      }
-
-      .logo {
-        font-size: 18px;
-      }
-    }
-
-    @media (max-width: 420px) {
-      body {
-        padding: 8px;
-      }
-
-      header {
-        padding: 11px;
-      }
-
-      .logo {
-        font-size: 12px;
-      }
-
-      .user-area {
-        max-width: 120px;
-        font-size: 10px;
-      }
-
-      .terminal-body {
-        padding: 10px;
-        font-size: 12px;
-      }
-
-      #prompt-label {
-        font-size: 10px;
-      }
-
-      .app-shortcut {
-        padding: 10px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
-    }
-  </style>
+<style>
+:root {
+  --bg:#07090e;
+  --card:#111622;
+  --accent:#00e676;
+  --gold:#ffd700;
+  --border:#1f283d;
+  --text:#fff;
+}
+* {
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:system-ui,sans-serif;
+}
+body {
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding:14px;
+}
+header,.owner,.player,.categories,.channels,.footer {
+  width:100%;
+  max-width:650px;
+  margin-left:auto;
+  margin-right:auto;
+}
+header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:16px;
+  margin-bottom:14px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+}
+.logo {
+  color:var(--accent);
+  font-weight:bold;
+  font-size:17px;
+}
+#user-label {
+  color:var(--accent);
+  font-size:12px;
+}
+.owner {
+  display:none;
+  text-align:center;
+  padding:12px;
+  margin-bottom:14px;
+  color:var(--gold);
+  border:1px solid var(--gold);
+  border-radius:12px;
+}
+.player {
+  position:relative;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  background:#000;
+  border:1px solid var(--border);
+  border-radius:15px;
+  margin-bottom:15px;
+}
+.player video,.player iframe {
+  display:block;
+  width:100%;
+  height:100%;
+  border:0;
+  background:#000;
+}
+.status {
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  left:10px;
+  padding:8px;
+  text-align:center;
+  background:#111c;
+  border-radius:8px;
+  font-size:13px;
+  pointer-events:none;
+}
+.categories {
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:8px;
+  margin-bottom:12px;
+}
+.cat {
+  flex-shrink:0;
+  padding:10px 15px;
+  background:var(--card);
+  color:#fff;
+  border:1px solid var(--border);
+  border-radius:22px;
+  cursor:pointer;
+}
+.cat.active {
+  background:var(--accent);
+  color:#000;
+}
+.channels {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.channel {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  padding:13px;
+  text-align:right;
+  color:#fff;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:13px;
+  cursor:pointer;
+}
+.channel:hover,.channel:focus {
+  border-color:var(--accent);
+}
+.channel-info {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.channel-icon {
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  background:#1a2235;
+  border-radius:10px;
+  color:var(--accent);
+  font-size:19px;
+}
+.channel-name {
+  font-weight:bold;
+}
+.channel-cat {
+  color:#aaa;
+  font-size:12px;
+  margin-top:4px;
+}
+.live {
+  color:#ff526c;
+  font-size:12px;
+  white-space:nowrap;
+}
+.footer {
+  color:#777;
+  font-size:12px;
+  text-align:center;
+  margin-top:22px;
+  padding-bottom:12px;
+}
+.overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:#05070cf5;
+}
+.modal {
+  width:100%;
+  max-width:380px;
+  padding:24px;
+  text-align:center;
+  background:var(--card);
+  border:1px solid var(--accent);
+  border-radius:18px;
+}
+.modal h2,.modal h3 {
+  margin-bottom:10px;
+}
+.modal p {
+  color:#bbb;
+  font-size:14px;
+  margin:12px 0;
+}
+.modal input {
+  width:100%;
+  padding:13px;
+  margin:10px 0;
+  background:#05070c;
+  color:white;
+  border:1px solid var(--border);
+  border-radius:9px;
+  font-size:16px;
+}
+.primary {
+  width:100%;
+  padding:13px;
+  color:#000;
+  background:var(--accent);
+  border:0;
+  border-radius:9px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.ad-modal {
+  border-color:var(--gold);
+}
+.ad-modal h3 {
+  color:var(--gold);
+}
+.timer {
+  font-size:28px;
+  color:var(--accent);
+  margin:16px;
+}
+.primary:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+}
+@media(max-width:360px) {
+  body {padding:8px}
+  header {padding:12px}
+  .channel {padding:10px}
+}
+</style>
 </head>
 
 <body>
-  <div class="modal-overlay" id="register-modal" role="dialog"
-       aria-modal="true" aria-labelledby="login-title">
-    <div class="modal-box">
-      <h2 id="login-title">🐉 Kali Linux Web OS</h2>
-      <p>أدخل اسم المستخدم لبدء المختبر التعليمي.</p>
-      <form id="login-form">
-        <input id="user-name-input" type="text"
-          maxlength="24" autocomplete="nickname"
-          placeholder="مثال: student" aria-label="اسم المستخدم" required>
-        <button class="primary-btn" type="submit">تشغيل النظام</button>
-      </form>
-      <p style="margin-top:12px">هذه واجهة محاكاة تعليمية تعمل داخل المتصفح.</p>
-    </div>
+
+<!-- نافذة الدخول -->
+<div class="overlay" id="login-modal">
+  <div class="modal">
+    <h2>📺 الملك لايف</h2>
+    <p>اكتب اسمك للدخول إلى المنصة</p>
+    <input id="username" maxlength="40"
+           placeholder="اسم المشاهد">
+    <button class="primary" id="login-btn">
+      دخول للمنصة
+    </button>
   </div>
+</div>
 
-  <header>
-    <div class="logo">
-      <i class="fa-solid fa-dragon" aria-hidden="true"></i>
-      <span>Kali Linux Web OS</span>
-    </div>
-    <div class="user-area" id="header-user">guest@kali</div>
-  </header>
+<!-- نافذة الإعلان -->
+<div class="overlay" id="ad-modal">
+  <div class="modal ad-modal">
+    <h3>إعلان تجاري</h3>
+    <p>يمكنك متابعة المشاهدة بعد انتهاء العداد.</p>
+    <div class="timer" id="ad-timer">05:00</div>
+    <button class="primary" id="close-ad" disabled>
+      يرجى الانتظار...
+    </button>
+  </div>
+</div>
 
-  <main class="desktop-area">
-    <section aria-label="اختصارات الأدوات">
-      <div class="section-title">الأدوات التعليمية السريعة</div>
-      <div class="tools-bar">
-        <button class="app-shortcut" data-command="nmap --help">
-          <i class="fa-solid fa-network-wired"></i> Nmap
-        </button>
-        <button class="app-shortcut" data-command="metasploit">
-          <i class="fa-solid fa-skull"></i> Metasploit
-        </button>
-        <button class="app-shortcut" data-command="wireshark">
-          <i class="fa-solid fa-wifi"></i> Wireshark
-        </button>
-        <button class="app-shortcut" data-command="sqlmap --help">
-          <i class="fa-solid fa-database"></i> SQLMap
-        </button>
-        <button class="app-shortcut" data-command="aircrack-ng --help">
-          <i class="fa-solid fa-shield-halved"></i> Aircrack
-        </button>
-        <button class="app-shortcut" data-command="help">
-          <i class="fa-solid fa-circle-question"></i> Help
-        </button>
-        <button class="app-shortcut" data-command="clear">
-          <i class="fa-solid fa-eraser"></i> Clear
-        </button>
-      </div>
-    </section>
+<header>
+  <div class="logo">
+    <i class="fa-solid fa-tv"></i>
+    الملك لايف
+  </div>
+  <span id="user-label">زائر</span>
+</header>
 
-    <section class="terminal-window" aria-label="الطرفية التعليمية">
-      <div class="terminal-header">
-        <span class="title">
-          <i class="fa-solid fa-terminal"></i>
-          <span id="terminal-title">student@kali: ~</span>
-        </span>
-        <div class="window-dots" aria-hidden="true">
-          <span class="dot" style="background:#ff1744"></span>
-          <span class="dot" style="background:#ffd700"></span>
-          <span class="dot" style="background:#00ff66"></span>
-        </div>
-      </div>
+<div class="owner" id="owner-panel">
+  <i class="fa-solid fa-crown"></i>
+  المالك: عبده
+</div>
 
-      <div class="terminal-body" id="terminal-output"
-           role="log" aria-live="polite">
-      </div>
+<!-- مشغل الفيديو -->
+<div class="player" id="player-box">
+  <video id="live-player"
+         controls
+         playsinline
+         preload="metadata"></video>
+  <div class="status" id="player-status">
+    اختر قناة من القائمة لبدء المشاهدة
+  </div>
+</div>
 
-      <form class="terminal-input-area" id="command-form">
-        <label id="prompt-label" for="terminal-input">student@kali:~$</label>
-        <input id="terminal-input" type="text"
-          placeholder="اكتب help لعرض الأوامر..."
-          autocomplete="off" autocapitalize="off" spellcheck="false">
-        <button class="terminal-send" type="submit" aria-label="تنفيذ الأمر">
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-      </form>
-    </section>
+<!-- تصنيفات القنوات -->
+<nav class="categories" aria-label="تصنيفات القنوات">
+  <button class="cat active" data-cat="all">الكل</button>
+  <button class="cat" data-cat="bein">بي إن سبورت</button>
+  <button class="cat" data-cat="egypt">القنوات المصرية</button>
+  <button class="cat" data-cat="world">قنوات العالم</button>
+  <button class="cat" data-cat="kids">أطفال وكرتون</button>
+</nav>
 
-    <aside class="info-panel">
-      <strong><i class="fa-solid fa-circle-info"></i> تنبيه:</strong>
-      هذه محاكاة في المتصفح. الأوامر تعرض شروحات ونتائج تجريبية فقط،
-      ولا تشغّل أدوات Kali الحقيقية ولا تفحص الشبكات أو الأجهزة.
-      لتشغيل الأدوات الحقيقية تحتاج إلى بيئة Linux فعلية.
-    </aside>
-  </main>
+<!-- قائمة القنوات -->
+<section class="channels" id="channels-list"></section>
 
-  <footer class="footer-bar">
-    <span id="footer-status">الحالة: المختبر التعليمي جاهز</span>
-    <div class="footer-actions">
-      <button class="footer-btn" id="change-user-btn">تغيير المستخدم</button>
-      <button class="footer-btn danger" id="reset-btn">إعادة ضبط التطبيق</button>
-    </div>
-  </footer>
+<footer class="footer">
+  الملك لايف © 2026 — مصادر البث المرخّصة فقط
+</footer>
 
-  <script>
-    "use strict";
+<!-- مشغل HLS -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
 
-    const STORAGE_KEY = "kali_webos_username_v2";
-    let currentUser = "";
-    let commandHistory = [];
-    let historyIndex = 0;
+<script>
+'use strict';
 
-    const $ = (id) => document.getElementById(id);
+/*
+  أضف رابط البث المرخص في streamUrl لكل قناة.
+  الروابط الفارغة لا تشغّل بثًا فعليًا.
+*/
+const channels = [
+  {
+    id:1,
+    name:'beIN Sports 1 HD',
+    cat:'bein',
+    icon:'fa-futbol',
+    streamUrl:''
+  },
+  {
+    id:2,
+    name:'beIN Sports 2 HD',
+    cat:'bein',
+    icon:'fa-futbol',
+    streamUrl:''
+  },
+  {
+    id:3,
+    name:'beIN Sports Premium 1',
+    cat:'bein',
+    icon:'fa-trophy',
+    streamUrl:''
+  },
+  {
+    id:4,
+    name:'النهار المصرية',
+    cat:'egypt',
+    icon:'fa-tv',
+    streamUrl:''
+  },
+  {
+    id:5,
+    name:'CBC المصرية',
+    cat:'egypt',
+    icon:'fa-tv',
+    streamUrl:''
+  },
+  {
+    id:6,
+    name:'أون تايم سبورت',
+    cat:'egypt',
+    icon:'fa-futbol',
+    streamUrl:''
+  },
+  {
+    id:7,
+    name:'النيل للأخبار',
+    cat:'egypt',
+    icon:'fa-newspaper',
+    streamUrl:''
+  },
+  {
+    id:8,
+    name:'BBC News',
+    cat:'world',
+    icon:'fa-globe',
+    streamUrl:''
+  },
+  {
+    id:9,
+    name:'Sky News Arabia',
+    cat:'world',
+    icon:'fa-satellite-dish',
+    streamUrl:''
+  },
+  {
+    id:10,
+    name:'سبيستون',
+    cat:'kids',
+    icon:'fa-child',
+    streamUrl:''
+  }
+];
 
-    const output = $("terminal-output");
-    const input = $("terminal-input");
-    const modal = $("register-modal");
+const $ = id => document.getElementById(id);
 
-    function appendTerminal(message, type = "normal") {
-      const line = document.createElement("div");
-      line.className = "terminal-line";
-      line.textContent = String(message);
+const video = $('live-player');
+const statusBox = $('player-status');
 
-      if (type === "error") {
-        line.style.color = "#ff526b";
-      } else if (type === "info") {
-        line.style.color = "#38bdf8";
-      } else if (type === "muted") {
-        line.style.color = "#94a3b8";
-      } else {
-        line.style.color = "#00ff66";
-      }
+let hlsInstance = null;
+let currentCategory = 'all';
+let adInterval = null;
+let adTimeout = null;
+let adRemaining = 300;
+let adVisible = false;
 
-      output.appendChild(line);
+/*
+  ملاحظة:
+  اسم المالك في المتصفح ليس وسيلة مصادقة آمنة.
+  استخدم تحققًا من الخادم لحماية لوحة الإدارة.
+*/
+function setupUser(name) {
+  $('user-label').textContent = name;
+  $('owner-panel').style.display =
+    name === 'عبده' ? 'block' : 'none';
+}
 
-      // الحد من حجم سجل الطرفية حتى لا تتباطأ الصفحة.
-      while (output.children.length > 300) {
-        output.removeChild(output.firstChild);
-      }
+function login() {
+  const name =
+    $('username').value.trim().slice(0,40) || 'مشاهد';
 
-      output.scrollTop = output.scrollHeight;
+  localStorage.setItem('tv_user_name', name);
+  $('login-modal').style.display = 'none';
+  setupUser(name);
+}
+
+$('login-btn').addEventListener('click', login);
+
+$('username').addEventListener('keydown', event => {
+  if (event.key === 'Enter') login();
+});
+
+function renderChannels() {
+  const list = $('channels-list');
+  list.replaceChildren();
+
+  const filtered = channels.filter(channel =>
+    currentCategory === 'all' ||
+    channel.cat === currentCategory
+  );
+
+  filtered.forEach(channel => {
+    const button = document.createElement('button');
+    button.className = 'channel';
+    button.type = 'button';
+
+    const info = document.createElement('div');
+    info.className = 'channel-info';
+
+    const icon = document.createElement('div');
+    icon.className = 'channel-icon';
+
+    const iconElement = document.createElement('i');
+    iconElement.className = 'fa-solid ' + channel.icon;
+    icon.appendChild(iconElement);
+
+    const text = document.createElement('div');
+
+    const name = document.createElement('div');
+    name.className = 'channel-name';
+    name.textContent = channel.name;
+
+    const category = document.createElement('div');
+    category.className = 'channel-cat';
+    category.textContent = 'بث مباشر';
+
+    text.append(name, category);
+    info.append(icon, text);
+
+    const badge = document.createElement('span');
+    badge.className = 'live';
+    badge.textContent = '● مباشر';
+
+    button.append(info, badge);
+    button.addEventListener('click', () => playChannel(channel));
+
+    list.appendChild(button);
+  });
+
+  if (filtered.length === 0) {
+    const empty = document.createElement('p');
+    empty.textContent = 'لا توجد قنوات في هذا التصنيف.';
+    list.appendChild(empty);
+  }
+}
+
+document.querySelectorAll('.cat').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('.cat').forEach(item =>
+      item.classList.remove('active')
+    );
+
+    button.classList.add('active');
+    currentCategory = button.dataset.cat;
+    renderChannels();
+  });
+});
+
+function stopPlayer() {
+  if (hlsInstance) {
+    hlsInstance.destroy();
+    hlsInstance = null;
+  }
+
+  video.pause();
+  video.removeAttribute('src');
+  video.load();
+}
+
+function playChannel(channel) {
+  stopPlayer();
+
+  if (!channel.streamUrl) {
+    statusBox.textContent =
+      'رابط البث غير متوفر لهذه القناة. أضف رابطًا مرخصًا.';
+    return;
+  }
+
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(channel.streamUrl);
+
+    if (!['https:', 'http:'].includes(parsedUrl.protocol)) {
+      throw new Error('رابط غير صالح');
     }
+  } catch {
+    statusBox.textContent = 'رابط البث غير صالح.';
+    return;
+  }
 
-    function setStatus(message) {
-      $("footer-status").textContent = "الحالة: " + message;
-    }
+  statusBox.textContent = 'جارٍ تحميل ' + channel.name;
 
-    function setupOS() {
-      $("header-user").textContent = currentUser + "@kali";
-      $("prompt-label").textContent = currentUser + "@kali:~$";
-      $("terminal-title").textContent = currentUser + "@kali: ~";
-      setStatus("المختبر التعليمي جاهز");
+  if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = parsedUrl.href;
+  } else if (window.Hls && Hls.isSupported()) {
+    hlsInstance = new Hls();
 
-      appendTerminal("Kali Linux Web OS — Educational Simulator", "info");
-      appendTerminal("هذه ليست جلسة Linux حقيقية؛ الأوامر محاكاة تعليمية.");
-      appendTerminal("اكتب help لعرض الأوامر المتاحة.");
-      appendTerminal("");
+    hlsInstance.loadSource(parsedUrl.href);
+    hlsInstance.attachMedia(video);
 
-      input.focus();
-    }
-
-    function loginUser(name) {
-      const cleanName = String(name || "")
-        .trim()
-        .replace(/[^\w.-]/g, "")
-        .slice(0, 24);
-
-      if (!cleanName) {
-        alert("اكتب اسم مستخدم صحيحًا باللغة الإنجليزية أو الأرقام.");
-        $("user-name-input").focus();
-        return;
-      }
-
-      currentUser = cleanName;
-
-      try {
-        localStorage.setItem(STORAGE_KEY, currentUser);
-      } catch (error) {
-        // يمكن استخدام الصفحة حتى إذا كان التخزين غير متاح.
-      }
-
-      modal.style.display = "none";
-      output.replaceChildren();
-      commandHistory = [];
-      historyIndex = 0;
-      setupOS();
-    }
-
-    function showLogin() {
-      modal.style.display = "flex";
-      $("user-name-input").value = currentUser;
-      $("user-name-input").focus();
-    }
-
-    function printHelp() {
-      appendTerminal("الأوامر المتاحة:", "info");
-      appendTerminal("help                 - عرض المساعدة");
-      appendTerminal("whoami               - عرض اسم المستخدم");
-      appendTerminal("date                 - عرض التاريخ والوقت");
-      appendTerminal("history              - عرض الأوامر السابقة");
-      appendTerminal("clear                - مسح الشاشة");
-      appendTerminal("about                - معلومات عن المحاكاة");
-      appendTerminal("nmap --help          - شرح Nmap");
-      appendTerminal("metasploit           - شرح Metasploit");
-      appendTerminal("wireshark            - شرح Wireshark");
-      appendTerminal("sqlmap --help        - شرح SQLMap");
-      appendTerminal("aircrack-ng --help   - شرح Aircrack-ng");
-      appendTerminal("echo نص              - طباعة نص");
-      appendTerminal("");
-      appendTerminal("ملاحظة: الأوامر لا تشغّل برامج النظام الحقيقية.", "muted");
-    }
-
-    function showToolInfo(tool) {
-      const tools = {
-        nmap: [
-          "Nmap — أداة لاستكشاف الشبكات والمنافذ.",
-          "في هذه المحاكاة لا يتم إرسال أي طلبات للشبكة.",
-          "للتعلم: استخدم بيئة اختبار تملكها أو لديك تصريح بفحصها."
-        ],
-        metasploit: [
-          "Metasploit Framework — منصة لاختبار الأمان.",
-          "هذه الواجهة لا تحتوي على Metasploit ولا تنفّذ أي استغلال.",
-          "يمكنك دراسة المفاهيم في مختبر محلي قانوني."
-        ],
-        wireshark: [
-          "Wireshark — أداة لتحليل حزم الشبكة.",
-          "المتصفح هنا لا يلتقط حزم الشبكة ولا يراقب Wi-Fi."
-        ],
-        sqlmap: [
-          "SQLMap — أداة لاختبار ثغرات SQL Injection.",
-          "لا يتم إرسال طلبات إلى أي موقع من خلال هذه المحاكاة."
-        ],
-        aircrack: [
-          "Aircrack-ng — مجموعة أدوات لتدقيق أمان شبكات Wi-Fi.",
-          "هذه الصفحة لا تلتقط المصافحات ولا تكسر كلمات المرور."
-        ]
-      };
-
-      const lines = tools[tool];
-
-      if (!lines) {
-        appendTerminal("الأداة غير معروفة. اكتب help.", "error");
-        return;
-      }
-
-      lines.forEach((line) => appendTerminal(line));
-      setStatus("تم عرض معلومات " + tool);
-    }
-
-    function processCommand(rawCommand) {
-      const cmd = rawCommand.trim();
-
-      if (!cmd) return;
-
-      // نعرض الأوامر كنص عادي لمنع تفسيرها على أنها HTML.
-      appendTerminal(currentUser + "@kali:~$ " + cmd, "info");
-
-      commandHistory.push(cmd);
-      historyIndex = commandHistory.length;
-
-      const firstSpace = cmd.indexOf(" ");
-      const command = (firstSpace === -1
-        ? cmd
-        : cmd.slice(0, firstSpace)).toLowerCase();
-
-      const args = firstSpace === -1
-        ? ""
-        : cmd.slice(firstSpace + 1).trim();
-
-      switch (command) {
-        case "help":
-          printHelp();
-          break;
-
-        case "whoami":
-          appendTerminal(currentUser);
-          break;
-
-        case "date":
-          appendTerminal(new Date().toString(), "info");
-          break;
-
-        case "history":
-          if (!commandHistory.length) {
-            appendTerminal("لا توجد أوامر سابقة.", "muted");
-          } else {
-            commandHistory.forEach((item, index) => {
-              appendTerminal((index + 1) + "  " + item);
-            });
-          }
-          break;
-
-        case "clear":
-          output.replaceChildren();
-          break;
-
-        case "about":
-          appendTerminal("Kali Linux Web OS — واجهة تعليمية تجريبية.");
-          appendTerminal("HTML + CSS + JavaScript داخل المتصفح.");
-          appendTerminal("لا يوجد اتصال بطرفية Linux فعلية.");
-          break;
-
-        case "echo":
-          appendTerminal(args);
-          break;
-
-        case "nmap":
-          showToolInfo("nmap");
-          break;
-
-        case "metasploit":
-          showToolInfo("metasploit");
-          break;
-
-        case "wireshark":
-          showToolInfo("wireshark");
-          break;
-
-        case "sqlmap":
-          showToolInfo("sqlmap");
-          break;
-
-        case "aircrack-ng":
-          showToolInfo("aircrack");
-          break;
-
-        case "pwd":
-          appendTerminal("/home/" + currentUser);
-          break;
-
-        case "uname":
-          appendTerminal("Kali Web OS Simulator (not a real Linux kernel)", "muted");
-          break;
-
-        default:
-          appendTerminal(
-            "bash: " + cmd + ": الأمر غير متاح في المحاكاة. اكتب help.",
-            "error"
-          );
-      }
-    }
-
-    $("login-form").addEventListener("submit", function (event) {
-      event.preventDefault();
-      loginUser($("user-name-input").value);
+    hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+      statusBox.textContent = channel.name;
     });
 
-    $("command-form").addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      const cmd = input.value;
-      input.value = "";
-      processCommand(cmd);
-      input.focus();
-    });
-
-    input.addEventListener("keydown", function (event) {
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-        if (historyIndex > 0) {
-          historyIndex--;
-          input.value = commandHistory[historyIndex] || "";
-        }
-      } else if (event.key === "ArrowDown") {
-        event.preventDefault();
-        if (historyIndex < commandHistory.length - 1) {
-          historyIndex++;
-          input.value = commandHistory[historyIndex] || "";
-        } else {
-          historyIndex = commandHistory.length;
-          input.value = "";
-        }
+    hlsInstance.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal) {
+        statusBox.textContent =
+          'تعذر تشغيل البث. تحقق من الرابط والاتصال.';
       }
     });
+  } else {
+    statusBox.textContent =
+      'المتصفح لا يدعم صيغة البث المطلوبة.';
+    return;
+  }
 
-    document.querySelectorAll("[data-command]").forEach((button) => {
-      button.addEventListener("click", function () {
-        if (!currentUser) {
-          showLogin();
-          return;
-        }
+  video.play().then(() => {
+    statusBox.textContent = channel.name;
+  }).catch(() => {
+    statusBox.textContent = 'اضغط تشغيل لبدء المشاهدة.';
+  });
+}
 
-        processCommand(button.dataset.command);
-      });
-    });
+video.addEventListener('error', () => {
+  statusBox.textContent =
+    'تعذر تحميل الفيديو. تحقق من مصدر البث.';
+});
 
-    $("change-user-btn").addEventListener("click", function () {
-      showLogin();
-    });
+/* نظام الإعلانات */
+function showAd() {
+  const name = localStorage.getItem('tv_user_name') || '';
 
-    $("reset-btn").addEventListener("click", function () {
-      const confirmed = confirm(
-        "هل تريد حذف اسم المستخدم المحفوظ وإعادة ضبط هذا التطبيق؟"
-      );
+  if (name === 'عبده' || adVisible) return;
 
-      if (!confirmed) return;
+  adVisible = true;
+  adRemaining = 300;
 
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-      } catch (error) {
-        // لا نعتمد على التخزين لإعادة تحميل الواجهة.
-      }
+  const modal = $('ad-modal');
+  const timer = $('ad-timer');
+  const closeButton = $('close-ad');
 
-      currentUser = "";
-      commandHistory = [];
-      historyIndex = 0;
-      output.replaceChildren();
-      input.value = "";
-      showLogin();
-      setStatus("بانتظار تسجيل الدخول");
-    });
+  clearInterval(adInterval);
 
-    (function init() {
-      let savedUser = "";
+  closeButton.disabled = true;
+  closeButton.textContent = 'يرجى الانتظار...';
+  modal.style.display = 'flex';
 
-      try {
-        savedUser = localStorage.getItem(STORAGE_KEY) || "";
-      } catch (error) {
-        savedUser = "";
-      }
+  function updateTimer() {
+    const minutes = Math.floor(adRemaining / 60);
+    const seconds = adRemaining % 60;
 
-      if (savedUser && /^[\w.-]{1,24}$/.test(savedUser)) {
-        currentUser = savedUser;
-        modal.style.display = "none";
-        setupOS();
-      } else {
-        modal.style.display = "flex";
-        $("user-name-input").focus();
-        setStatus("بانتظار تسجيل الدخول");
-      }
-    })();
-  </script>
+    timer.textContent =
+      String(minutes).padStart(2,'0') + ':' +
+      String(seconds).padStart(2,'0');
+
+    if (adRemaining <= 0) {
+      clearInterval(adInterval);
+      closeButton.disabled = false;
+      closeButton.textContent = 'متابعة المشاهدة';
+      return;
+    }
+
+    adRemaining--;
+  }
+
+  updateTimer();
+  adInterval = setInterval(updateTimer, 1000);
+}
+
+$('close-ad').addEventListener('click', () => {
+  if ($('close-ad').disabled) return;
+
+  $('ad-modal').style.display = 'none';
+  adVisible = false;
+  clearInterval(adInterval);
+  scheduleAd();
+});
+
+function scheduleAd() {
+  clearTimeout(adTimeout);
+
+  const name = localStorage.getItem('tv_user_name') || '';
+  if (name === 'عبده') return;
+
+  adTimeout = setTimeout(() => {
+    showAd();
+  }, 60 * 60 * 1000);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const savedName = localStorage.getItem('tv_user_name');
+
+  if (savedName) {
+    setupUser(savedName);
+  } else {
+    $('login-modal').style.display = 'flex';
+  }
+
+  renderChannels();
+  scheduleAd();
+});
+
+window.addEventListener('beforeunload', () => {
+  clearInterval(adInterval);
+  clearTimeout(adTimeout);
+
+  if (hlsInstance) {
+    hlsInstance.destroy();
+  }
+});
+</script>
+
 </body>
 </html>
