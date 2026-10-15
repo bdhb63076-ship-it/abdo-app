@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -57,10 +56,8 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 .close{border:0;border-radius:50%;width:38px;height:38px;font-size:23px}
 .player{aspect-ratio:16/9;width:100%;background:#000}
 .player iframe{width:100%;height:100%;border:0}
-.shortbox{position:relative;height:calc(100dvh - 150px);min-height:400px;max-width:480px;margin:auto;background:#171717;color:white;overflow:hidden}
+.shortbox{position:relative;height:calc(100dvh - 250px);min-height:350px;max-width:380px;margin:auto;background:#171717;color:white;overflow:hidden;border-radius:16px}
 .shortbox iframe{width:100%;height:100%;border:0}
-.shorttext{position:absolute;bottom:12px;right:12px;left:12px;background:linear-gradient(transparent,rgba(0,0,0,.6));padding:30px 5px 8px;pointer-events:none}
-.shorttext button{pointer-events:auto}
 #login-screen{position:fixed;inset:0;z-index:50;background:#fff;display:flex;align-items:center;justify-content:center;padding:22px}
 .loginbox{width:min(420px,100%);text-align:center}
 .loginlogo{font-size:28px;font-weight:bold;margin-bottom:25px}
@@ -82,7 +79,7 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
       <input class="field" id="login-name" maxlength="40" required placeholder="اسمك">
       <button class="wide" type="submit">دخول</button>
     </form>
-    <p class="small">هذه نسخة تجريبية: تسجيل الدخول هنا محلي على الجهاز، وليس نظام حسابات آمنًا.</p>
+    <p class="small">هذه نسخة تجريبية: تسجيل الدخول هنا محلي على الجهاز.</p>
   </div>
 </section>
 
@@ -121,7 +118,7 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 
   <section id="subscriptions" class="view">
     <div class="heading">الاشتراكات</div>
-    <div class="notice">عرض الاشتراكات الشخصية يحتاج حسابات محفوظة في قاعدة بيانات.</div>
+    <div class="notice">عرض الاشتراكات الشخصية.</div>
   </section>
 
   <section id="create" class="view">
@@ -133,7 +130,6 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
       <label for="add-title">عنوان الفيديو</label>
       <input class="field" id="add-title" placeholder="عنوان الفيديو" />
       <button class="wide" id="add-button">إضافة الفيديو</button>
-      <p class="small">هذه الإضافة محلية فقط. رفع ملفات فيديو وتخزينها لجميع المستخدمين يحتاج خادمًا وقاعدة بيانات.</p>
     </div>
   </section>
 
@@ -141,7 +137,7 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
     <div class="shortbox" id="shortbox">
       <div style="padding:25px;text-align:center">Shorts — أدخل رابط مقطع قصير أسفل الصفحة.</div>
     </div>
-    <div class="formpage">
+    <div class="formpage" style="padding-top:10px">
       <input class="field" id="short-url" placeholder="رابط YouTube Shorts">
       <button class="wide" id="play-short">تشغيل المقطع</button>
     </div>
@@ -168,14 +164,13 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
       <p>اسم العرض</p>
       <input class="field" id="settings-name" placeholder="اسم العرض">
       <button class="wide" id="save-name">حفظ الاسم</button>
-      <button class="wide light" id="logout">تسجيل الخروج من هذا الجهاز</button>
-      <p class="small">حساب المالك الحقيقي يجب إنشاؤه وحمايته من خلال باك إند، وليس باسم مكتوب داخل HTML.</p>
+      <button class="wide light" id="logout">تسجيل الخروج</button>
     </div>
   </section>
 
   <section id="notifications-view" class="view">
     <div class="heading">الإشعارات</div>
-    <div class="notice">لا توجد إشعارات في النسخة التجريبية.</div>
+    <div class="notice">لا توجد إشعارات جديدة.</div>
   </section>
 </main>
 
@@ -201,10 +196,6 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 <script>
 "use strict";
 
-/*
-  مفتاح YouTube Data API v3 مطلوب للبحث عن النتائج الحقيقية.
-  لا تضع رابط iframe_api مكان المفتاح.
-*/
 const API_KEY = "PUT_YOUR_YOUTUBE_DATA_API_V3_KEY_HERE";
 const $ = id => document.getElementById(id);
 
@@ -213,14 +204,31 @@ let myVideos = [];
 let activeVideo = null;
 let searchSequence = 0;
 
-function getSavedUser() {
-  try { return localStorage.getItem("abdoTubeUser") || ""; }
-  catch { return ""; }
+function initUser() {
+  let saved = "";
+  try { saved = localStorage.getItem("abdoTubeUser") || ""; } catch {}
+  if (saved) {
+    currentUser = saved;
+    $("login-screen").classList.add("hidden");
+    updateProfileUI();
+  }
 }
 
-function saveUser(name) {
-  try { localStorage.setItem("abdoTubeUser", name); }
-  catch {}
+$("login-form").addEventListener("submit", e => {
+  e.preventDefault();
+  let name = $("login-name").value.trim();
+  if (name) {
+    currentUser = name;
+    try { localStorage.setItem("abdoTubeUser", name); } catch {}
+    $("login-screen").classList.add("hidden");
+    updateProfileUI();
+  }
+});
+
+function updateProfileUI() {
+  $("profile-name").textContent = currentUser;
+  $("bigavatar").textContent = currentUser.charAt(0);
+  $("profile-handle").textContent = "@" + currentUser.toLowerCase().replace(/\s+/g, "");
 }
 
 function validId(id) {
@@ -233,8 +241,7 @@ function extractId(raw) {
     let id = null;
     if (u.hostname === "youtu.be") {
       id = u.pathname.split("/").filter(Boolean)[0];
-    } else if (u.hostname.includes("youtube.com") ||
-               u.hostname.includes("youtube-nocookie.com")) {
+    } else if (u.hostname.includes("youtube.com") || u.hostname.includes("youtube-nocookie.com")) {
       id = u.searchParams.get("v");
       if (!id) {
         const p = u.pathname.split("/").filter(Boolean);
@@ -269,37 +276,27 @@ async function api(endpoint, params) {
   if (!API_KEY || API_KEY === "PUT_YOUR_YOUTUBE_DATA_API_V3_KEY_HERE") {
     throw new Error("MISSING_KEY");
   }
-
   const url = new URL("https://www.googleapis.com/youtube/v3/" + endpoint);
   Object.entries({...params,key:API_KEY}).forEach(([k,v]) => {
     url.searchParams.set(k,String(v));
   });
-
   const response = await fetch(url.toString());
   const data = await response.json().catch(() => ({}));
-
   if (!response.ok) {
-    const reason = data?.error?.errors?.[0]?.reason;
-    if (reason === "quotaExceeded") {
-      throw new Error("انتهت حصة البحث اليومية لمفتاح API.");
-    }
-    throw new Error(data?.error?.message || "فشل طلب البحث. تحقق من مفتاح API.");
+    throw new Error(data?.error?.message || "فشل طلب البحث.");
   }
   return data;
 }
 
 function render(items, target = $("results")) {
   target.replaceChildren();
-
   if (!items.length) {
-    target.innerHTML = '<div class="notice">لا توجد نتائج. جرّب اسمًا آخر.</div>';
+    target.innerHTML = '<div class="notice">لا توجد نتائج.</div>';
     return;
   }
-
   items.forEach(item => {
     const card = document.createElement("article");
     card.className = "card";
-
     const thumb = document.createElement("div");
     thumb.className = "thumb";
 
@@ -313,8 +310,7 @@ function render(items, target = $("results")) {
       const img = document.createElement("img");
       img.loading = "lazy";
       img.alt = item.title;
-      img.src = item.thumbnail ||
-        "https://i.ytimg.com/vi/" + encodeURIComponent(item.id) + "/hqdefault.jpg";
+      img.src = item.thumbnail || "https://i.ytimg.com/vi/" + encodeURIComponent(item.id) + "/hqdefault.jpg";
       thumb.appendChild(img);
     }
 
@@ -339,13 +335,11 @@ function render(items, target = $("results")) {
 
     const meta = document.createElement("div");
     meta.className = "meta";
-    meta.textContent = item.kind === "channel"
-      ? "قناة يوتيوب · اضغط لعرض فيديوهات القناة"
-      : (item.channel || "YouTube");
+    meta.textContent = item.kind === "channel" ? "قناة يوتيوب" : (item.channel || "YouTube");
 
-    txt.append(title,meta);
-    details.append(avatar,txt);
-    card.append(thumb,details);
+    txt.append(title, meta);
+    details.append(avatar, txt);
+    card.append(thumb, details);
     target.appendChild(card);
   });
 }
@@ -357,7 +351,6 @@ async function searchYouTube(query) {
   setStatus("جارٍ البحث في يوتيوب...");
 
   const type = $("search-type").value;
-
   try {
     const data = await api("search", {
       part:"snippet",
@@ -369,30 +362,20 @@ async function searchYouTube(query) {
       regionCode:"EG",
       ...(type === "video" ? {videoEmbeddable:"true"} : {})
     });
-
     if (seq !== searchSequence) return;
 
     const items = (data.items || []).map(item => {
       const snippet = item.snippet || {};
       if (item.id?.kind === "youtube#channel" || type === "channel") {
         const channelId = item.id?.channelId || snippet.channelId;
-        return {
-          kind:"channel",
-          channelId,
-          id:channelId,
-          title:snippet.title || "قناة",
-          channel:snippet.title || "قناة"
-        };
+        return { kind:"channel", channelId, id:channelId, title:snippet.title || "قناة", channel:snippet.title };
       }
-
       return {
         kind:"video",
         id:item.id?.videoId,
         title:snippet.title || "فيديو",
         channel:snippet.channelTitle || "YouTube",
-        thumbnail:snippet.thumbnails?.high?.url ||
-                   snippet.thumbnails?.medium?.url ||
-                   snippet.thumbnails?.default?.url
+        thumbnail:snippet.thumbnails?.high?.url || snippet.thumbnails?.medium?.url
       };
     }).filter(item => item.kind === "channel" ? !!item.channelId : validId(item.id));
 
@@ -400,12 +383,7 @@ async function searchYouTube(query) {
     render(items);
   } catch (error) {
     if (seq !== searchSequence) return;
-
-    if (error.message === "MISSING_KEY") {
-      setStatus("البحث لن يعرض نتائج حقيقية قبل إضافة مفتاح YouTube Data API v3. أضف المفتاح في أول قسم JavaScript.",true);
-    } else {
-      setStatus(error.message,true);
-    }
+    setStatus(error.message === "MISSING_KEY" ? "أضف مفتاح YouTube Data API v3 للبحث الفعلي." : error.message, true);
   }
 }
 
@@ -413,7 +391,7 @@ async function searchChannelVideos(channelId, channelName) {
   $("search-type").value = "video";
   $("query").value = channelName;
   $("heading").textContent = "فيديوهات قناة: " + channelName;
-  setStatus("جارٍ تحميل فيديوهات القناة...");
+  setStatus("جارٍ التحميل...");
   $("results").replaceChildren();
 
   try {
@@ -425,7 +403,6 @@ async function searchChannelVideos(channelId, channelName) {
       order:"date",
       videoEmbeddable:"true"
     });
-
     const items = (data.items || []).map(item => ({
       kind:"video",
       id:item.id?.videoId,
@@ -437,18 +414,15 @@ async function searchChannelVideos(channelId, channelName) {
     $("status").style.display = "none";
     render(items);
   } catch (error) {
-    setStatus(error.message === "MISSING_KEY"
-      ? "أضف مفتاح YouTube Data API v3 للبحث عن فيديوهات القناة."
-      : error.message,true);
+    setStatus(error.message, true);
   }
 }
 
 function playVideo(video) {
   if (!validId(video.id)) {
-    setStatus("معرّف الفيديو غير صحيح.",true);
+    alert("معرّف الفيديو غير صحيح.");
     return;
   }
-
   activeVideo = video;
   $("watch-title").textContent = video.title;
   $("watch-message").textContent = "";
@@ -456,11 +430,9 @@ function playVideo(video) {
 
   const frame = document.createElement("iframe");
   frame.title = video.title;
-  frame.src = "https://www.youtube-nocookie.com/embed/" +
-    encodeURIComponent(video.id) + "?autoplay=1&playsinline=1&rel=0";
+  frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(video.id) + "?autoplay=1&playsinline=1&rel=0";
   frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen; web-share";
   frame.allowFullscreen = true;
-  frame.referrerPolicy = "strict-origin-when-cross-origin";
   $("player").appendChild(frame);
 
   $("watch").classList.add("open");
@@ -474,15 +446,14 @@ function closePlayer() {
   activeVideo = null;
 }
 
-$("close-watch").addEventListener("click",closePlayer);
-$("watch").addEventListener("click",e => {
-  if (e.target === $("watch")) closePlayer();
-});
-document.addEventListener("keydown",e => {
-  if (e.key === "Escape") closePlayer();
-});
+function renderMyVideos() {
+  render(myVideos, $("my-results"));
+}
 
-$("searchbar").addEventListener("submit",e => {
+$("close-watch").addEventListener("click", closePlayer);
+$("watch").addEventListener("click", e => { if (e.target === $("watch")) closePlayer(); });
+
+$("searchbar").addEventListener("submit", e => {
   e.preventDefault();
   const q = $("query").value.trim();
   if (q) {
@@ -491,130 +462,79 @@ $("searchbar").addEventListener("submit",e => {
   }
 });
 
-$("chips").addEventListener("click",e => {
+$("chips").addEventListener("click", e => {
   const b = e.target.closest("[data-q]");
   if (!b) return;
-  document.querySelectorAll(".chip").forEach(x => x.classList.toggle("active",x === b));
+  document.querySelectorAll(".chip").forEach(x => x.classList.toggle("active", x === b));
   $("query").value = b.dataset.q;
   $("search-type").value = "video";
   searchYouTube(b.dataset.q);
 });
 
-$("toggle-search").addEventListener("click",() => {
-  $("query").focus();
-});
-
-$("home-logo").addEventListener("click",() => switchView("home"));
+$("toggle-search").addEventListener("click", () => { $("query").focus(); });
+$("home-logo").addEventListener("click", () => switchView("home"));
 
 document.querySelectorAll(".nav").forEach(b => {
-  b.addEventListener("click",() => switchView(b.dataset.view));
+  b.addEventListener("click", () => switchView(b.dataset.view));
 });
 
-$("notifications").addEventListener("click",() => switchView("notifications-view"));
-$("settings").addEventListener("click",() => {
+$("notifications").addEventListener("click", () => switchView("notifications-view"));
+$("settings").addEventListener("click", () => {
   $("settings-name").value = currentUser;
   switchView("settings-view");
 });
 
-$("add-button").addEventListener("click",() => {
+$("add-button").addEventListener("click", () => {
   const id = extractId($("add-url").value);
   const title = $("add-title").value.trim();
-
   if (!id) {
     alert("أدخل رابط فيديو صحيحًا.");
     return;
   }
-
-  myVideos.unshift({
-    id,
-    title:title || "فيديو جديد",
-    channel:currentUser || "زائر",
-    kind:"video"
-  });
-
+  myVideos.unshift({ id, title: title || "فيديو جديد", channel: currentUser || "زائر", kind: "video" });
   $("add-url").value = "";
   $("add-title").value = "";
-  alert("تمت الإضافة في هذه الجلسة.");
+  alert("تمت إضافة الفيديو بنجاح!");
   switchView("home");
   render(myVideos);
 });
 
-$("play-short").addEventListener("click",() => {
+// تشغيل مقاطع الـ Shorts بداخل مشغل الـ Shorts المخصص
+$("play-short").addEventListener("click", () => {
   const id = extractId($("short-url").value);
   if (!id) {
     alert("أدخل رابط Shorts أو يوتيوب صحيحًا.");
     return;
   }
-
   $("shortbox").replaceChildren();
   const iframe = document.createElement("iframe");
   iframe.title = "عبده يوتيوب Shorts";
-  iframe.src = "https://www.youtube-nocookie.com/embed/" +
-    encodeURIComponent(id) + "?autoplay=1&playsinline=1&rel=0";
-  iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+  iframe.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&playsinline=1&loop=1";
+  iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
   iframe.allowFullscreen = true;
   $("shortbox").appendChild(iframe);
 });
 
-function renderMyVideos() {
-  render(myVideos,$("my-results"));
-}
-
-$("change-name").addEventListener("click",() => {
-  const name = prompt("اسم العرض الجديد:",currentUser);
-  if (name && name.trim()) {
-    currentUser = name.trim().slice(0,40);
-    saveUser(currentUser);
-    updateProfile();
+$("save-name").addEventListener("click", () => {
+  let newName = $("settings-name").value.trim();
+  if (newName) {
+    currentUser = newName;
+    try { localStorage.setItem("abdoTubeUser", newName); } catch {}
+    updateProfileUI();
+    alert("تم حفظ الاسم بنجاح!");
+    switchView("profile");
   }
 });
 
-function updateProfile() {
-  $("profile-name").textContent = currentUser || "زائر";
-  $("bigavatar").textContent = (currentUser || "ز").charAt(0);
-  $("profile-handle").textContent = "@" + (currentUser || "user").replace(/\s+/g,"");
-  $("settings-name").value = currentUser;
-}
-
-$("save-name").addEventListener("click",() => {
-  const name = $("settings-name").value.trim();
-  if (!name) {
-    alert("اكتب اسمًا أولًا.");
-    return;
-  }
-  currentUser = name.slice(0,40);
-  saveUser(currentUser);
-  updateProfile();
-  switchView("profile");
-});
-
-$("logout").addEventListener("click",() => {
+$("logout").addEventListener("click", () => {
   try { localStorage.removeItem("abdoTubeUser"); } catch {}
-  currentUser = "";
-  $("login-screen").classList.remove("hidden");
-  $("login-name").value = "";
+  location.reload();
 });
 
-$("login-form").addEventListener("submit",e => {
-  e.preventDefault();
-  const name = $("login-name").value.trim();
-  if (!name) return;
-
-  currentUser = name.slice(0,40);
-  saveUser(currentUser);
-  updateProfile();
-  $("login-screen").classList.add("hidden");
+window.addEventListener("DOMContentLoaded", () => {
+  initUser();
   searchYouTube("فيديوهات عربية");
 });
-
-// لا نضع حساب المالك تلقائيًا لكل زائر.
-currentUser = getSavedUser();
-if (currentUser) {
-  $("login-screen").classList.add("hidden");
-  updateProfile();
-} else {
-  $("login-screen").classList.remove("hidden");
-}
 </script>
 </body>
 </html>
