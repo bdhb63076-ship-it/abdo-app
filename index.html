@@ -36,7 +36,7 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 .avatar{width:42px;height:42px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;background:var(--pink);color:white;font-weight:bold}
 .title{font-weight:600;font-size:15px;line-height:1.6;overflow-wrap:anywhere}
 .meta{color:var(--muted);font-size:12px;line-height:1.8;margin-top:4px}
-.bottom{position:fixed;bottom:0;left:0;right:0;z-index:10;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:7px 2px max(8px,env(safe-area-inset-bottom))}
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:10;background:#fff;border-top:1px solid var(--line);display:flex;justify-space-around;padding:7px 2px max(8px,env(safe-area-inset-bottom))}
 .nav{border:0;background:white;display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;font-size:11px;color:#222}
 .nav span:first-child{font-size:26px;height:30px}
 .nav.active{color:var(--pink)}
@@ -201,8 +201,8 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 <script>
 "use strict";
 
-// أضف مفتاح API هنا إذا رغبت في البحث الحقيقي المباشر من Google Data API
-const API_KEY = "PUT_YOUR_YOUTUBE_DATA_API_V3_KEY_HERE";
+// تم وضع مفتاح API الخاص بك بنجاح
+const API_KEY = "AIzaSyAhXKfQspu2iCtM4QZ83U-siTnBvFIAEyw";
 const $ = id => document.getElementById(id);
 
 let currentUser = "عبده";
@@ -295,7 +295,7 @@ function setStatus(text, error = false) {
 }
 
 async function api(endpoint, params) {
-  if (!API_KEY || API_KEY === "PUT_YOUR_YOUTUBE_DATA_API_V3_KEY_HERE") {
+  if (!API_KEY) {
     throw new Error("MISSING_KEY");
   }
   const url = new URL("https://www.googleapis.com/youtube/v3/" + endpoint);
@@ -405,7 +405,7 @@ async function searchYouTube(query) {
     render(items);
   } catch (error) {
     if (seq !== searchSequence) return;
-    setStatus(error.message === "MISSING_KEY" ? "أضف مفتاح YouTube Data API v3 للبحث الفعلي المباشر." : error.message, true);
+    setStatus(error.message, true);
   }
 }
 
