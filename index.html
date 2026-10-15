@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#ffffff">
-<title>عبده يوتيوب</title>
+<title>عبده يوتيوب - النسخة الرسمية الشاملة</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,Tahoma,sans-serif;color:#171717;background:#fff}
-button,input{font:inherit}
+button,input,select{font:inherit}
 button{cursor:pointer}
 :root{--pink:#ed3678;--line:#e7e7e7;--soft:#f3f3f3;--muted:#737373}
 header{height:60px;position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 13px;gap:10px}
@@ -55,7 +55,7 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 .modalhead h3{font-size:16px;line-height:1.6}
 .close{border:0;border-radius:50%;width:38px;height:38px;font-size:23px}
 .player{aspect-ratio:16/9;width:100%;background:#000}
-.player iframe{width:100%;height:100%;border:0}
+.player div, .player iframe{width:100%;height:100%;border:0}
 .shortbox{position:relative;height:calc(100dvh - 250px);min-height:350px;max-width:380px;margin:auto;background:#171717;color:white;overflow:hidden;border-radius:16px}
 .shortbox iframe{width:100%;height:100%;border:0}
 #login-screen{position:fixed;inset:0;z-index:50;background:#fff;display:flex;align-items:center;justify-content:center;padding:22px}
@@ -69,17 +69,16 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 </head>
 <body>
 
-<!-- تسجيل دخول أولي -->
+<!-- شاشة تسجيل الدخول -->
 <section id="login-screen">
   <div class="loginbox">
     <div class="loginlogo"><span class="logo-icon">▶</span> عبده <b>يوتيوب</b></div>
     <h2 id="login-title">أهلًا بك في عبده يوتيوب</h2>
     <p>اكتب اسم العرض للبدء.</p>
     <form id="login-form">
-      <input class="field" id="login-name" maxlength="40" required placeholder="اسمك">
-      <button class="wide" type="submit">دخول</button>
+      <input class="field" id="login-name" maxlength="40" required placeholder="اسمك الكريم (مثلاً: عبده)">
+      <button class="wide" type="submit">دخول للمنصة</button>
     </form>
-    <p class="small">هذه نسخة تجريبية: تسجيل الدخول هنا محلي على الجهاز.</p>
   </div>
 </section>
 
@@ -105,10 +104,10 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
   <section id="home" class="view active">
     <div class="chips" id="chips">
       <button class="chip active" data-q="فيديوهات عربية">الكل</button>
-      <button class="chip" data-q="كرة القدم">رياضة</button>
-      <button class="chip" data-q="ألعاب">ألعاب</button>
-      <button class="chip" data-q="تعليم">تعليم</button>
-      <button class="chip" data-q="كوميديا">كوميديا</button>
+      <button class="chip" data-q="ملخصات كرة القدم">رياضة</button>
+      <button class="chip" data-q="العاب ممتعة">ألعاب</button>
+      <button class="chip" data-q="دروس تعليمية">تعليم</button>
+      <button class="chip" data-q="مقاطع كوميدية">كوميديا</button>
       <button class="chip" data-q="موسيقى عربية">موسيقى</button>
     </div>
     <div class="heading" id="heading">فيديوهات مقترحة</div>
@@ -118,13 +117,13 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 
   <section id="subscriptions" class="view">
     <div class="heading">الاشتراكات</div>
-    <div class="notice">عرض الاشتراكات الشخصية.</div>
+    <div class="notice">قائمة القنوات والمحتوى المفضل لديك.</div>
   </section>
 
   <section id="create" class="view">
     <div class="formpage">
       <h2>إضافة فيديو</h2>
-      <p>أضف رابط فيديو يوتيوب لعرضه داخل موقعك.</p>
+      <p>أضف رابط فيديو يوتيوب لعرضه مباشرة داخل موقعك.</p>
       <label for="add-url">رابط الفيديو</label>
       <input class="field" id="add-url" placeholder="https://youtu.be/..." />
       <label for="add-title">عنوان الفيديو</label>
@@ -135,7 +134,7 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 
   <section id="shorts" class="view">
     <div class="shortbox" id="shortbox">
-      <div style="padding:25px;text-align:center">Shorts — أدخل رابط مقطع قصير أسفل الصفحة.</div>
+      <div style="padding:25px;text-align:center">Shorts — أدخل رابط مقطع قصير أسفل الصفحة للتشغيل.</div>
     </div>
     <div class="formpage" style="padding-top:10px">
       <input class="field" id="short-url" placeholder="رابط YouTube Shorts">
@@ -149,12 +148,12 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
         <div class="bigavatar" id="bigavatar">ع</div>
         <div>
           <div class="name" id="profile-name">عبده</div>
-          <div class="meta" id="profile-handle">@user</div>
+          <div class="meta" id="profile-handle">@abdo</div>
         </div>
       </div>
       <button class="wide" id="change-name">تغيير اسم العرض</button>
       <div class="heading">فيديوهاتي المضافة</div>
-      <div id="my-results"></div>
+      <div id="my-results" class="grid"></div>
     </div>
   </section>
 
@@ -170,7 +169,7 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
 
   <section id="notifications-view" class="view">
     <div class="heading">الإشعارات</div>
-    <div class="notice">لا توجد إشعارات جديدة.</div>
+    <div class="notice">لا توجد إشعارات جديدة حالياً.</div>
   </section>
 </main>
 
@@ -182,27 +181,50 @@ main{max-width:900px;margin:auto;padding-bottom:95px}
   <button class="nav active" data-view="home"><span>⌂</span><span>الرئيسية</span></button>
 </nav>
 
+<!-- نافذة عرض الفيديو بالمشغل الرسمي -->
 <div class="modal" id="watch">
   <div class="modalbox">
     <div class="modalhead">
       <h3 id="watch-title">مشاهدة الفيديو</h3>
       <button class="close" id="close-watch" aria-label="إغلاق">×</button>
     </div>
-    <div class="player" id="player"></div>
+    <div class="player">
+      <div id="yt-player-element"></div>
+    </div>
     <div id="watch-message" class="notice"></div>
   </div>
 </div>
 
+<!-- استدعاء سكريبت يوتيوب الرسمي (API) -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
 "use strict";
 
+// أضف مفتاح API هنا إذا رغبت في البحث الحقيقي المباشر من Google Data API
 const API_KEY = "PUT_YOUR_YOUTUBE_DATA_API_V3_KEY_HERE";
 const $ = id => document.getElementById(id);
 
-let currentUser = "";
+let currentUser = "عبده";
 let myVideos = [];
-let activeVideo = null;
+let ytPlayer = null;
+let isApiReady = false;
 let searchSequence = 0;
+
+// تجهيز مشغل يوتيوب الرسمي عبر مكتبة IFrame API
+function onYouTubeIframeAPIReady() {
+  isApiReady = true;
+  ytPlayer = new YT.Player('yt-player-element', {
+    height: '100%',
+    width: '100%',
+    videoId: '5qap5aO4i9A',
+    playerVars: {
+      'playsinline': 1,
+      'autoplay': 1,
+      'rel': 0
+    }
+  });
+}
 
 function initUser() {
   let saved = "";
@@ -291,7 +313,7 @@ async function api(endpoint, params) {
 function render(items, target = $("results")) {
   target.replaceChildren();
   if (!items.length) {
-    target.innerHTML = '<div class="notice">لا توجد نتائج.</div>';
+    target.innerHTML = '<div class="notice">لا توجد نتائج مضافة.</div>';
     return;
   }
   items.forEach(item => {
@@ -335,7 +357,7 @@ function render(items, target = $("results")) {
 
     const meta = document.createElement("div");
     meta.className = "meta";
-    meta.textContent = item.kind === "channel" ? "قناة يوتيوب" : (item.channel || "YouTube");
+    meta.textContent = item.kind === "channel" ? "قناة يوتيوب" : (item.channel || "عبده يوتيوب");
 
     txt.append(title, meta);
     details.append(avatar, txt);
@@ -383,7 +405,7 @@ async function searchYouTube(query) {
     render(items);
   } catch (error) {
     if (seq !== searchSequence) return;
-    setStatus(error.message === "MISSING_KEY" ? "أضف مفتاح YouTube Data API v3 للبحث الفعلي." : error.message, true);
+    setStatus(error.message === "MISSING_KEY" ? "أضف مفتاح YouTube Data API v3 للبحث الفعلي المباشر." : error.message, true);
   }
 }
 
@@ -423,27 +445,21 @@ function playVideo(video) {
     alert("معرّف الفيديو غير صحيح.");
     return;
   }
-  activeVideo = video;
   $("watch-title").textContent = video.title;
-  $("watch-message").textContent = "";
-  $("player").replaceChildren();
-
-  const frame = document.createElement("iframe");
-  frame.title = video.title;
-  frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(video.id) + "?autoplay=1&playsinline=1&rel=0";
-  frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen; web-share";
-  frame.allowFullscreen = true;
-  $("player").appendChild(frame);
-
   $("watch").classList.add("open");
   document.body.style.overflow = "hidden";
+
+  if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
+    ytPlayer.loadVideoById(video.id);
+  }
 }
 
 function closePlayer() {
   $("watch").classList.remove("open");
-  $("player").replaceChildren();
   document.body.style.overflow = "";
-  activeVideo = null;
+  if (ytPlayer && typeof ytPlayer.stopVideo === "function") {
+    ytPlayer.stopVideo();
+  }
 }
 
 function renderMyVideos() {
@@ -484,14 +500,18 @@ $("settings").addEventListener("click", () => {
   switchView("settings-view");
 });
 
+$("change-name").addEventListener("click", () => {
+  switchView("settings-view");
+});
+
 $("add-button").addEventListener("click", () => {
   const id = extractId($("add-url").value);
   const title = $("add-title").value.trim();
   if (!id) {
-    alert("أدخل رابط فيديو صحيحًا.");
+    alert("أدخل رابط فيديو صحيحاً.");
     return;
   }
-  myVideos.unshift({ id, title: title || "فيديو جديد", channel: currentUser || "زائر", kind: "video" });
+  myVideos.unshift({ id, title: title || "فيديو جديد", channel: currentUser || "عبده", kind: "video" });
   $("add-url").value = "";
   $("add-title").value = "";
   alert("تمت إضافة الفيديو بنجاح!");
@@ -499,11 +519,10 @@ $("add-button").addEventListener("click", () => {
   render(myVideos);
 });
 
-// تشغيل مقاطع الـ Shorts بداخل مشغل الـ Shorts المخصص
 $("play-short").addEventListener("click", () => {
   const id = extractId($("short-url").value);
   if (!id) {
-    alert("أدخل رابط Shorts أو يوتيوب صحيحًا.");
+    alert("أدخل رابط Shorts أو يوتيوب صحيحاً.");
     return;
   }
   $("shortbox").replaceChildren();
