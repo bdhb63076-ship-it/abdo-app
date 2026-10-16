@@ -2,309 +2,293 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#0f0f0f">
-<title>عبده يوتيوب 2 - النسخة الأصلية الكاملة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>عبده كينجز ليج - Abdo Kings League</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Roboto,Arial,Tahoma,sans-serif;color:#f1f1f1;background:#0f0f0f;direction:rtl;text-align:right}
-button,input{font:inherit}
-button{cursor:pointer}
-:root{--pink:#ff0033;--card:#212121;--border:#303030;--muted:#aaa;--gold:#ffd700}
+  *{box-sizing:border-box;user-select:none;-webkit-user-select:none}
+  body{margin:0;background:#0b0b0f;color:#fff;font-family:Arial,Tahoma,sans-serif;overflow:hidden;touch-action:none;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  
+  /* الشاشات والقوائم */
+  .screen{position:absolute;inset:0;background:radial-gradient(circle at center, #1b1b2f 0%, #0b0b0f 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;padding:20px;text-align:center}
+  .hidden{display:none !important}
+  
+  h1{color:#ffd700;font-size:32px;margin-bottom:10px;text-shadow:0 0 15px rgba(255,215,0,0.5)}
+  h2{color:#ff0055;font-size:22px;margin-bottom:20px}
+  p{color:#aaa;font-size:14px;margin-bottom:25px}
+  
+  .btn{background:linear-gradient(135deg, #ff0055, #cc0044);color:#fff;border:0;padding:14px 35px;border-radius:30px;font-size:18px;font-weight:bold;cursor:pointer;margin:10px;box-shadow:0 5px 20px rgba(255,0,85,0.4);transition:0.2s}
+  .btn:active{transform:scale(0.95)}
+  .btn.secondary{background:linear-gradient(135deg, #2b2b3f, #1b1b2f);border:1px solid #444}
 
-/* الهيدر العلوي المطابق ليوتيوب الحقيقي */
-header{height:56px;position:sticky;top:0;z-index:50;background:#0f0f0f;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
-.logo-area{display:flex;align-items:center;gap:4px;font-size:18px;font-weight:bold;color:#fff;cursor:pointer}
-.logo-icon{background:var(--pink);color:#fff;padding:2px 6px;border-radius:4px;font-size:14px}
-.header-right{display:flex;align-items:center;gap:15px}
-.icon-btn{background:none;border:0;color:#fff;font-size:20px;position:relative}
-.badge-dot{position:absolute;top:0;right:0;background:var(--pink);color:#fff;font-size:10px;padding:1px 4px;border-radius:10px;font-weight:bold}
+  /* اختيار الفرق واللاعبين */
+  .grid-select{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;width:100%;max-width:350px;margin-bottom:20px}
+  .select-card{background:#161625;border:2px solid #333;padding:15px;border-radius:12px;cursor:pointer;font-weight:bold;transition:0.2s}
+  .select-card.selected{border-color:#ffd700;background:#262640;box-shadow:0 0 10px rgba(255,215,0,0.3)}
 
-/* شريط البحث المنبثق */
-.search-bar{display:flex;align-items:center;background:#121212;border:1px solid var(--border);border-radius:20px;overflow:hidden;margin:0 10px;flex:1;max-width:500px}
-.search-bar input{flex:1;background:none;border:0;color:#fff;padding:8px 14px;font-size:14px;outline:none;text-align:right}
-.search-submit{background:#222;border:0;color:#fff;padding:8px 16px;font-size:15px}
+  /* ساحة اللعب */
+  #game-container{position:relative;width:100%;max-width:450px;height:100vh;max-height:850px;background:#0a3a1f;overflow:hidden;border:3px solid #222;box-shadow:0 0 30px rgba(0,0,0,0.8)}
+  canvas{display:block;width:100%;height:100%}
 
-main{max-width:900px;margin:auto;padding-bottom:80px}
-.view{display:none}.view.active{display:block}
+  /* واجهة أزرار التحكم الملكية */
+  .hud{position:absolute;top:15px;left:0;right:0;display:flex;justify-content:space-between;padding:0 20px;font-size:18px;font-weight:bold;z-index:10;pointer-events:none}
+  .score-board{background:rgba(0,0,0,0.6);padding:6px 15px;border-radius:20px;border:1px solid #444}
+  
+  .controls-bar{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:space-between;padding:0 25px;z-index:10;pointer-events:none}
+  .d-pad{display:flex;gap:10px;pointer-events:auto}
+  .action-btns{display:grid;grid-template-columns:repeat(2, 60px);gap:10px;pointer-events:auto}
+  
+  .ctrl-btn{width:60px;height:60px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);border-radius:50%;color:#fff;font-size:16px;font-weight:bold;display:grid;place-items:center;backdrop-filter:blur(5px);cursor:pointer}
+  .ctrl-btn:active{background:rgba(255,215,0,0.4);border-color:#ffd700}
+  .ctrl-btn.shoot{background:rgba(255,0,85,0.4);border-color:#ff0055}
+  .ctrl-btn.special{background:rgba(255,215,0,0.3);border-color:#ffd700}
 
-/* دوائر القصص والقنوات فوق */
-.stories{display:flex;gap:12px;overflow-x:auto;padding:10px 16px;scrollbar-width:none;border-bottom:1px solid var(--border)}
-.story{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0}
-.story-ring{width:54px;height:54px;border-radius:50%;padding:2px;background:linear-gradient(45deg,#ff0033,#ff8800)}
-.story-avatar{width:100%;height:100%;border-radius:50%;background:#333;display:grid;place-items:center;font-weight:bold;color:#fff;border:2px solid #0f0f0f;overflow:hidden}
-.story-avatar img{width:100%;height:100%;object-fit:cover}
-.story-name{font-size:11px;color:#aaa;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-/* فلاتر المحتوى */
-.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;scrollbar-width:none}
-.chip{background:#272727;border:0;color:#fff;padding:6px 12px;border-radius:8px;font-size:13px;white-space:nowrap}
-.chip.active{background:#fff;color:#000;font-weight:bold}
-
-/* شبكة الفيديوهات */
-.grid{display:grid;grid-template-columns:1fr;gap:20px;padding:0 12px}
-@media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
-
-.card{background:#0f0f0f;cursor:pointer}
-.thumb{position:relative;width:100%;aspect-ratio:16/9;background:#111;border-radius:12px;overflow:hidden}
-.thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.duration{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.8);color:#fff;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:bold}
-
-.video-info{display:flex;gap:12px;padding-top:10px}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;font-weight:bold;flex-shrink:0}
-.title{font-size:14px;font-weight:500;line-height:1.4;color:#fff;margin-bottom:3px}
-.meta{font-size:12px;color:var(--muted);line-height:1.4}
-
-/* شريط التنقل السفلي المطابق للصور الحقيقية تماماً */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:#0f0f0f;border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
-.nav-btn{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;font-size:10px;color:#aaa}
-.nav-btn span:first-child{font-size:22px;height:24px}
-.nav-btn.active{color:#fff}
-.nav-btn.create span:first-child{background:#fff;color:#0f0f0f;border-radius:50%;width:38px;height:38px;display:grid;place-items:center;margin-top:-8px;font-size:26px}
-
-/* صفحة أنت (قناتي) المطابقة للصورة 1000758400 */
-.profile-header{display:flex;align-items:center;gap:15px;padding:20px}
-.profile-big-avatar{width:75px;height:75px;border-radius:50%;background:#333;color:#fff;font-size:28px;display:grid;place-items:center;font-weight:bold}
-.profile-actions{display:flex;gap:10px;padding:0 20px 20px}
-.p-btn{flex:1;background:#272727;color:#fff;border:0;padding:10px;border-radius:20px;font-weight:bold;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px}
-
-/* مشغل الفيديو والتعليقات المطابق للصور */
-.modal{position:fixed;inset:0;z-index:300;background:#0f0f0f;display:none;flex-direction:column;overflow-y:auto}
-.modal.open{display:flex}
-.player-box{width:100%;aspect-ratio:16/9;background:#000;position:sticky;top:0;z-index:10}
-.player-box iframe{width:100%;height:100%;border:0}
-.video-action-bar{display:flex;justify-content:space-around;padding:12px;border-bottom:1px solid var(--border);background:#121212}
-.act-btn{background:#272727;border:0;color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:5px}
-
-.status-msg{text-align:center;padding:40px;color:var(--muted);font-size:14px;grid-column:1/-1}
+  .card-alert{position:absolute;top:80px;left:50%;transform:translateX(-50%);background:rgba(255,215,0,0.9);color:#000;padding:8px 20px;border-radius:15px;font-weight:bold;font-size:14px;z-index:20;display:none;box-shadow:0 0 15px #ffd700}
 </style>
 </head>
 <body>
 
-<!-- الهيدر العلوي المماثل تماماً للصورة الحقيقية -->
-<header>
-  <div class="logo-area" onclick="switchView('home')">
-    <span class="logo-icon">▶</span> يوتيوب <span style="color:var(--pink); font-size:12px;">عبده 👑</span>
+<!-- شاشة البداية الرئيسية -->
+<div id="main-menu" class="screen">
+  <h1>⚡ عبده كينجز ليج 👑</h1>
+  <h2>Abdo Kings League 2026</h2>
+  <p>أقوى بطولة كروية بقواعد مجنونة، نجوم حقيقيين، وأسلوب لعِب حماسي!</p>
+  <button class="btn" onclick="showScreen('mode-screen')">بدء التحدي 🎮</button>
+</div>
+
+<!-- شاشة اختيار أطوار اللعب (أونلاين / أوفلاين) -->
+<div id="mode-screen" class="screen hidden">
+  <h1>اختر نظام اللعب</h1>
+  <p>العب مع أصحابك أونلاين أو تحدى الذكاء الاصطناعي أوفلاين</p>
+  <button class="btn" onclick="startMatch('online')">🌐 أونلاين (سيرفر الكينجز)</button>
+  <button class="btn secondary" onclick="startMatch('offline')">🤖 أوفلاين (ضد الجهاز)</button>
+  <button class="btn secondary" style="background:transparent;border:0;color:#aaa" onclick="showScreen('main-menu')">الرجوع</button>
+</div>
+
+<!-- شاشة اختيار الفريق والنجوم -->
+<div id="team-screen" class="screen hidden">
+  <h1>اختر فريقك الأسطوري</h1>
+  <div class="grid-select">
+    <div class="select-card selected" onclick="selectTeam(this, 'تربون FC')">🔥 فريق تربون</div>
+    <div class="select-card" onclick="selectTeam(this, 'رونالدينيو 10')">⚽ نجوم السامبا</div>
+    <div class="select-card" onclick="selectTeam(this, 'أغويرو كينج')">👑 أساطير المان</div>
+    <div class="select-card" onclick="selectTeam(this, 'عبده الملكي')">⚡ فريق عبده</div>
   </div>
-  <div class="search-bar">
-    <input id="query" placeholder="بحث في YouTube..." autocomplete="off">
-    <button class="search-submit" id="search-btn">🔍</button>
+  <button class="btn" onclick="initGameEngine()">دخول الملعـب 🏟️</button>
+</div>
+
+<!-- ساحة اللعبة -->
+<div id="game-container" class="hidden">
+  <div class="hud">
+    <div class="score-board"><span id="team1-name">تربون</span>: <span id="score1">0</span></div>
+    <div class="score-board" id="match-timer">⏰ 03:00</div>
+    <div class="score-board"><span id="team2-name">الخصم</span>: <span id="score2">0</span></div>
   </div>
-  <div class="header-right">
-    <button class="icon-btn">🔔<span class="badge-dot">9+</span></button>
-  </div>
-</header>
 
-<main>
-  <!-- الصفحة الرئيسية -->
-  <section id="home" class="view active">
-    <!-- قصص القنوات فوق -->
-    <div class="stories" id="stories-container">
-      <div class="story" onclick="searchYouTube('عبده جيمنج')">
-        <div class="story-ring"><div class="story-avatar" style="background:#ff0033">ع</div></div>
-        <div class="story-name">عبده 👑</div>
-      </div>
-      <div class="story" onclick="searchYouTube('كرة القدم')">
-        <div class="story-ring"><div class="story-avatar" style="background:#3ea6ff">رياضة</div></div>
-        <div class="story-name">رياضة</div>
-      </div>
-      <div class="story" onclick="searchYouTube('ألعاب فيديو')">
-        <div class="story-ring"><div class="story-avatar" style="background:#2ba640">ألعاب</div></div>
-        <div class="story-name">ألعاب</div>
-      </div>
-      <div class="story" onclick="searchYouTube('ضحك كوميديا')">
-        <div class="story-ring"><div class="story-avatar" style="background:#f1c40f">كوميدي</div></div>
-        <div class="story-name">كوميديا</div>
-      </div>
+  <div class="card-alert" id="card-alert">⚡ كارت جوكر: هدف بـ 2!</div>
+
+  <canvas id="fieldCanvas"></canvas>
+
+  <div class="controls-bar">
+    <div class="d-pad">
+      <button class="ctrl-btn" ontouchstart="movePlayer('left')" onmousedown="movePlayer('left')">⬅️</button>
+      <button class="ctrl-btn" ontouchstart="movePlayer('right')" onmousedown="movePlayer('right')">➡️</button>
+      <button class="ctrl-btn" ontouchstart="movePlayer('up')" onmousedown="movePlayer('up')">⬆️</button>
+      <button class="ctrl-btn" ontouchstart="movePlayer('down')" onmousedown="movePlayer('down')">⬇️</button>
     </div>
-
-    <!-- تصنيفات الفلاتر -->
-    <div class="chips" id="chips">
-      <button class="chip active" data-q="كل المحتوى">كل المحتوى</button>
-      <button class="chip" data-q="ألعاب فيديو">ألعاب فيديو</button>
-      <button class="chip" data-q="كرة القدم">كرة القدم</button>
-      <button class="chip" data-q="موسيقى">موسيقى</button>
-      <button class="chip" data-q="Shorts">Shorts</button>
-    </div>
-
-    <div class="status-msg" id="status">جاري تحميل الفيديوهات الحقيقية...</div>
-    <div id="results" class="grid"></div>
-  </section>
-
-  <!-- Shorts -->
-  <section id="shorts" class="view">
-    <div style="position:relative;height:calc(100dvh - 120px);max-width:380px;margin:auto;background:#000;border-radius:12px;overflow:hidden">
-      <iframe src="https://www.youtube-nocookie.com/embed/5qap5aO4i9A?autoplay=1&loop=1" style="width:100%;height:100%;border:0" allow="autoplay; fullscreen"></iframe>
-    </div>
-  </section>
-
-  <!-- إنشاء (Upload) -->
-  <section id="create" class="view">
-    <div style="padding:30px; text-align:center">
-      <h3>إنشاء محتوى على أي جهاز 🎬</h3>
-      <p style="color:var(--muted); font-size:13px;">بإمكانك تسجيل المحتوى وتحميله في المنزل أو أثناء التنقل.</p>
-      <input type="file" id="local-file" accept="video/*" style="display:none" onchange="addLocal(event)">
-      <button onclick="document.getElementById('local-file').click()" style="background:#fff; color:#0f0f0f; border:0; padding:12px 24px; border-radius:24px; font-weight:bold; margin-top:15px;">رفع فيديو من الاستوديو</button>
-    </div>
-  </section>
-
-  <!-- الاشتراكات -->
-  <section id="subscriptions" class="view">
-    <div style="padding:20px; font-weight:bold;">الاشتراكات والمتابعات</div>
-    <div id="sub-results" class="grid"></div>
-  </section>
-
-  <!-- صفحة "أنت" المماثلة للصورة 1000758400 تماماً -->
-  <section id="profile" class="view">
-    <div class="profile-header">
-      <div class="profile-big-avatar">Yd</div>
-      <div>
-        <h2 style="margin:0; font-size:18px;">Yd Hd <span style="color:var(--gold)">👑</span></h2>
-        <div style="color:var(--muted); font-size:13px;">@YdHd-e8d</div>
-      </div>
-    </div>
-    <div class="profile-actions">
-      <button class="p-btn" onclick="alert('تعديل القناة مفعل للمالك الحقيقي!')">✏️ تعديل القناة</button>
-      <button class="p-btn" onclick="alert('الإحصاءات: المشاهدات ممتازة يا بطل!')">📊 الإحصاءات</button>
-    </div>
-    <div style="padding:20px; text-align:center; border-top:1px solid var(--border);">
-      <p style="color:var(--muted); font-size:13px;">إشعار المالك: لديك صلاحيات مطلقة على منصة عبده يوتيوب 2.</p>
-    </div>
-  </section>
-</main>
-
-<!-- نافذة عرض الفيديو الكاملة المماثلة للصورة 1000758401 -->
-<div class="modal" id="watch">
-  <div class="player-box">
-    <iframe id="iframe-player" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
-  </div>
-  <div style="padding:15px; background:#0f0f0f; flex:1;">
-    <h3 id="modal-title" style="font-size:15px; line-height:1.4; margin:0 0 10px 0; color:#fff;">عنوان الفيديو</h3>
-    <div class="video-action-bar">
-      <button class="act-btn">👍 أعجبني</button>
-      <button class="act-btn">💬 تعليقات</button>
-      <button class="act-btn">↗️ مشاركة</button>
-      <button class="act-btn" onclick="closePlayer()" style="background:var(--pink)">✕ إغلاق</button>
+    <div class="action-btns">
+      <button class="ctrl-btn special" ontouchstart="useSkill()" title="مهارة">⚡</button>
+      <button class="ctrl-btn" ontouchstart="playerPass()" title="باس">🎯</button>
+      <button class="ctrl-btn shoot" ontouchstart="playerShoot()" title="شوت">💥</button>
+      <button class="ctrl-btn" ontouchstart="playerSprint()" title="جري">🏃</button>
     </div>
   </div>
 </div>
 
-<!-- شريط التنقل السفلي -->
-<nav class="bottom-nav">
-  <button class="nav-btn active" data-view="home"><span>🏠</span><span>الصفحة الرئيسية</span></button>
-  <button class="nav-btn" data-view="shorts"><span>⚡</span><span>Shorts</span></button>
-  <button class="nav-btn create" data-view="create"><span>＋</span><span>إنشاء</span></button>
-  <button class="nav-btn" data-view="subscriptions"><span>📺</span><span>الاشتراكات</span></button>
-  <button class="nav-btn" data-view="profile"><span>👤</span><span>أنت</span></button>
-</nav>
-
 <script>
-"use strict";
-
-const API_KEY = "AIzaSyAhXKfQspu2iCtM4QZ83U-siTnBvFIAEyw";
 const $ = id => document.getElementById(id);
 
-function switchView(name) {
-  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === name));
-  document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.view === name));
-  window.scrollTo({top:0,behavior:"smooth"});
+let currentMode = 'offline';
+let selectedTeamName = 'تربون FC';
+
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  $(screenId).classList.remove('hidden');
+  $('game-container').classList.add('hidden');
 }
 
-async function searchYouTube(query) {
-  $("status").textContent = "جاري جلب الفيديوهات...";
-  $("results").replaceChildren();
+function startMatch(mode) {
+  currentMode = mode;
+  showScreen('team-screen');
+}
 
-  try {
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=20&regionCode=EG&relevanceLanguage=ar&key=${API_KEY}`;
-    const res = await fetch(url);
-    const data = await res.json();
+function selectTeam(el, name) {
+  document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTeamName = name;
+}
 
-    if (data.items && data.items.length) {
-      $("status").textContent = "";
-      renderVideos(data.items, $("results"));
+// محرك الكانفاس واللعبة
+let canvas, ctx;
+let gameInterval;
+let score1 = 0, score2 = 0;
+let ball = { x: 225, y: 400, vx: 0, vy: 0, radius: 10 };
+let player = { x: 225, y: 600, radius: 18, speed: 4, color: '#ffd700' };
+let ai = { x: 225, y: 200, radius: 18, speed: 2.5, color: '#ff0055' };
+
+function initGameEngine() {
+  $('team-screen').classList.add('hidden');
+  $('game-container').classList.remove('hidden');
+  $('team1-name').textContent = selectedTeamName;
+
+  canvas = $('fieldCanvas');
+  ctx = canvas.getContext('2d');
+  canvas.width = 450;
+  canvas.height = 800;
+
+  resetBall();
+  if (gameInterval) clearInterval(gameInterval);
+  gameInterval = setInterval(updateGame, 1000 / 60);
+}
+
+function resetBall() {
+  ball.x = canvas.width / 2;
+  ball.y = canvas.height / 2;
+  ball.vx = 0;
+  ball.vy = 0;
+}
+
+let moveDir = null;
+function movePlayer(dir) {
+  if (dir === 'left' && player.x > 40) player.x -= 20;
+  if (dir === 'right' && player.x < canvas.width - 40) player.x += 20;
+  if (dir === 'up' && player.y > 100) player.y -= 20;
+  if (dir === 'down' && player.y < canvas.height - 100) player.y += 20;
+}
+
+function playerShoot() {
+  let dx = ball.x - player.x;
+  let dy = ball.y - player.y;
+  let dist = Math.hypot(dx, dy);
+  if (dist < 45) {
+    ball.vx = (dx / dist) * 10;
+    ball.vy = -12; // تسديدة صاروخية للأعلى
+  }
+}
+
+function playerPass() {
+  let dx = ball.x - player.x;
+  let dy = ball.y - player.y;
+  let dist = Math.hypot(dx, dy);
+  if (dist < 45) {
+    ball.vx = (dx / dist) * 5;
+    ball.vy = -6;
+  }
+}
+
+function playerSprint() {
+  player.speed = 7;
+  setTimeout(() => player.speed = 4, 1500);
+}
+
+function useSkill() {
+  const alertBox = $('card-alert');
+  alertBox.style.display = 'block';
+  setTimeout(() => alertBox.style.display = 'none', 2500);
+}
+
+function updateGame() {
+  // حركة الكرة والفيزياء البسيطة
+  ball.x += ball.vx;
+  ball.y += ball.vy;
+  ball.vx *= 0.98;
+  ball.vy *= 0.98;
+
+  // حدود الملعب الجانبية
+  if (ball.x < 30 || ball.x > canvas.width - 30) ball.vx *= -1;
+
+  // ذكاء اصطناعي يتحرك خلف الكرة
+  if (ai.x < ball.x) ai.x += ai.speed;
+  if (ai.x > ball.x) ai.x -= ai.speed;
+  if (ai.y < ball.y && ai.y > 80) ai.y -= ai.speed * 0.5;
+  if (ai.y > ball.y && ai.y < canvas.height / 2) ai.y += ai.speed * 0.5;
+
+  // اصطدام الخصم بالكرة
+  let distAI = Math.hypot(ball.x - ai.x, ball.y - ai.y);
+  if (distAI < 25) {
+    ball.vy = 6;
+    ball.vx += (Math.random() - 0.5) * 6;
+  }
+
+  // تسجيل الأهداف
+  if (ball.y < 50) {
+    if (ball.x > 150 && ball.x < 300) {
+      score1++;
+      $('score1').textContent = score1;
+      resetBall();
     } else {
-      $("status").textContent = "لا توجد نتائج.";
+      ball.vy *= -1;
     }
-  } catch (err) {
-    $("status").textContent = "خطأ في الاتصال بالشبكة.";
   }
-}
-
-function renderVideos(items, target) {
-  target.replaceChildren();
-  items.forEach(item => {
-    const videoId = item.id.videoId;
-    const title = item.snippet.title;
-    const channel = item.snippet.channelTitle;
-    const thumb = item.snippet.thumbnails.high.url;
-
-    const card = document.createElement("article");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="thumb">
-        <img src="${thumb}" alt="${title}" loading="lazy">
-        <div class="duration">12:30</div>
-      </div>
-      <div class="video-info">
-        <div class="avatar">${channel.charAt(0)}</div>
-        <div>
-          <div class="title">${title}</div>
-          <div class="meta">${channel}<br>قبل ساعة • 105 ألف مشاهدة</div>
-        </div>
-      </div>
-    `;
-    card.addEventListener("click", () => openPlayer(videoId, title));
-    target.appendChild(card);
-  });
-}
-
-function openPlayer(videoId, title) {
-  $("modal-title").textContent = title;
-  $("iframe-player").src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
-  $("watch").classList.add("open");
-  document.body.style.overflow = "hidden";
-}
-
-function closePlayer() {
-  $("watch").classList.remove("open");
-  $("iframe-player").src = "";
-  document.body.style.overflow = "";
-}
-
-function addLocal(e) {
-  const file = e.target.files[0];
-  if (file) {
-    alert("تم اختيار الفيديو بنجاح وسيتم عرضه في قناتك!");
-    switchView("profile");
+  if (ball.y > canvas.height - 50) {
+    if (ball.x > 150 && ball.x < 300) {
+      score2++;
+      $('score2').textContent = score2;
+      resetBall();
+    } else {
+      ball.vy *= -1;
+    }
   }
+
+  drawField();
 }
 
-document.querySelectorAll(".nav-btn").forEach(b => {
-  b.addEventListener("click", () => switchView(b.dataset.view));
-});
+function drawField() {
+  // تلوين الملعب
+  ctx.fillStyle = '#0a3a1f';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-$("search-btn").addEventListener("click", () => {
-  const q = $("query").value.trim();
-  if (q) { switchView("home"); searchYouTube(q); }
-});
+  // خطوط الملعب البيضاء
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
 
-$("query").addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    $("search-btn").click();
-  }
-});
+  ctx.beginPath();
+  ctx.moveTo(30, canvas.height / 2);
+  ctx.lineTo(canvas.width - 30, canvas.height / 2);
+  ctx.stroke();
 
-$("chips").addEventListener("click", e => {
-  const b = e.target.closest("[data-q]");
-  if (!b) return;
-  document.querySelectorAll(".chip").forEach(x => x.classList.remove("active", x === b));
-  searchYouTube(b.dataset.q);
-});
+  ctx.beginPath();
+  ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
+  ctx.stroke();
 
-window.addEventListener("DOMContentLoaded", () => {
-  searchYouTube("فيديوهات عربية مشهورة");
-});
+  // المرميين
+  ctx.fillStyle = '#ff0055';
+  ctx.fillRect(150, 10, 150, 10); // مرمى الخصم
+  ctx.fillStyle = '#ffd700';
+  ctx.fillRect(150, canvas.height - 20, 150, 10); // مرمانا
+
+  // رسم اللاعب
+  ctx.fillStyle = player.color;
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // رسم الخصم
+  ctx.fillStyle = ai.color;
+  ctx.beginPath();
+  ctx.arc(ai.x, ai.y, ai.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // رسم الكرة
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+  ctx.fill();
+}
 </script>
 </body>
 </html>
