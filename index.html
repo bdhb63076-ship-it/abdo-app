@@ -1,491 +1,937 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#ffffff">
-<title>عبده يوتيوب - النسخة الملكية</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Tahoma,sans-serif;color:#171717;background:#fff;direction:rtl;text-align:right}
-button,input,select{font:inherit}
-button{cursor:pointer}
-:root{--pink:#ed3678;--line:#e7e7e7;--soft:#f3f3f3;--gold:#FFD700;--muted:#737373}
-header{height:60px;position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 13px;gap:10px}
-.logo{font-size:20px;font-weight:800;white-space:nowrap;cursor:pointer;display:flex;align-items:center}
-.logo-icon{display:inline-grid;place-items:center;width:33px;height:25px;border-radius:7px;background:var(--pink);color:#fff;margin-left:5px}
-.logo b{color:var(--pink)}
-.header-actions{display:flex;gap:5px}
-.icon{border:0;background:white;font-size:24px;width:39px;height:39px;border-radius:50%}
-
-/* شارة المالك الملكية */
-.king-badge {
-  background: linear-gradient(135deg, #fff2a8, #ffd700);
-  border: 1px solid var(--gold);
-  color: #5c4300;
-  padding: 10px 15px;
-  border-radius: 12px;
-  margin: 10px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-weight: bold;
-  font-size: 14px;
-  box-shadow: 0 2px 8px rgba(255,215,0,0.3);
-}
-
-#searchbar{display:flex;gap:7px;padding:10px;border-bottom:1px solid var(--line)}
-#searchbar input,.field{flex:1;min-width:0;border:1px solid #ddd;background:#f8f8f8;border-radius:22px;padding:12px;text-align:right}
-.btn{border:0;border-radius:24px;background:#222;color:#fff;padding:11px 17px}
-.btn.pink{background:var(--pink)}
-main{max-width:900px;margin:auto;padding-bottom:95px}
-.view{display:none}.view.active{display:block}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:14px;scrollbar-width:none}
-.chip{border:0;background:#eee;border-radius:9px;padding:9px 14px;white-space:nowrap}
-.chip.active{background:#222;color:white}
-.heading{font-size:19px;font-weight:bold;margin:12px 14px}
-.notice{padding:15px;color:var(--muted);line-height:1.8}
-.notice.error{color:#b00020}
-.card{margin-bottom:22px}
-.thumb{position:relative;width:100%;aspect-ratio:16/9;background:#eee;cursor:pointer;border-radius:12px;overflow:hidden}
-.thumb img, .thumb video{width:100%;height:100%;object-fit:cover;display:block}
-.details{display:flex;align-items:flex-start;gap:10px;padding:12px}
-.avatar{width:42px;height:42px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;background:var(--pink);color:white;font-weight:bold}
-.title{font-weight:600;font-size:15px;line-height:1.6;overflow-wrap:anywhere}
-.meta{color:var(--muted);font-size:12px;line-height:1.8;margin-top:4px}
-
-.bottom{position:fixed;bottom:0;left:0;right:0;z-index:10;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:7px 2px max(8px,env(safe-area-inset-bottom))}
-.nav{border:0;background:white;display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;font-size:11px;color:#222}
-.nav span:first-child{font-size:26px;height:30px}
-.nav.active{color:var(--pink)}
-.nav.create span:first-child{background:#f2f2f2;border-radius:50%;width:43px;height:43px;display:grid;place-items:center;margin-top:-12px;font-size:32px}
-
-.profile,.formpage{padding:22px 16px}
-.profiletop{display:flex;align-items:center;justify-content:flex-start;gap:15px;margin:20px 0}
-.bigavatar{width:95px;height:95px;border-radius:50%;display:grid;place-items:center;background:var(--pink);color:white;font-size:34px;position:relative}
-.bigavatar .crown-icon{position:absolute;top:-12px;font-size:24px}
-.name{font-size:24px;font-weight:bold}
-.wide{width:100%;margin:7px 0;padding:13px;border:0;border-radius:24px;background:#222;color:white}
-.wide.light{background:#eee;color:#222}
-.field{width:100%;display:block;margin:8px 0 14px;border-radius:10px;background:white}
-.modal{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;padding:12px}
-.modal.open{display:flex}
-.modalbox{width:min(850px,100%);background:#fff;padding:12px;border-radius:12px}
-.modalhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
-.modalhead h3{font-size:16px;line-height:1.6}
-.close{border:0;border-radius:50%;width:38px;height:38px;font-size:23px}
-.player{aspect-ratio:16/9;width:100%;background:#000}
-.player video, .player iframe{width:100%;height:100%;border:0}
-.shortbox{position:relative;height:calc(100dvh - 250px);min-height:350px;max-width:380px;margin:auto;background:#171717;color:white;overflow:hidden;border-radius:16px}
-.shortbox video, .shortbox iframe{width:100%;height:100%;border:0}
-#login-screen{position:fixed;inset:0;z-index:50;background:#fff;display:flex;align-items:center;justify-content:center;padding:22px}
-.loginbox{width:min(420px,100%);text-align:center}
-.loginlogo{font-size:28px;font-weight:bold;margin-bottom:25px}
-.loginlogo b{color:var(--pink)}
-.hidden{display:none!important}
-@media(min-width:700px){.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card{margin-bottom:0}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عبده يوتيوب - AbdoTube</title>
+  <style>
+    :root {
+      --bg:#fff;
+      --text:#171717;
+      --muted:#666;
+      --border:#e8e8e8;
+      --pink:#ff2458;
+      --soft:#fff0f4;
+      --card:#f7f7f7;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,Tahoma,sans-serif;
+    }
+    button,input,select { font:inherit; }
+    button { cursor:pointer; }
+    header {
+      position:sticky;
+      top:0;
+      z-index:20;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px 16px;
+      background:#fff;
+      border-bottom:1px solid var(--border);
+    }
+    .logo {
+      border:0;
+      background:none;
+      font-size:22px;
+      font-weight:bold;
+      white-space:nowrap;
+      cursor:pointer;
+    }
+    .logo span { color:var(--pink); }
+    .search {
+      display:flex;
+      flex:1;
+      max-width:700px;
+      margin:auto;
+    }
+    .search input {
+      width:100%;
+      min-width:0;
+      padding:11px 14px;
+      border:1px solid #ccc;
+      border-radius:0 24px 24px 0;
+      outline:none;
+    }
+    .search button {
+      border:1px solid #ccc;
+      border-right:0;
+      padding:0 17px;
+      border-radius:24px 0 0 24px;
+      background:#f6f6f6;
+    }
+    .header-btn {
+      border:0;
+      background:var(--soft);
+      color:var(--pink);
+      padding:10px 13px;
+      border-radius:20px;
+      font-weight:bold;
+      white-space:nowrap;
+    }
+    .layout { display:flex; }
+    aside {
+      position:sticky;
+      top:66px;
+      width:205px;
+      height:calc(100vh - 66px);
+      padding:12px;
+      border-left:1px solid var(--border);
+      background:#fff;
+      flex-shrink:0;
+    }
+    .nav-btn {
+      width:100%;
+      display:block;
+      padding:13px 12px;
+      margin-bottom:5px;
+      text-align:right;
+      border:0;
+      border-radius:12px;
+      background:transparent;
+      color:#222;
+    }
+    .nav-btn:hover,.nav-btn.active { background:var(--soft); color:var(--pink); }
+    main { flex:1; min-width:0; padding:20px; }
+    .chips {
+      display:flex;
+      gap:9px;
+      overflow:auto;
+      padding-bottom:17px;
+    }
+    .chip {
+      border:0;
+      border-radius:8px;
+      padding:9px 15px;
+      background:#f0f0f0;
+      white-space:nowrap;
+    }
+    .chip.active { background:#171717; color:#fff; }
+    .section-title { margin:4px 0 18px; }
+    .videos {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(235px,1fr));
+      gap:22px 16px;
+    }
+    .video-card { min-width:0; cursor:pointer; }
+    .thumb {
+      position:relative;
+      aspect-ratio:16/9;
+      overflow:hidden;
+      border-radius:13px;
+      background:#eee;
+    }
+    .thumb img,.thumb video {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .duration {
+      position:absolute;
+      bottom:7px;
+      left:7px;
+      padding:3px 5px;
+      border-radius:4px;
+      color:#fff;
+      background:#000b;
+      font-size:12px;
+    }
+    .video-info {
+      display:flex;
+      gap:10px;
+      padding-top:11px;
+    }
+    .avatar {
+      width:37px;
+      height:37px;
+      flex-shrink:0;
+      display:grid;
+      place-items:center;
+      background:var(--soft);
+      color:var(--pink);
+      border-radius:50%;
+      font-weight:bold;
+    }
+    .video-title { font-weight:bold; line-height:1.5; }
+    .meta { margin-top:6px; font-size:13px; color:var(--muted); line-height:1.6; }
+    .actions { display:flex; gap:7px; flex-wrap:wrap; margin-top:9px; }
+    .small-btn {
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:18px;
+      padding:6px 10px;
+      font-size:12px;
+    }
+    .small-btn:hover { background:var(--soft); }
+    .status { padding:25px 5px; color:var(--muted); text-align:center; }
+    .error { color:#c62828; }
+    .modal {
+      position:fixed;
+      inset:0;
+      z-index:100;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:15px;
+      background:#000b;
+    }
+    .modal.open { display:flex; }
+    .modal-box {
+      background:#fff;
+      border-radius:16px;
+      width:min(900px,100%);
+      max-height:92vh;
+      overflow:auto;
+      padding:16px;
+    }
+    .modal-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .close-btn {
+      border:0;
+      background:#eee;
+      border-radius:50%;
+      width:38px;
+      height:38px;
+      font-size:21px;
+    }
+    .player {
+      width:100%;
+      aspect-ratio:16/9;
+      border:0;
+      border-radius:12px;
+      background:#000;
+    }
+    .form-row { display:flex; gap:8px; margin:12px 0; }
+    .form-row input,.form-row select {
+      min-width:0;
+      flex:1;
+      padding:11px;
+      border:1px solid #ccc;
+      border-radius:9px;
+    }
+    .primary {
+      border:0;
+      background:var(--pink);
+      color:#fff;
+      border-radius:9px;
+      padding:11px 16px;
+      font-weight:bold;
+    }
+    .profile-box {
+      background:var(--soft);
+      border-radius:15px;
+      padding:22px;
+      margin-bottom:20px;
+    }
+    .empty {
+      grid-column:1/-1;
+      text-align:center;
+      padding:40px 10px;
+      color:var(--muted);
+    }
+    footer {
+      padding:25px;
+      color:#777;
+      text-align:center;
+      font-size:12px;
+    }
+    @media(max-width:750px) {
+      header { flex-wrap:wrap; gap:9px; }
+      .logo { font-size:19px; }
+      .search { order:3; flex-basis:100%; max-width:none; }
+      .layout { display:block; }
+      aside {
+        position:sticky;
+        top:112px;
+        z-index:10;
+        width:100%;
+        height:auto;
+        display:flex;
+        overflow:auto;
+        padding:7px;
+        border-left:0;
+        border-bottom:1px solid var(--border);
+      }
+      .nav-btn {
+        width:auto;
+        flex-shrink:0;
+        margin:0 3px;
+        padding:10px;
+      }
+      main { padding:13px; }
+      .videos { grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 10px; }
+      .video-title { font-size:14px; }
+      .meta { font-size:12px; }
+      .avatar { width:30px; height:30px; }
+    }
+    @media(max-width:400px) {
+      .videos { grid-template-columns:1fr; }
+      .header-btn { padding:8px; }
+    }
+  </style>
 </head>
 <body>
-
-<!-- شاشة الدخول -->
-<section id="login-screen">
-  <div class="loginbox">
-    <div class="loginlogo"><span class="logo-icon">▶</span> عبده <b>يوتيوب</b></div>
-    <h2>أهلًا بك في تطبيقك</h2>
-    <p>اكتب اسمك للبدء (اكتب "عبده" للتاج الملكي 👑):</p>
-    <form id="login-form">
-      <input class="field" id="login-name" maxlength="40" required placeholder="اسمك الكريم">
-      <button class="wide" type="submit">دخول للمنصة</button>
-    </form>
-  </div>
-</section>
-
 <header>
-  <div class="logo" id="home-logo"><span class="logo-icon">▶</span>عبده <b>يوتيوب</b></div>
-  <div class="header-actions">
-    <button class="icon" id="toggle-search" aria-label="بحث">⌕</button>
-    <button class="icon" id="notifications" aria-label="إشعارات">♧</button>
-    <button class="icon" id="settings" aria-label="إعدادات">⚙</button>
-  </div>
+  <button class="logo" onclick="showPage('home')">▶ <span>عبده</span> يوتيوب</button>
+  <form class="search" id="searchForm">
+    <input id="searchInput" placeholder="ابحث عن فيديوهات أو قنوات..." autocomplete="off">
+    <button type="submit">🔍</button>
+  </form>
+  <button class="header-btn" onclick="openUpload()">＋ إنشاء</button>
 </header>
 
-<!-- بنر الملكية لـ عبده -->
-<div class="king-badge" id="king-banner">
-  <span>👑 المالك الرسمي للتطبيق: عبده (تم تفعيل الحصانة والتاج الملكي)</span>
+<div class="layout">
+  <aside>
+    <button class="nav-btn active" data-page="home" onclick="showPage('home')">🏠 الرئيسية</button>
+    <button class="nav-btn" data-page="shorts" onclick="showPage('shorts')">🎬 الشورتس</button>
+    <button class="nav-btn" data-page="subscriptions" onclick="showPage('subscriptions')">📺 اشتراكاتي</button>
+    <button class="nav-btn" data-page="saved" onclick="showPage('saved')">🔖 المحفوظات</button>
+    <button class="nav-btn" data-page="channel" onclick="showPage('channel')">👤 قناتي</button>
+    <button class="nav-btn" onclick="openUpload()">⬆️ رفع فيديو</button>
+    <button class="nav-btn" data-page="settings" onclick="showPage('settings')">⚙️ الإعدادات</button>
+  </aside>
+
+  <main>
+    <div id="chips" class="chips">
+      <button class="chip active" onclick="searchCategory('trending',this)">كل المحتوى</button>
+      <button class="chip" onclick="searchCategory('ألعاب فيديو',this)">ألعاب فيديو</button>
+      <button class="chip" onclick="searchCategory('كرة القدم',this)">كرة القدم</button>
+      <button class="chip" onclick="searchCategory('موسيقى',this)">موسيقى</button>
+      <button class="chip" onclick="searchCategory('أخبار مصر',this)">أخبار</button>
+      <button class="chip" onclick="searchCategory('تعليم',this)">تعليم</button>
+      <button class="chip" onclick="searchCategory('كوميديا',this)">كوميديا</button>
+    </div>
+
+    <h2 class="section-title" id="pageTitle">أحدث الفيديوهات</h2>
+    <div id="status" class="status">جاري تحميل الفيديوهات...</div>
+    <div id="videoGrid" class="videos"></div>
+    <footer>عبده يوتيوب © <span id="year"></span></footer>
+  </main>
 </div>
 
-<form id="searchbar">
-  <input id="query" placeholder="ابحث عن فيديو أو قناة..." autocomplete="off">
-  <select id="search-type" aria-label="نوع البحث" style="border:1px solid #ddd;border-radius:20px;padding:5px">
-    <option value="video">فيديوهات</option>
-    <option value="channel">قنوات</option>
-  </select>
-  <button class="btn" type="submit">بحث</button>
-</form>
-
-<main>
-  <section id="home" class="view active">
-    <div class="chips" id="chips">
-      <button class="chip active" data-q="فيديوهات عربية">الكل</button>
-      <button class="chip" data-q="ملخصات كرة القدم">رياضة</button>
-      <button class="chip" data-q="العاب ممتعة">ألعاب</button>
-      <button class="chip" data-q="مقاطع كوميدية">كوميديا</button>
+<div class="modal" id="playerModal" onclick="closeOnBackdrop(event,'playerModal')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="playerTitle">مشاهدة الفيديو</h3>
+      <button class="close-btn" onclick="closeModal('playerModal')">×</button>
     </div>
-    <div class="heading" id="heading">فيديوهات مقترحة</div>
-    <div class="notice" id="status">جارٍ تجهيز الصفحة...</div>
-    <div id="results" class="grid"></div>
-  </section>
-
-  <section id="subscriptions" class="view">
-    <div class="heading">الاشتراكات</div>
-    <div class="notice">قائمة القنوات والمحتوى المفضل لديك.</div>
-  </section>
-
-  <!-- قسم إضافة فيديو من الموبايل مباشرة أو برابط -->
-  <section id="create" class="view">
-    <div class="formpage">
-      <h2>نشر فيديو جديد 🎬</h2>
-      
-      <div style="background:#f8f8f8; border:2px dashed #ccc; padding:20px; border-radius:15px; text-align:center; margin-bottom:15px;">
-        <label for="local-file-input" style="font-weight:bold; cursor:pointer; display:block; margin-bottom:10px;">
-          📁 اختر فيديو مباشرة من جهازك / الموبايل
-        </label>
-        <input type="file" id="local-file-input" accept="video/*" style="display:none;" onchange="handleFileSelect(event)">
-        <button class="btn pink" onclick="document.getElementById('local-file-input').click()">تصفح استوديو الموبايل</button>
-        <div id="file-name-display" style="margin-top:10px; font-size:12px; color:var(--pink);"></div>
-      </div>
-
-      <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
-
-      <p style="font-size:13px; color:#666;">أو ضَع رابط من يوتيوب:</p>
-      <input class="field" id="add-url" style="direction:ltr; text-align:right;" placeholder="https://youtu.be/..." />
-      
-      <label for="add-title">عنوان الفيديو</label>
-      <input class="field" id="add-title" placeholder="اكتب عنواناً مميزاً للفيديو" />
-      
-      <button class="wide" id="add-button">نشر الفيديو الآن</button>
-    </div>
-  </section>
-
-  <section id="shorts" class="view">
-    <div class="shortbox" id="shortbox">
-      <div style="padding:25px;text-align:center">Shorts — اختر مقطع قصير من جهازك أو ضع رابط يوتيوب.</div>
-    </div>
-    <div class="formpage" style="padding-top:10px">
-      <input type="file" id="short-file-input" accept="video/*" style="display:none" onchange="handleShortSelect(event)">
-      <button class="wide light" onclick="document.getElementById('short-file-input').click()">📁 رفع Short من الموبايل</button>
-      <input class="field" id="short-url" style="direction:ltr; text-align:right; margin-top:10px" placeholder="أو رابط YouTube Shorts">
-      <button class="wide" id="play-short">تشغيل المقطع</button>
-    </div>
-  </section>
-
-  <section id="profile" class="view">
-    <div class="profile">
-      <div class="profiletop">
-        <div class="bigavatar" id="bigavatar">
-          <span id="crown-badge" class="crown-icon" style="display:none;">👑</span>
-          <span id="avatar-letter">ع</span>
-        </div>
-        <div>
-          <div class="name" id="profile-name">عبده</div>
-          <div class="meta" id="profile-handle" style="direction:ltr; text-align:right;">@abdo</div>
-        </div>
-      </div>
-      <button class="wide" id="change-name">تغيير اسم العرض</button>
-      <div class="heading">فيديوهاتي المضافة</div>
-      <div id="my-results" class="grid"></div>
-    </div>
-  </section>
-
-  <section id="settings-view" class="view">
-    <div class="formpage">
-      <h2>الإعدادات</h2>
-      <p>اسم العرض</p>
-      <input class="field" id="settings-name" placeholder="اسم العرض">
-      <button class="wide" id="save-name">حفظ الاسم</button>
-      <button class="wide light" id="logout">تسجيل الخروج</button>
-    </div>
-  </section>
-</main>
-
-<nav class="bottom">
-  <button class="nav active" data-view="home"><span>⌂</span><span>الرئيسية</span></button>
-  <button class="nav" data-view="shorts"><span>ϟ</span><span>Shorts</span></button>
-  <button class="nav create" data-view="create"><span>＋</span><span>إنشاء</span></button>
-  <button class="nav" data-view="subscriptions"><span>▣</span><span>الاشتراكات</span></button>
-  <button class="nav" data-view="profile"><span>●</span><span>أنت</span></button>
-</nav>
-
-<!-- نافذة عرض الفيديو -->
-<div class="modal" id="watch">
-  <div class="modalbox">
-    <div class="modalhead">
-      <h3 id="watch-title">مشاهدة الفيديو</h3>
-      <button class="close" id="close-watch" aria-label="إغلاق">×</button>
-    </div>
-    <div class="player" id="player-container">
-      <div id="yt-player-element"></div>
+    <iframe id="playerFrame" class="player"
+      src="about:blank"
+      title="مشغل الفيديو"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>
+    <p id="playerChannel" class="meta"></p>
+    <div class="actions">
+      <button class="small-btn" id="playerSaveBtn">🔖 حفظ الفيديو</button>
+      <button class="small-btn" id="playerChannelBtn">📺 متابعة القناة</button>
+      <button class="small-btn" onclick="closeModal('playerModal')">إغلاق</button>
     </div>
   </div>
 </div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
+<div class="modal" id="uploadModal" onclick="closeOnBackdrop(event,'uploadModal')">
+  <div class="modal-box" style="max-width:600px">
+    <div class="modal-head">
+      <h3>إنشاء محتوى</h3>
+      <button class="close-btn" onclick="closeModal('uploadModal')">×</button>
+    </div>
+    <p>أضف رابط فيديو من يوتيوب أو اختر فيديو من جهازك للعرض محليًا في هذه الصفحة.</p>
+    <label for="videoUrl">رابط فيديو يوتيوب</label>
+    <div class="form-row">
+      <input id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+      <button class="primary" onclick="addYouTubeVideo()">إضافة</button>
+    </div>
+    <label for="localTitle">عنوان الفيديو المحلي</label>
+    <div class="form-row">
+      <input id="localTitle" placeholder="اكتب عنوان الفيديو">
+    </div>
+    <input id="localFile" type="file" accept="video/*">
+    <div class="form-row">
+      <button class="primary" onclick="addLocalVideo()">اختيار وإضافة الفيديو</button>
+    </div>
+    <p class="meta">ملاحظة: الفيديو المحلي لا يُرفع إلى الإنترنت ولا يظهر للمستخدمين الآخرين.</p>
+    <div id="uploadStatus" class="meta"></div>
+  </div>
+</div>
 
 <script>
 "use strict";
 
+/* مفتاح YouTube Data API الذي زوّدني به المستخدم */
 const API_KEY = "AIzaSyAhXKfQspu2iCtM4QZ83U-siTnBvFIAEyw";
+
 const $ = id => document.getElementById(id);
 
-let currentUser = "عبده";
-let myVideos = [];
-let selectedLocalFileUrl = null;
-let ytPlayer = null;
+let currentItems = [];
+let activePage = "home";
+let activeVideo = null;
+let savedIds = readStorage("abdotube_saved", []);
+let followedChannels = readStorage("abdotube_followed", []);
+let localVideos = readStorage("abdotube_local_meta", []);
 
-function onYouTubeIframeAPIReady() {
-  ytPlayer = new YT.Player('yt-player-element', {
-    height: '100%',
-    width: '100%',
-    videoId: '5qap5aO4i9A',
-    playerVars: { 'playsinline': 1, 'autoplay': 1, 'rel': 0 }
-  });
-}
-
-function initUser() {
-  let saved = "";
-  try { saved = localStorage.getItem("abdoTubeUser") || ""; } catch {}
-  if (saved) {
-    currentUser = saved;
-    $("login-screen").classList.add("hidden");
-    updateProfileUI();
-  }
-}
-
-$("login-form").addEventListener("submit", e => {
-  e.preventDefault();
-  let name = $("login-name").value.trim();
-  if (name) {
-    currentUser = name;
-    try { localStorage.setItem("abdoTubeUser", name); } catch {}
-    $("login-screen").classList.add("hidden");
-    updateProfileUI();
-  }
-});
-
-function updateProfileUI() {
-  $("profile-name").textContent = currentUser;
-  $("avatar-letter").textContent = currentUser.charAt(0);
-  $("profile-handle").textContent = "@" + currentUser.toLowerCase().replace(/\s+/g, "");
-
-  let lower = currentUser.toLowerCase();
-  if (lower === "abdo" || lower === "abpo" || currentUser === "عبده") {
-    $("king-banner").style.display = "flex";
-    $("crown-badge").style.display = "block";
-  } else {
-    $("king-banner").style.display = "none";
-    $("crown-badge").style.display = "none";
-  }
-}
-
-function handleFileSelect(event) {
-  const file = event.target.files[0];
-  if (file) {
-    selectedLocalFileUrl = URL.createObjectURL(file);
-    $("file-name-display").textContent = "تم اختيار الفيديو: " + file.name;
-    if (!$("add-title").value) {
-      $("add-title").value = file.name.replace(/\.[^/.]+$/, "");
-    }
-  }
-}
-
-function handleShortSelect(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const fileUrl = URL.createObjectURL(file);
-    $("shortbox").replaceChildren();
-    const video = document.createElement("video");
-    video.src = fileUrl;
-    video.controls = true;
-    video.autoplay = true;
-    video.style.width = "100%";
-    video.style.height = "100%";
-    $("shortbox").appendChild(video);
-  }
-}
-
-function validId(id) {
-  return typeof id === "string" && /^[A-Za-z0-9_-]{11}$/.test(id);
-}
-
-function extractId(raw) {
+function readStorage(key, fallback) {
   try {
-    const u = new URL(raw.trim());
-    let id = null;
-    if (u.hostname === "youtu.be") id = u.pathname.split("/").filter(Boolean)[0];
-    else if (u.hostname.includes("youtube.com")) {
-      id = u.searchParams.get("v");
-      if (!id) {
-        const p = u.pathname.split("/").filter(Boolean);
-        const i = p.findIndex(x => ["embed","shorts"].includes(x));
-        if (i >= 0) id = p[i + 1];
-      }
-    }
-    return validId(id) ? id : null;
+    const value = JSON.parse(localStorage.getItem(key));
+    return value ?? fallback;
   } catch {
-    return validId(raw.trim()) ? raw.trim() : null;
+    return fallback;
   }
 }
 
-function switchView(name) {
-  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === name));
-  document.querySelectorAll(".nav").forEach(b => b.classList.toggle("active", b.dataset.view === name));
-  window.scrollTo({top:0,behavior:"smooth"});
-  if (name === "profile") renderMyVideos();
+function writeStorage(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    alert("مساحة التخزين ممتلئة أو غير متاحة على هذا الجهاز.");
+  }
 }
 
-function render(items, target = $("results")) {
-  target.replaceChildren();
+function escapeHTML(value = "") {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+function normalizeVideo(item) {
+  const snippet = item.snippet || {};
+  const id = typeof item.id === "string"
+    ? item.id
+    : item.id?.videoId || item.videoId || "";
+
+  return {
+    id,
+    title: snippet.title || item.title || "فيديو",
+    channel: snippet.channelTitle || item.channel || "قناة يوتيوب",
+    channelId: snippet.channelId || item.channelId || "",
+    description: snippet.description || "",
+    thumbnail:
+      snippet.thumbnails?.high?.url ||
+      snippet.thumbnails?.medium?.url ||
+      snippet.thumbnails?.default?.url ||
+      item.thumbnail ||
+      "",
+    published: snippet.publishedAt || "",
+    local: Boolean(item.local),
+    localUrl: item.localUrl || ""
+  };
+}
+
+function showStatus(message, isError = false) {
+  $("status").style.display = "block";
+  $("status").className = "status" + (isError ? " error" : "");
+  $("status").textContent = message;
+}
+
+function formatDate(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("ar-EG");
+}
+
+async function youtubeRequest(endpoint, params = {}) {
+  if (!API_KEY || API_KEY === "YOUR_API_KEY") {
+    throw new Error("مفتاح YouTube API غير مضبوط.");
+  }
+
+  const url = new URL("https://www.googleapis.com/youtube/v3/" + endpoint);
+  Object.entries({ ...params, key: API_KEY }).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      url.searchParams.set(key, value);
+    }
+  });
+
+  const response = await fetch(url.toString());
+  const data = await response.json();
+
+  if (!response.ok || data.error) {
+    const apiMessage = data.error?.message || "تعذر الاتصال بيوتيوب.";
+    if (response.status === 403) {
+      throw new Error("رفض يوتيوب الطلب. راجع تفعيل YouTube Data API v3 وحصة الاستخدام وقيود المفتاح. التفاصيل: " + apiMessage);
+    }
+    throw new Error(apiMessage);
+  }
+
+  return data;
+}
+
+async function searchVideos(query = "فيديوهات عربية", options = {}) {
+  showStatus("جاري البحث عن الفيديوهات...");
+  $("videoGrid").innerHTML = "";
+
+  try {
+    const data = await youtubeRequest("search", {
+      part: "snippet",
+      q: query,
+      type: "video",
+      maxResults: 24,
+      regionCode: "EG",
+      relevanceLanguage: "ar",
+      safeSearch: "moderate",
+      order: options.order || "relevance"
+    });
+
+    currentItems = (data.items || []).map(normalizeVideo).filter(video => video.id);
+    renderVideos(currentItems);
+
+    if (!currentItems.length) {
+      showStatus("لم يتم العثور على فيديوهات. جرّب كلمات بحث مختلفة.");
+    } else {
+      $("status").style.display = "none";
+    }
+  } catch (error) {
+    showStatus(error.message + " تأكد من اتصال الإنترنت وإعدادات المفتاح.", true);
+  }
+}
+
+async function loadTrending() {
+  showStatus("جاري تحميل الفيديوهات...");
+  $("videoGrid").innerHTML = "";
+
+  try {
+    const data = await youtubeRequest("videos", {
+      part: "snippet,statistics",
+      chart: "mostPopular",
+      regionCode: "EG",
+      maxResults: 24
+    });
+
+    currentItems = (data.items || []).map(normalizeVideo).filter(video => video.id);
+    renderVideos(currentItems);
+
+    if (currentItems.length) {
+      $("status").style.display = "none";
+    } else {
+      await searchVideos("فيديوهات عربية");
+    }
+  } catch (error) {
+    await searchVideos("فيديوهات عربية");
+  }
+}
+
+function renderVideos(items) {
+  const grid = $("videoGrid");
+  grid.innerHTML = "";
+
   if (!items.length) {
-    target.innerHTML = '<div class="notice">لا توجد فيديوهات مضافة بعد.</div>';
+    grid.innerHTML = '<div class="empty">لا توجد فيديوهات لعرضها حاليًا.</div>';
     return;
   }
-  items.forEach(item => {
+
+  items.forEach(video => {
     const card = document.createElement("article");
-    card.className = "card";
+    card.className = "video-card";
+
     const thumb = document.createElement("div");
     thumb.className = "thumb";
 
-    if (item.isLocal) {
-      const vid = document.createElement("video");
-      vid.src = item.localUrl;
-      thumb.appendChild(vid);
+    if (video.local && video.localUrl) {
+      const localPreview = document.createElement("video");
+      localPreview.src = video.localUrl;
+      localPreview.muted = true;
+      localPreview.preload = "metadata";
+      thumb.appendChild(localPreview);
     } else {
       const img = document.createElement("img");
-      img.src = item.thumbnail || "https://i.ytimg.com/vi/" + encodeURIComponent(item.id) + "/hqdefault.jpg";
+      img.src = video.thumbnail;
+      img.alt = video.title;
+      img.loading = "lazy";
+      img.onerror = () => {
+        img.src = "https://placehold.co/640x360/f7f7f7/555?text=AbdoTube";
+      };
       thumb.appendChild(img);
     }
 
-    thumb.addEventListener("click", () => playVideo(item));
+    thumb.addEventListener("click", () => playVideo(video));
 
-    const details = document.createElement("div");
-    details.className = "details";
+    const info = document.createElement("div");
+    info.className = "video-info";
+
     const avatar = document.createElement("div");
     avatar.className = "avatar";
-    avatar.textContent = (item.channel || "ع").charAt(0);
+    avatar.textContent = (video.channel || "ع").charAt(0);
 
-    const txt = document.createElement("div");
-    const title = document.createElement("div");
-    title.className = "title";
-    title.textContent = item.title;
+    const text = document.createElement("div");
+    text.style.minWidth = "0";
+    text.innerHTML = `
+      <div class="video-title">${escapeHTML(video.title)}</div>
+      <div class="meta">${escapeHTML(video.channel)}<br>
+      ${escapeHTML(formatDate(video.published))}</div>
+      <div class="actions">
+        <button class="small-btn" data-action="save">
+          ${savedIds.includes(video.id) ? "🔖 محفوظ" : "🔖 حفظ"}
+        </button>
+        <button class="small-btn" data-action="follow">
+          ${followedChannels.includes(video.channelId || video.channel) ? "✓ متابَع" : "＋ متابعة"}
+        </button>
+        <button class="small-btn" data-action="watch">▶ مشاهدة</button>
+      </div>
+    `;
 
-    const meta = document.createElement("div");
-    meta.className = "meta";
-    meta.textContent = item.channel || "عبده يوتيوب";
+    text.querySelector('[data-action="save"]').addEventListener("click", event => {
+      event.stopPropagation();
+      toggleSaved(video);
+    });
 
-    txt.append(title, meta);
-    details.append(avatar, txt);
-    card.append(thumb, details);
-    target.appendChild(card);
+    text.querySelector('[data-action="follow"]').addEventListener("click", event => {
+      event.stopPropagation();
+      toggleFollow(video);
+    });
+
+    text.querySelector('[data-action="watch"]').addEventListener("click", event => {
+      event.stopPropagation();
+      playVideo(video);
+    });
+
+    info.append(avatar, text);
+    card.append(thumb, info);
+    grid.appendChild(card);
   });
 }
 
-function playVideo(item) {
-  $("watch-title").textContent = item.title;
-  $("watch").classList.add("open");
-  document.body.style.overflow = "hidden";
-
-  const pContainer = $("player-container");
-  pContainer.replaceChildren();
-
-  if (item.isLocal) {
-    const video = document.createElement("video");
-    video.src = item.localUrl;
-    video.controls = true;
-    video.autoplay = true;
-    video.style.width = "100%";
-    video.style.height = "100%";
-    pContainer.appendChild(video);
+function toggleSaved(video) {
+  const id = video.id;
+  if (savedIds.includes(id)) {
+    savedIds = savedIds.filter(savedId => savedId !== id);
   } else {
-    const div = document.createElement("div");
-    div.id = "yt-player-element";
-    pContainer.appendChild(div);
-    ytPlayer = new YT.Player('yt-player-element', {
-      height: '100%', width: '100%', videoId: item.id,
-      playerVars: { 'playsinline': 1, 'autoplay': 1 }
+    savedIds.push(id);
+  }
+
+  writeStorage("abdotube_saved", savedIds);
+
+  if (activePage === "saved") {
+    showPage("saved");
+  } else {
+    renderVideos(currentItems);
+  }
+}
+
+function toggleFollow(video) {
+  const channel = video.channelId || video.channel;
+  if (followedChannels.includes(channel)) {
+    followedChannels = followedChannels.filter(item => item !== channel);
+  } else {
+    followedChannels.push(channel);
+  }
+
+  writeStorage("abdotube_followed", followedChannels);
+  renderVideos(currentItems);
+}
+
+function playVideo(video) {
+  activeVideo = video;
+  $("playerTitle").textContent = video.title;
+  $("playerChannel").textContent = video.channel;
+
+  if (video.local && video.localUrl) {
+    $("playerFrame").style.display = "none";
+
+    let localPlayer = $("localPlayer");
+    if (!localPlayer) {
+      localPlayer = document.createElement("video");
+      localPlayer.id = "localPlayer";
+      localPlayer.className = "player";
+      localPlayer.controls = true;
+      localPlayer.autoplay = true;
+      $("playerFrame").after(localPlayer);
+    }
+
+    localPlayer.style.display = "block";
+    localPlayer.src = video.localUrl;
+    localPlayer.load();
+  } else {
+    const localPlayer = $("localPlayer");
+    if (localPlayer) {
+      localPlayer.pause();
+      localPlayer.style.display = "none";
+      localPlayer.removeAttribute("src");
+    }
+
+    $("playerFrame").style.display = "block";
+    $("playerFrame").src =
+      "https://www.youtube-nocookie.com/embed/" +
+      encodeURIComponent(video.id) +
+      "?autoplay=1&rel=0";
+  }
+
+  $("playerSaveBtn").textContent =
+    savedIds.includes(video.id) ? "🔖 إزالة من المحفوظات" : "🔖 حفظ الفيديو";
+
+  $("playerChannelBtn").textContent =
+    followedChannels.includes(video.channelId || video.channel)
+      ? "✓ إلغاء المتابعة"
+      : "📺 متابعة القناة";
+
+  $("playerSaveBtn").onclick = () => {
+    toggleSaved(activeVideo);
+    $("playerSaveBtn").textContent =
+      savedIds.includes(activeVideo.id) ? "🔖 إزالة من المحفوظات" : "🔖 حفظ الفيديو";
+  };
+
+  $("playerChannelBtn").onclick = () => {
+    toggleFollow(activeVideo);
+    $("playerChannelBtn").textContent =
+      followedChannels.includes(activeVideo.channelId || activeVideo.channel)
+        ? "✓ إلغاء المتابعة"
+        : "📺 متابعة القناة";
+  };
+
+  $("playerModal").classList.add("open");
+}
+
+function closeModal(id) {
+  $(id).classList.remove("open");
+
+  if (id === "playerModal") {
+    $("playerFrame").src = "about:blank";
+    const localPlayer = $("localPlayer");
+    if (localPlayer) {
+      localPlayer.pause();
+      localPlayer.removeAttribute("src");
+      localPlayer.load();
+    }
+  }
+}
+
+function closeOnBackdrop(event, id) {
+  if (event.target.id === id) closeModal(id);
+}
+
+function showPage(page) {
+  activePage = page;
+
+  document.querySelectorAll(".nav-btn[data-page]").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === page);
+  });
+
+  $("chips").style.display = page === "home" ? "flex" : "none";
+  $("videoGrid").innerHTML = "";
+
+  if (page === "home") {
+    $("pageTitle").textContent = "أحدث الفيديوهات";
+    loadTrending();
+    return;
+  }
+
+  if (page === "shorts") {
+    $("pageTitle").textContent = "الشورتس";
+    searchVideos("YouTube Shorts عربي");
+    return;
+  }
+
+  if (page === "subscriptions") {
+    $("pageTitle").textContent = "القنوات التي تتابعها";
+    const items = currentItems.filter(video =>
+      followedChannels.includes(video.channelId || video.channel)
+    );
+    renderPageItems(items, "ابحث عن فيديوهات أولًا، ثم تابع القنوات التي تعجبك.");
+    return;
+  }
+
+  if (page === "saved") {
+    $("pageTitle").textContent = "الفيديوهات المحفوظة";
+    const items = currentItems.filter(video => savedIds.includes(video.id));
+    renderPageItems(items, "الفيديوهات التي تحفظها ستظهر هنا بعد تحميلها.");
+    return;
+  }
+
+  if (page === "channel") {
+    $("pageTitle").textContent = "قناتي";
+    $("videoGrid").innerHTML = `
+      <div class="profile-box" style="grid-column:1/-1">
+        <h2>👑 عبده يوتيوب</h2>
+        <p>أهلًا بك في قناتك على عبده يوتيوب.</p>
+        <button class="primary" onclick="openUpload()">＋ إنشاء محتوى</button>
+      </div>
+    `;
+    $("status").style.display = "none";
+    return;
+  }
+
+  if (page === "settings") {
+    $("pageTitle").textContent = "الإعدادات";
+    $("videoGrid").innerHTML = `
+      <div class="profile-box" style="grid-column:1/-1">
+        <h3>إعدادات عبده يوتيوب</h3>
+        <p>يمكنك مسح قائمة المحفوظات والمتابعات المخزنة على هذا الجهاز.</p>
+        <button class="primary" onclick="clearLocalData()">مسح البيانات المحلية</button>
+        <p class="meta">هذا النموذج يحفظ المحفوظات والمتابعات محليًا على جهازك.</p>
+      </div>
+    `;
+    $("status").style.display = "none";
+  }
+}
+
+function renderPageItems(items, emptyMessage) {
+  $("status").style.display = "none";
+  if (items.length) {
+    renderVideos(items);
+  } else {
+    $("videoGrid").innerHTML =
+      '<div class="empty">' + escapeHTML(emptyMessage) + '</div>';
+  }
+}
+
+async function searchCategory(query, button) {
+  document.querySelectorAll(".chip").forEach(chip => chip.classList.remove("active"));
+  if (button) button.classList.add("active");
+
+  activePage = "home";
+  $("pageTitle").textContent = query === "trending" ? "أحدث الفيديوهات" : query;
+  if (query === "trending") {
+    await loadTrending();
+  } else {
+    await searchVideos(query);
+  }
+}
+
+$("searchForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const query = $("searchInput").value.trim();
+  if (!query) {
+    showStatus("اكتب اسم فيديو أو قناة للبحث.");
+    return;
+  }
+
+  showPageForSearch();
+  await searchVideos(query);
+});
+
+function showPageForSearch() {
+  activePage = "home";
+  document.querySelectorAll(".nav-btn[data-page]").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === "home");
+  });
+  $("chips").style.display = "flex";
+  $("pageTitle").textContent = "نتائج البحث";
+}
+
+function openUpload() {
+  $("uploadModal").classList.add("open");
+  $("uploadStatus").textContent = "";
+}
+
+function extractYouTubeId(value) {
+  try {
+    const url = new URL(value);
+    if (url.hostname === "youtu.be") {
+      return url.pathname.slice(1).split("/")[0];
+    }
+    if (url.hostname.includes("youtube.com")) {
+      if (url.pathname === "/watch") return url.searchParams.get("v");
+      const parts = url.pathname.split("/").filter(Boolean);
+      if (["shorts", "embed", "live"].includes(parts[0])) return parts[1];
+    }
+  } catch {}
+  return null;
+}
+
+async function addYouTubeVideo() {
+  const url = $("videoUrl").value.trim();
+  const id = extractYouTubeId(url);
+
+  if (!id) {
+    $("uploadStatus").textContent = "الرابط غير صحيح. أدخل رابط فيديو يوتيوب.";
+    return;
+  }
+
+  $("uploadStatus").textContent = "جاري إضافة الفيديو...";
+
+  try {
+    const data = await youtubeRequest("videos", {
+      part: "snippet",
+      id
     });
+
+    if (!data.items || !data.items.length) {
+      throw new Error("الفيديو غير موجود أو غير متاح.");
+    }
+
+    const video = normalizeVideo(data.items[0]);
+    currentItems = [video, ...currentItems.filter(item => item.id !== video.id)];
+
+    closeModal("uploadModal");
+    showPageForSearch();
+    $("pageTitle").textContent = "الفيديو المضاف";
+    renderVideos(currentItems);
+    $("status").style.display = "none";
+    $("videoUrl").value = "";
+  } catch (error) {
+    $("uploadStatus").textContent = error.message;
   }
 }
 
-function closePlayer() {
-  $("watch").classList.remove("open");
-  $("player-container").replaceChildren();
-  document.body.style.overflow = "";
+function addLocalVideo() {
+  const file = $("localFile").files[0];
+  const title = $("localTitle").value.trim() || file?.name || "فيديو محلي";
+
+  if (!file) {
+    $("uploadStatus").textContent = "اختَر ملف فيديو من جهازك أولًا.";
+    return;
+  }
+
+  if (!file.type.startsWith("video/")) {
+    $("uploadStatus").textContent = "الملف المحدد ليس فيديو.";
+    return;
+  }
+
+  const localUrl = URL.createObjectURL(file);
+  const video = {
+    id: "local-" + Date.now(),
+    title,
+    channel: "قناتي",
+    channelId: "local-channel",
+    thumbnail: "",
+    local: true,
+    localUrl
+  };
+
+  currentItems = [video, ...currentItems];
+  closeModal("uploadModal");
+  showPageForSearch();
+  $("pageTitle").textContent = "الفيديو المضاف";
+  renderVideos(currentItems);
+  $("status").style.display = "none";
+  $("localFile").value = "";
+  $("localTitle").value = "";
 }
 
-function renderMyVideos() { render(myVideos, $("my-results")); }
+function clearLocalData() {
+  if (!confirm("هل تريد مسح المحفوظات والمتابعات على هذا الجهاز؟")) return;
 
-$("close-watch").addEventListener("click", closePlayer);
+  savedIds = [];
+  followedChannels = [];
+  writeStorage("abdotube_saved", savedIds);
+  writeStorage("abdotube_followed", followedChannels);
+  alert("تم مسح المحفوظات والمتابعات المحلية.");
+}
 
-$("add-button").addEventListener("click", () => {
-  const title = $("add-title").value.trim() || "فيديو جديد";
-
-  if (selectedLocalFileUrl) {
-    myVideos.unshift({ isLocal: true, localUrl: selectedLocalFileUrl, title, channel: currentUser });
-    selectedLocalFileUrl = null;
-    $("file-name-display").textContent = "";
-  } else {
-    const id = extractId($("add-url").value);
-    if (!id) { alert("اختر فيديو من الموبايل أو ضع رابطاً صحيحاً."); return; }
-    myVideos.unshift({ isLocal: false, id, title, channel: currentUser });
-  }
-
-  $("add-url").value = "";
-  $("add-title").value = "";
-  alert("تم نشر الفيديو بنجاح!");
-  switchView("home");
-  render(myVideos);
-});
-
-$("play-short").addEventListener("click", () => {
-  const id = extractId($("short-url").value);
-  if (!id) { alert("أدخل رابط Shorts أو اختر ملفاً."); return; }
-  $("shortbox").replaceChildren();
-  const iframe = document.createElement("iframe");
-  iframe.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&loop=1";
-  iframe.allow = "autoplay; encrypted-media; fullscreen";
-  $("shortbox").appendChild(iframe);
-});
-
-document.querySelectorAll(".nav").forEach(b => {
-  b.addEventListener("click", () => switchView(b.dataset.view));
-});
-
-$("home-logo").addEventListener("click", () => switchView("home"));
-$("settings").addEventListener("click", () => switchView("settings-view"));
-$("change-name").addEventListener("click", () => switchView("settings-view"));
-
-$("save-name").addEventListener("click", () => {
-  let newName = $("settings-name").value.trim();
-  if (newName) {
-    currentUser = newName;
-    try { localStorage.setItem("abdoTubeUser", newName); } catch {}
-    updateProfileUI();
-    alert("تم حفظ الاسم!");
-    switchView("profile");
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeModal("playerModal");
+    closeModal("uploadModal");
   }
 });
 
-$("logout").addEventListener("click", () => {
-  try { localStorage.removeItem("abdoTubeUser"); } catch {}
-  location.reload();
-});
+$("year").textContent = new Date().getFullYear();
 
-window.addEventListener("DOMContentLoaded", () => {
-  initUser();
-  render(myVideos);
-});
+loadTrending();
 </script>
 </body>
 </html>
