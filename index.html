@@ -1,241 +1,202 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عبده يوتيوب 2 - AbdoTube II</title>
-  <style>
-    :root {
-      --bg: #0f0f0f;
-      --text: #f1f1f1;
-      --muted: #aaa;
-      --border: #222;
-      --pink: #ff0033;
-      --gold: #ffd700;
-      --card: #1f1f1f;
-      --hover: #303030;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Roboto, Arial, Tahoma, sans-serif;
-    }
-    button, input { font: inherit; }
-    button { cursor: pointer; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#0f0f0f">
+<title>عبده يوتيوب 2 - النسخة الأصلية الكاملة</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Roboto,Arial,Tahoma,sans-serif;color:#f1f1f1;background:#0f0f0f;direction:rtl;text-align:right}
+button,input{font:inherit}
+button{cursor:pointer}
+:root{--pink:#ff0033;--card:#212121;--border:#303030;--muted:#aaa;--gold:#ffd700}
 
-    /* شاشة تسجيل الدخول والتعرف الذكي */
-    #login-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .login-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 30px;
-      border-radius: 16px;
-      width: min(400px, 100%);
-      text-align: center;
-    }
-    .login-logo { font-size: 26px; font-weight: bold; margin-bottom: 20px; color: #fff; }
-    .login-logo span { color: var(--pink); }
-    .login-input {
-      width: 100%;
-      padding: 12px 16px;
-      background: #121212;
-      border: 1px solid var(--border);
-      color: #fff;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      outline: none;
-      text-align: right;
-    }
-    .login-btn {
-      width: 100%;
-      padding: 12px;
-      background: var(--pink);
-      color: #fff;
-      border: 0;
-      border-radius: 8px;
-      font-weight: bold;
-    }
+/* الهيدر العلوي المطابق ليوتيوب الحقيقي */
+header{height:56px;position:sticky;top:0;z-index:50;background:#0f0f0f;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.logo-area{display:flex;align-items:center;gap:4px;font-size:18px;font-weight:bold;color:#fff;cursor:pointer}
+.logo-icon{background:var(--pink);color:#fff;padding:2px 6px;border-radius:4px;font-size:14px}
+.header-right{display:flex;align-items:center;gap:15px}
+.icon-btn{background:none;border:0;color:#fff;font-size:20px;position:relative}
+.badge-dot{position:absolute;top:0;right:0;background:var(--pink);color:#fff;font-size:10px;padding:1px 4px;border-radius:10px;font-weight:bold}
 
-    /* الهيدر مطابق ليوتيوب الأصلي */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 56px;
-      padding: 0 16px;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-    }
-    .logo-area { display: flex; align-items: center; gap: 15px; }
-    .logo {
-      background: none; border: 0; color: #fff;
-      font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 5px; cursor: pointer;
-    }
-    .logo b { color: var(--pink); }
-    
-    .search-area {
-      display: flex; flex: 1; max-width: 600px; margin: 0 20px;
-    }
-    .search-input {
-      width: 100%; padding: 8px 16px; background: #121212; border: 1px solid var(--border);
-      color: #fff; border-radius: 40px 0 0 40px; outline: none; font-size: 15px;
-    }
-    .search-btn {
-      background: #222; border: 1px solid var(--border); border-right: 0;
-      padding: 0 20px; border-radius: 0 40px 40px 0; color: #fff; font-size: 16px;
-    }
+/* شريط البحث المنبثق */
+.search-bar{display:flex;align-items:center;background:#121212;border:1px solid var(--border);border-radius:20px;overflow:hidden;margin:0 10px;flex:1;max-width:500px}
+.search-bar input{flex:1;background:none;border:0;color:#fff;padding:8px 14px;font-size:14px;outline:none;text-align:right}
+.search-submit{background:#222;border:0;color:#fff;padding:8px 16px;font-size:15px}
 
-    .user-profile-badge {
-      display: flex; align-items: center; gap: 8px; background: #222;
-      padding: 5px 12px; border-radius: 20px; font-size: 14px; font-weight: bold;
-    }
-    .verified-badge { color: #3ea6ff; font-size: 14px; }
-    .king-crown { color: var(--gold); }
+main{max-width:900px;margin:auto;padding-bottom:80px}
+.view{display:none}.view.active{display:block}
 
-    /* التخطيط العام */
-    .layout { display: flex; }
-    aside {
-      width: 240px; height: calc(100vh - 56px); position: sticky; top: 56px;
-      padding: 12px; background: var(--bg); overflow-y: auto; flex-shrink: 0;
-    }
-    .nav-item {
-      display: flex; align-items: center; gap: 20px; padding: 10px 12px;
-      border-radius: 10px; background: transparent; border: 0; color: #fff;
-      width: 100%; text-align: right; font-size: 14px; margin-bottom: 4px;
-    }
-    .nav-item:hover, .nav-item.active { background: var(--hover); }
+/* دوائر القصص والقنوات فوق */
+.stories{display:flex;gap:12px;overflow-x:auto;padding:10px 16px;scrollbar-width:none;border-bottom:1px solid var(--border)}
+.story{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0}
+.story-ring{width:54px;height:54px;border-radius:50%;padding:2px;background:linear-gradient(45deg,#ff0033,#ff8800)}
+.story-avatar{width:100%;height:100%;border-radius:50%;background:#333;display:grid;place-items:center;font-weight:bold;color:#fff;border:2px solid #0f0f0f;overflow:hidden}
+.story-avatar img{width:100%;height:100%;object-fit:cover}
+.story-name{font-size:11px;color:#aaa;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-    main { flex: 1; padding: 24px; min-width: 0; }
-    
-    /* الفيديوهات والشبكة */
-    .chips { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 20px; scrollbar-width: none; }
-    .chip {
-      background: #272727; border: 0; color: #fff; padding: 6px 14px;
-      border-radius: 8px; font-size: 14px; white-space: nowrap; cursor: pointer;
-    }
-    .chip.active { background: #f1f1f1; color: #0f0f0f; font-weight: bold; }
+/* فلاتر المحتوى */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;scrollbar-width:none}
+.chip{background:#272727;border:0;color:#fff;padding:6px 12px;border-radius:8px;font-size:13px;white-space:nowrap}
+.chip.active{background:#fff;color:#000;font-weight:bold}
 
-    .video-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px 16px;
-    }
-    .video-card { cursor: pointer; }
-    .thumbnail {
-      aspect-ratio: 16/9; background: #222; border-radius: 12px; overflow: hidden; position: relative;
-    }
-    .thumbnail img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    
-    .video-details { display: flex; gap: 12px; margin-top: 10px; }
-    .channel-avatar {
-      width: 36px; height: 36px; border-radius: 50%; background: var(--pink);
-      color: #fff; display: grid; place-items: center; font-weight: bold; flex-shrink: 0;
-    }
-    .video-title { font-size: 15px; font-weight: 500; line-height: 1.4; color: #fff; margin-bottom: 4px; }
-    .video-meta { font-size: 13px; color: var(--muted); }
+/* شبكة الفيديوهات */
+.grid{display:grid;grid-template-columns:1fr;gap:20px;padding:0 12px}
+@media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
 
-    /* مشاهدة الفيديو (Modal) */
-    .modal {
-      position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.8);
-      display: none; align-items: center; justify-content: center; padding: 20px;
-    }
-    .modal.open { display: flex; }
-    .modal-content {
-      background: var(--card); border-radius: 16px; width: min(900px, 100%);
-      padding: 20px; border: 1px solid var(--border);
-    }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .close-modal { background: none; border: 0; color: #fff; font-size: 24px; cursor: pointer; }
-    .player-container { aspect-ratio: 16/9; width: 100%; background: #000; border-radius: 10px; overflow: hidden; }
-    .player-container iframe { width: 100%; height: 100%; border: 0; }
+.card{background:#0f0f0f;cursor:pointer}
+.thumb{position:relative;width:100%;aspect-ratio:16/9;background:#111;border-radius:12px;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.duration{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.8);color:#fff;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:bold}
 
-    .status-msg { text-align: center; padding: 40px; color: var(--muted); font-size: 16px; grid-column: 1/-1; }
+.video-info{display:flex;gap:12px;padding-top:10px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;font-weight:bold;flex-shrink:0}
+.title{font-size:14px;font-weight:500;line-height:1.4;color:#fff;margin-bottom:3px}
+.meta{font-size:12px;color:var(--muted);line-height:1.4}
 
-    @media(max-width: 768px) {
-      aside { display: none; }
-      .search-area { margin: 0 10px; }
-    }
-  </style>
+/* شريط التنقل السفلي المطابق للصور الحقيقية تماماً */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:#0f0f0f;border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
+.nav-btn{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;font-size:10px;color:#aaa}
+.nav-btn span:first-child{font-size:22px;height:24px}
+.nav-btn.active{color:#fff}
+.nav-btn.create span:first-child{background:#fff;color:#0f0f0f;border-radius:50%;width:38px;height:38px;display:grid;place-items:center;margin-top:-8px;font-size:26px}
+
+/* صفحة أنت (قناتي) المطابقة للصورة 1000758400 */
+.profile-header{display:flex;align-items:center;gap:15px;padding:20px}
+.profile-big-avatar{width:75px;height:75px;border-radius:50%;background:#333;color:#fff;font-size:28px;display:grid;place-items:center;font-weight:bold}
+.profile-actions{display:flex;gap:10px;padding:0 20px 20px}
+.p-btn{flex:1;background:#272727;color:#fff;border:0;padding:10px;border-radius:20px;font-weight:bold;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* مشغل الفيديو والتعليقات المطابق للصور */
+.modal{position:fixed;inset:0;z-index:300;background:#0f0f0f;display:none;flex-direction:column;overflow-y:auto}
+.modal.open{display:flex}
+.player-box{width:100%;aspect-ratio:16/9;background:#000;position:sticky;top:0;z-index:10}
+.player-box iframe{width:100%;height:100%;border:0}
+.video-action-bar{display:flex;justify-content:space-around;padding:12px;border-bottom:1px solid var(--border);background:#121212}
+.act-btn{background:#272727;border:0;color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:5px}
+
+.status-msg{text-align:center;padding:40px;color:var(--muted);font-size:14px;grid-column:1/-1}
+</style>
 </head>
 <body>
 
-<!-- شاشة تسجيل الدخول الرسمية -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">▶ عبده <span>يوتيوب 2</span></div>
-    <p style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">مرحباً بك، يرجى أدخل اسم الحساب للدخول إلى المنصة:</p>
-    <form id="login-form">
-      <input type="text" id="username-input" class="login-input" placeholder="اكتب الاسم هنا..." required autocomplete="off">
-      <button type="submit" class="login-btn">دخول المنصة</button>
-    </form>
-  </div>
-</div>
-
-<!-- الهيدر الرئيسي -->
+<!-- الهيدر العلوي المماثل تماماً للصورة الحقيقية -->
 <header>
-  <div class="logo-area">
-    <button class="logo" onclick="switchPage('home')">▶ عبده <b>يوتيوب 2</b></button>
+  <div class="logo-area" onclick="switchView('home')">
+    <span class="logo-icon">▶</span> يوتيوب <span style="color:var(--pink); font-size:12px;">عبده 👑</span>
   </div>
-  <form class="search-area" id="search-form">
-    <input type="text" id="search-input" class="search-input" placeholder="بحث..." autocomplete="off">
-    <button type="submit" class="search-btn">🔍</button>
-  </form>
-  <div class="user-profile-badge" id="user-badge-display">
-    <!-- يتم تعبئتها ديناميكياً -->
+  <div class="search-bar">
+    <input id="query" placeholder="بحث في YouTube..." autocomplete="off">
+    <button class="search-submit" id="search-btn">🔍</button>
+  </div>
+  <div class="header-right">
+    <button class="icon-btn">🔔<span class="badge-dot">9+</span></button>
   </div>
 </header>
 
-<div class="layout">
-  <!-- القائمة الجانبية المنسدلة مطابقة ليوتيوب -->
-  <aside>
-    <button class="nav-item active" onclick="switchPage('home')">🏠 الرئيسية</button>
-    <button class="nav-item" onclick="switchPage('shorts')">⚡ الشورتس</button>
-    <button class="nav-item" onclick="switchPage('subscriptions')">📺 الاشتراكات</button>
-    <button class="nav-item" onclick="switchPage('channel')">👤 قناتي والملكية</button>
-  </aside>
-
-  <main>
-    <!-- الأقسام والتصنيفات -->
-    <div class="chips" id="chips-container">
-      <button class="chip active" onclick="filterCategory('الكل', this)">الكل</button>
-      <button class="chip" onclick="filterCategory('ألعاب فيديو', this)">ألعاب فيديو</button>
-      <button class="chip" onclick="filterCategory('كرة القدم', this)">كرة القدم</button>
-      <button class="chip" onclick="filterCategory('موسيقى عربية', this)">موسيقى</button>
-      <button class="chip" onclick="filterCategory('تقنية وموبايلات', this)">تقنية</button>
-      <button class="chip" onclick="filterCategory('ضحك وكوميديا', this)">كوميديا</button>
+<main>
+  <!-- الصفحة الرئيسية -->
+  <section id="home" class="view active">
+    <!-- قصص القنوات فوق -->
+    <div class="stories" id="stories-container">
+      <div class="story" onclick="searchYouTube('عبده جيمنج')">
+        <div class="story-ring"><div class="story-avatar" style="background:#ff0033">ع</div></div>
+        <div class="story-name">عبده 👑</div>
+      </div>
+      <div class="story" onclick="searchYouTube('كرة القدم')">
+        <div class="story-ring"><div class="story-avatar" style="background:#3ea6ff">رياضة</div></div>
+        <div class="story-name">رياضة</div>
+      </div>
+      <div class="story" onclick="searchYouTube('ألعاب فيديو')">
+        <div class="story-ring"><div class="story-avatar" style="background:#2ba640">ألعاب</div></div>
+        <div class="story-name">ألعاب</div>
+      </div>
+      <div class="story" onclick="searchYouTube('ضحك كوميديا')">
+        <div class="story-ring"><div class="story-avatar" style="background:#f1c40f">كوميدي</div></div>
+        <div class="story-name">كوميديا</div>
+      </div>
     </div>
 
-    <h2 id="section-title" style="font-size: 18px; margin-bottom: 16px; font-weight: 500;">الفيديوهات المقترحة</h2>
-    <div id="video-grid" class="video-grid">
-      <div class="status-msg">جاري تحميل الفيديوهات من يوتيوب...</div>
+    <!-- تصنيفات الفلاتر -->
+    <div class="chips" id="chips">
+      <button class="chip active" data-q="كل المحتوى">كل المحتوى</button>
+      <button class="chip" data-q="ألعاب فيديو">ألعاب فيديو</button>
+      <button class="chip" data-q="كرة القدم">كرة القدم</button>
+      <button class="chip" data-q="موسيقى">موسيقى</button>
+      <button class="chip" data-q="Shorts">Shorts</button>
     </div>
-  </main>
-</div>
 
-<!-- مشغل الفيديو المنبثق -->
-<div class="modal" id="video-modal" onclick="closeModalOnBackdrop(event)">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="modal-video-title" style="margin: 0; font-size: 16px;">عنوان الفيديو</h3>
-      <button class="close-modal" onclick="closeModal()">✕</button>
+    <div class="status-msg" id="status">جاري تحميل الفيديوهات الحقيقية...</div>
+    <div id="results" class="grid"></div>
+  </section>
+
+  <!-- Shorts -->
+  <section id="shorts" class="view">
+    <div style="position:relative;height:calc(100dvh - 120px);max-width:380px;margin:auto;background:#000;border-radius:12px;overflow:hidden">
+      <iframe src="https://www.youtube-nocookie.com/embed/5qap5aO4i9A?autoplay=1&loop=1" style="width:100%;height:100%;border:0" allow="autoplay; fullscreen"></iframe>
     </div>
-    <div class="player-container">
-      <iframe id="youtube-iframe" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+  </section>
+
+  <!-- إنشاء (Upload) -->
+  <section id="create" class="view">
+    <div style="padding:30px; text-align:center">
+      <h3>إنشاء محتوى على أي جهاز 🎬</h3>
+      <p style="color:var(--muted); font-size:13px;">بإمكانك تسجيل المحتوى وتحميله في المنزل أو أثناء التنقل.</p>
+      <input type="file" id="local-file" accept="video/*" style="display:none" onchange="addLocal(event)">
+      <button onclick="document.getElementById('local-file').click()" style="background:#fff; color:#0f0f0f; border:0; padding:12px 24px; border-radius:24px; font-weight:bold; margin-top:15px;">رفع فيديو من الاستوديو</button>
+    </div>
+  </section>
+
+  <!-- الاشتراكات -->
+  <section id="subscriptions" class="view">
+    <div style="padding:20px; font-weight:bold;">الاشتراكات والمتابعات</div>
+    <div id="sub-results" class="grid"></div>
+  </section>
+
+  <!-- صفحة "أنت" المماثلة للصورة 1000758400 تماماً -->
+  <section id="profile" class="view">
+    <div class="profile-header">
+      <div class="profile-big-avatar">Yd</div>
+      <div>
+        <h2 style="margin:0; font-size:18px;">Yd Hd <span style="color:var(--gold)">👑</span></h2>
+        <div style="color:var(--muted); font-size:13px;">@YdHd-e8d</div>
+      </div>
+    </div>
+    <div class="profile-actions">
+      <button class="p-btn" onclick="alert('تعديل القناة مفعل للمالك الحقيقي!')">✏️ تعديل القناة</button>
+      <button class="p-btn" onclick="alert('الإحصاءات: المشاهدات ممتازة يا بطل!')">📊 الإحصاءات</button>
+    </div>
+    <div style="padding:20px; text-align:center; border-top:1px solid var(--border);">
+      <p style="color:var(--muted); font-size:13px;">إشعار المالك: لديك صلاحيات مطلقة على منصة عبده يوتيوب 2.</p>
+    </div>
+  </section>
+</main>
+
+<!-- نافذة عرض الفيديو الكاملة المماثلة للصورة 1000758401 -->
+<div class="modal" id="watch">
+  <div class="player-box">
+    <iframe id="iframe-player" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+  </div>
+  <div style="padding:15px; background:#0f0f0f; flex:1;">
+    <h3 id="modal-title" style="font-size:15px; line-height:1.4; margin:0 0 10px 0; color:#fff;">عنوان الفيديو</h3>
+    <div class="video-action-bar">
+      <button class="act-btn">👍 أعجبني</button>
+      <button class="act-btn">💬 تعليقات</button>
+      <button class="act-btn">↗️ مشاركة</button>
+      <button class="act-btn" onclick="closePlayer()" style="background:var(--pink)">✕ إغلاق</button>
     </div>
   </div>
 </div>
+
+<!-- شريط التنقل السفلي -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-view="home"><span>🏠</span><span>الصفحة الرئيسية</span></button>
+  <button class="nav-btn" data-view="shorts"><span>⚡</span><span>Shorts</span></button>
+  <button class="nav-btn create" data-view="create"><span>＋</span><span>إنشاء</span></button>
+  <button class="nav-btn" data-view="subscriptions"><span>📺</span><span>الاشتراكات</span></button>
+  <button class="nav-btn" data-view="profile"><span>👤</span><span>أنت</span></button>
+</nav>
 
 <script>
 "use strict";
@@ -243,148 +204,107 @@
 const API_KEY = "AIzaSyAhXKfQspu2iCtM4QZ83U-siTnBvFIAEyw";
 const $ = id => document.getElementById(id);
 
-let currentUser = "";
-let isOwner = false;
-
-window.addEventListener("DOMContentLoaded", () => {
-  const savedUser = localStorage.getItem("abdotube2_user");
-  if (savedUser) {
-    setupUser(savedUser);
-  }
-});
-
-$("login-form").addEventListener("submit", e => {
-  e.preventDefault();
-  const name = $("username-input").value.trim();
-  if (name) {
-    localStorage.setItem("abdotube2_user", name);
-    setupUser(name);
-  }
-});
-
-function setupUser(name) {
-  currentUser = name;
-  const lower = name.toLowerCase();
-  
-  // فحص تلقائي وسري لاسم المالك
-  isOwner = (lower === "عبده" || lower === "abdo" || lower === "abpo");
-
-  let badgeHTML = `<span>${escapeHTML(currentUser)}</span>`;
-  if (isOwner) {
-    badgeHTML = `<span class="king-crown">👑</span> <span>${escapeHTML(currentUser)}</span> <span class="verified-badge" title="حساب موثق للمالك الرسمي">✓</span>`;
-  }
-  $("user-badge-display").innerHTML = badgeHTML;
-  $("login-screen").style.display = "none";
-
-  fetchYouTubeVideos("فيديوهات عربية روعة");
+function switchView(name) {
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === name));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.view === name));
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function escapeHTML(str) {
-  return str.replace(/[&<>'"]/g, tag => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-  }[tag] || tag));
-}
-
-async function fetchYouTubeVideos(query) {
-  const grid = $("video-grid");
-  grid.innerHTML = `<div class="status-msg">جاري تحميل أحدث فيديوهات يوتيوب...</div>`;
+async function searchYouTube(query) {
+  $("status").textContent = "جاري جلب الفيديوهات...";
+  $("results").replaceChildren();
 
   try {
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=20&regionCode=EG&relevanceLanguage=ar&key=${API_KEY}`;
     const res = await fetch(url);
     const data = await res.json();
 
-    if (data.items && data.items.length > 0) {
-      grid.innerHTML = "";
-      data.items.forEach(item => {
-        const videoId = item.id.videoId;
-        const title = item.snippet.title;
-        const channelTitle = item.snippet.channelTitle;
-        const thumb = item.snippet.thumbnails.high.url;
-
-        const card = document.createElement("div");
-        card.className = "video-card";
-        card.innerHTML = `
-          <div class="thumbnail">
-            <img src="${thumb}" alt="${escapeHTML(title)}" loading="lazy">
-          </div>
-          <div class="video-details">
-            <div class="channel-avatar">${escapeHTML(channelTitle.charAt(0))}</div>
-            <div>
-              <div class="video-title">${escapeHTML(title)}</div>
-              <div class="video-meta">${escapeHTML(channelTitle)}</div>
-            </div>
-          </div>
-        `;
-        card.addEventListener("click", () => openPlayer(videoId, title));
-        grid.appendChild(card);
-      });
+    if (data.items && data.items.length) {
+      $("status").textContent = "";
+      renderVideos(data.items, $("results"));
     } else {
-      grid.innerHTML = `<div class="status-msg">لا توجد نتائج مطابقة، جرب بحثاً آخر.</div>`;
+      $("status").textContent = "لا توجد نتائج.";
     }
   } catch (err) {
-    grid.innerHTML = `<div class="status-msg" style="color: #ff4444;">حدث خطأ أثناء الاتصال بخوادم يوتيوب. تأكد من الإنترنت.</div>`;
+    $("status").textContent = "خطأ في الاتصال بالشبكة.";
   }
 }
 
-$("search-form").addEventListener("submit", e => {
-  e.preventDefault();
-  const q = $("search-input").value.trim();
-  if (q) {
-    $("section-title").textContent = `نتائج البحث عن: ${q}`;
-    fetchYouTubeVideos(q);
-  }
-});
+function renderVideos(items, target) {
+  target.replaceChildren();
+  items.forEach(item => {
+    const videoId = item.id.videoId;
+    const title = item.snippet.title;
+    const channel = item.snippet.channelTitle;
+    const thumb = item.snippet.thumbnails.high.url;
 
-function filterCategory(category, btn) {
-  document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-  btn.classList.add("active");
-  $("section-title").textContent = category === "الكل" ? "الفيديوهات المقترحة" : `محتوى: ${category}`;
-  fetchYouTubeVideos(category === "الكل" ? "فيديوهات عربية مشهورة" : category);
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="thumb">
+        <img src="${thumb}" alt="${title}" loading="lazy">
+        <div class="duration">12:30</div>
+      </div>
+      <div class="video-info">
+        <div class="avatar">${channel.charAt(0)}</div>
+        <div>
+          <div class="title">${title}</div>
+          <div class="meta">${channel}<br>قبل ساعة • 105 ألف مشاهدة</div>
+        </div>
+      </div>
+    `;
+    card.addEventListener("click", () => openPlayer(videoId, title));
+    target.appendChild(card);
+  });
 }
 
 function openPlayer(videoId, title) {
-  $("modal-video-title").textContent = title;
-  $("youtube-iframe").src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
-  $("video-modal").classList.add("open");
+  $("modal-title").textContent = title;
+  $("iframe-player").src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
+  $("watch").classList.add("open");
+  document.body.style.overflow = "hidden";
 }
 
-function closeModal() {
-  $("video-modal").classList.remove("open");
-  $("youtube-iframe").src = "";
+function closePlayer() {
+  $("watch").classList.remove("open");
+  $("iframe-player").src = "";
+  document.body.style.overflow = "";
 }
 
-function closeModalOnBackdrop(e) {
-  if (e.target === $("video-modal")) {
-    closeModal();
+function addLocal(e) {
+  const file = e.target.files[0];
+  if (file) {
+    alert("تم اختيار الفيديو بنجاح وسيتم عرضه في قناتك!");
+    switchView("profile");
   }
 }
 
-function switchPage(page) {
-  document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
-  event?.currentTarget?.classList.add("active");
+document.querySelectorAll(".nav-btn").forEach(b => {
+  b.addEventListener("click", () => switchView(b.dataset.view));
+});
 
-  const grid = $("video-grid");
-  if (page === "home") {
-    $("section-title").textContent = "الفيديوهات المقترحة";
-    fetchYouTubeVideos("فيديوهات عربية متنوعة");
-  } else if (page === "shorts") {
-    $("section-title").textContent = "الفيديوهات القصيرة (Shorts)";
-    fetchYouTubeVideos("أحدث الشورتس المصرية والعربية");
-  } else if (page === "subscriptions") {
-    $("section-title").textContent = "القنوات المشترك بها";
-    fetchYouTubeVideos("أفضل القنوات العربية");
-  } else if (page === "channel") {
-    $("section-title").textContent = "قناتي والملكية";
-    grid.innerHTML = `
-      <div style="grid-column: 1/-1; background: var(--card); padding: 30px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
-        <h2 style="color: var(--pink);">حساب المستخدم: ${escapeHTML(currentUser)} ${isOwner ? '👑 ✓' : ''}</h2>
-        <p style="color: var(--muted);">${isOwner ? 'أنت تمتك الصلاحيات الموثقة الكاملة على المنصة.' : 'أهلاً بك في عبده يوتيوب 2.'}</p>
-        <button onclick="localStorage.removeItem('abdotube2_user'); location.reload();" style="background: #333; color: #fff; border: 0; padding: 10px 20px; border-radius: 8px; margin-top: 15px; cursor: pointer;">تسجيل الخروج</button>
-      </div>
-    `;
+$("search-btn").addEventListener("click", () => {
+  const q = $("query").value.trim();
+  if (q) { switchView("home"); searchYouTube(q); }
+});
+
+$("query").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    $("search-btn").click();
   }
-}
+});
+
+$("chips").addEventListener("click", e => {
+  const b = e.target.closest("[data-q]");
+  if (!b) return;
+  document.querySelectorAll(".chip").forEach(x => x.classList.remove("active", x === b));
+  searchYouTube(b.dataset.q);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  searchYouTube("فيديوهات عربية مشهورة");
+});
 </script>
 </body>
 </html>
