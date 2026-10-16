@@ -3,292 +3,1071 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>عبده كينجز ليج - Abdo Kings League</title>
+<meta name="theme-color" content="#05050f">
+<title>عبده كينجز ليج 3D - النسخة المطورة</title>
+
 <style>
-  *{box-sizing:border-box;user-select:none;-webkit-user-select:none}
-  body{margin:0;background:#0b0b0f;color:#fff;font-family:Arial,Tahoma,sans-serif;overflow:hidden;touch-action:none;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  
-  /* الشاشات والقوائم */
-  .screen{position:absolute;inset:0;background:radial-gradient(circle at center, #1b1b2f 0%, #0b0b0f 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;padding:20px;text-align:center}
-  .hidden{display:none !important}
-  
-  h1{color:#ffd700;font-size:32px;margin-bottom:10px;text-shadow:0 0 15px rgba(255,215,0,0.5)}
-  h2{color:#ff0055;font-size:22px;margin-bottom:20px}
-  p{color:#aaa;font-size:14px;margin-bottom:25px}
-  
-  .btn{background:linear-gradient(135deg, #ff0055, #cc0044);color:#fff;border:0;padding:14px 35px;border-radius:30px;font-size:18px;font-weight:bold;cursor:pointer;margin:10px;box-shadow:0 5px 20px rgba(255,0,85,0.4);transition:0.2s}
-  .btn:active{transform:scale(0.95)}
-  .btn.secondary{background:linear-gradient(135deg, #2b2b3f, #1b1b2f);border:1px solid #444}
+* {
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
 
-  /* اختيار الفرق واللاعبين */
-  .grid-select{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;width:100%;max-width:350px;margin-bottom:20px}
-  .select-card{background:#161625;border:2px solid #333;padding:15px;border-radius:12px;cursor:pointer;font-weight:bold;transition:0.2s}
-  .select-card.selected{border-color:#ffd700;background:#262640;box-shadow:0 0 10px rgba(255,215,0,0.3)}
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #05050f;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  touch-action: none;
+}
 
-  /* ساحة اللعب */
-  #game-container{position:relative;width:100%;max-width:450px;height:100vh;max-height:850px;background:#0a3a1f;overflow:hidden;border:3px solid #222;box-shadow:0 0 30px rgba(0,0,0,0.8)}
-  canvas{display:block;width:100%;height:100%}
+#canvas-container {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
 
-  /* واجهة أزرار التحكم الملكية */
-  .hud{position:absolute;top:15px;left:0;right:0;display:flex;justify-content:space-between;padding:0 20px;font-size:18px;font-weight:bold;z-index:10;pointer-events:none}
-  .score-board{background:rgba(0,0,0,0.6);padding:6px 15px;border-radius:20px;border:1px solid #444}
-  
-  .controls-bar{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:space-between;padding:0 25px;z-index:10;pointer-events:none}
-  .d-pad{display:flex;gap:10px;pointer-events:auto}
-  .action-btns{display:grid;grid-template-columns:repeat(2, 60px);gap:10px;pointer-events:auto}
-  
-  .ctrl-btn{width:60px;height:60px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);border-radius:50%;color:#fff;font-size:16px;font-weight:bold;display:grid;place-items:center;backdrop-filter:blur(5px);cursor:pointer}
-  .ctrl-btn:active{background:rgba(255,215,0,0.4);border-color:#ffd700}
-  .ctrl-btn.shoot{background:rgba(255,0,85,0.4);border-color:#ff0055}
-  .ctrl-btn.special{background:rgba(255,215,0,0.3);border-color:#ffd700}
+#canvas-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 
-  .card-alert{position:absolute;top:80px;left:50%;transform:translateX(-50%);background:rgba(255,215,0,0.9);color:#000;padding:8px 20px;border-radius:15px;font-weight:bold;font-size:14px;z-index:20;display:none;box-shadow:0 0 15px #ffd700}
+#rotate-notice {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,.96);
+  color: #ffd700;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 25px;
+  font-weight: bold;
+  font-size: 20px;
+  gap: 15px;
+  pointer-events: none;
+}
+
+.hud-top {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 13px;
+  min-width: 280px;
+  background: rgba(8,10,20,.9);
+  border: 1px solid rgba(255,215,0,.55);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px #0008;
+  backdrop-filter: blur(8px);
+}
+
+.team-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 75px;
+  gap: 3px;
+}
+
+.team-name {
+  color: #ffd700;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.team-sub {
+  color: #ccc;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.match-score {
+  font-size: 22px;
+  font-weight: 900;
+  background: #0009;
+  border: 1px solid #555;
+  border-radius: 9px;
+  padding: 3px 10px;
+  direction: ltr;
+  white-space: nowrap;
+}
+
+.card-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 12;
+  border: 1px solid #ffe985;
+  border-radius: 12px;
+  padding: 9px 12px;
+  color: #111;
+  background: linear-gradient(135deg,#ffe65c,#ff8500);
+  font-size: 11px;
+  font-weight: bold;
+  box-shadow: 0 0 14px #ffd70055;
+}
+
+.status-message {
+  position: absolute;
+  z-index: 10;
+  top: 75px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 7px 13px;
+  background: #0009;
+  border: 1px solid #ffffff22;
+  border-radius: 12px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.joystick-zone {
+  position: absolute;
+  z-index: 15;
+  left: 20px;
+  bottom: 18px;
+  width: 125px;
+  height: 125px;
+  border: 2px solid #ffffff40;
+  background: #ffffff13;
+  border-radius: 50%;
+  touch-action: none;
+}
+
+.joystick-stick {
+  position: absolute;
+  left: 34px;
+  top: 34px;
+  width: 53px;
+  height: 53px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%,#fff09a,#ffd700 45%,#ff7900);
+  box-shadow: 0 0 18px #ffd70080;
+  pointer-events: none;
+}
+
+.action-buttons {
+  position: absolute;
+  z-index: 15;
+  right: 16px;
+  bottom: 18px;
+  width: 165px;
+  height: 155px;
+  touch-action: none;
+}
+
+.act-btn {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  width: 57px;
+  height: 57px;
+  border: 2px solid #ffffff80;
+  border-radius: 50%;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px #0008;
+  touch-action: none;
+  padding: 0;
+}
+
+.act-btn .emoji {
+  font-size: 17px;
+}
+
+.act-btn:active {
+  filter: brightness(1.35);
+  transform: scale(.94);
+}
+
+.pass {
+  bottom: 0;
+  left: 0;
+  background: #008cffbb;
+  border-color: #0096ff;
+}
+
+.cross {
+  top: 0;
+  right: 42px;
+  background: #ff9600bb;
+  border-color: #ffaa00;
+}
+
+.shoot {
+  bottom: 38px;
+  right: 0;
+  width: 65px;
+  height: 65px;
+  background: #ff0055cc;
+  border-color: #ff0055;
+}
+
+.press {
+  top: 43px;
+  left: 3px;
+  background: #28c850bb;
+  border-color: #28c850;
+}
+
+#restart-btn {
+  position: absolute;
+  z-index: 12;
+  top: 76px;
+  right: 12px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  border: 1px solid #ffffff55;
+  background: #101522dd;
+  color: white;
+  font-size: 11px;
+}
+
+#loading {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #05050f;
+  color: #ffd700;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px;
+}
+
+@media (orientation: portrait) {
+  #rotate-notice {
+    display: flex;
+  }
+
+  .hud-top {
+    top: 8px;
+    transform: translateX(-50%) scale(.88);
+  }
+
+  .card-btn {
+    top: 68px;
+  }
+
+  .status-message {
+    top: 110px;
+  }
+
+  .action-buttons,
+  .joystick-zone {
+    transform: scale(.9);
+    transform-origin: bottom;
+  }
+}
 </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
+
 <body>
 
-<!-- شاشة البداية الرئيسية -->
-<div id="main-menu" class="screen">
-  <h1>⚡ عبده كينجز ليج 👑</h1>
-  <h2>Abdo Kings League 2026</h2>
-  <p>أقوى بطولة كروية بقواعد مجنونة، نجوم حقيقيين، وأسلوب لعِب حماسي!</p>
-  <button class="btn" onclick="showScreen('mode-screen')">بدء التحدي 🎮</button>
-</div>
+<div id="loading">⚽ جاري تجهيز ملعب عبده كينجز ليج 3D...</div>
 
-<!-- شاشة اختيار أطوار اللعب (أونلاين / أوفلاين) -->
-<div id="mode-screen" class="screen hidden">
-  <h1>اختر نظام اللعب</h1>
-  <p>العب مع أصحابك أونلاين أو تحدى الذكاء الاصطناعي أوفلاين</p>
-  <button class="btn" onclick="startMatch('online')">🌐 أونلاين (سيرفر الكينجز)</button>
-  <button class="btn secondary" onclick="startMatch('offline')">🤖 أوفلاين (ضد الجهاز)</button>
-  <button class="btn secondary" style="background:transparent;border:0;color:#aaa" onclick="showScreen('main-menu')">الرجوع</button>
-</div>
-
-<!-- شاشة اختيار الفريق والنجوم -->
-<div id="team-screen" class="screen hidden">
-  <h1>اختر فريقك الأسطوري</h1>
-  <div class="grid-select">
-    <div class="select-card selected" onclick="selectTeam(this, 'تربون FC')">🔥 فريق تربون</div>
-    <div class="select-card" onclick="selectTeam(this, 'رونالدينيو 10')">⚽ نجوم السامبا</div>
-    <div class="select-card" onclick="selectTeam(this, 'أغويرو كينج')">👑 أساطير المان</div>
-    <div class="select-card" onclick="selectTeam(this, 'عبده الملكي')">⚡ فريق عبده</div>
-  </div>
-  <button class="btn" onclick="initGameEngine()">دخول الملعـب 🏟️</button>
-</div>
-
-<!-- ساحة اللعبة -->
-<div id="game-container" class="hidden">
-  <div class="hud">
-    <div class="score-board"><span id="team1-name">تربون</span>: <span id="score1">0</span></div>
-    <div class="score-board" id="match-timer">⏰ 03:00</div>
-    <div class="score-board"><span id="team2-name">الخصم</span>: <span id="score2">0</span></div>
-  </div>
-
-  <div class="card-alert" id="card-alert">⚡ كارت جوكر: هدف بـ 2!</div>
-
-  <canvas id="fieldCanvas"></canvas>
-
-  <div class="controls-bar">
-    <div class="d-pad">
-      <button class="ctrl-btn" ontouchstart="movePlayer('left')" onmousedown="movePlayer('left')">⬅️</button>
-      <button class="ctrl-btn" ontouchstart="movePlayer('right')" onmousedown="movePlayer('right')">➡️</button>
-      <button class="ctrl-btn" ontouchstart="movePlayer('up')" onmousedown="movePlayer('up')">⬆️</button>
-      <button class="ctrl-btn" ontouchstart="movePlayer('down')" onmousedown="movePlayer('down')">⬇️</button>
-    </div>
-    <div class="action-btns">
-      <button class="ctrl-btn special" ontouchstart="useSkill()" title="مهارة">⚡</button>
-      <button class="ctrl-btn" ontouchstart="playerPass()" title="باس">🎯</button>
-      <button class="ctrl-btn shoot" ontouchstart="playerShoot()" title="شوت">💥</button>
-      <button class="ctrl-btn" ontouchstart="playerSprint()" title="جري">🏃</button>
-    </div>
+<div id="rotate-notice">
+  <div style="font-size:50px">📱 ↻</div>
+  <div>لف الموبايل بالعرض</div>
+  <div style="font-size:14px;color:white">
+    العب عبده كينجز ليج في وضع الشاشة الأفقية
   </div>
 </div>
+
+<div class="hud-top">
+  <div class="team-box">
+    <span class="team-name">عبده كينج</span>
+    <span class="team-sub">🇪🇬 فريقك</span>
+  </div>
+
+  <div class="match-score">
+    <span id="score-p">0</span> -
+    <span id="score-a">0</span>
+  </div>
+
+  <div class="team-box">
+    <span class="team-name">الخصم كينج</span>
+    <span class="team-sub">🇦🇷 المنافس</span>
+  </div>
+</div>
+
+<button class="card-btn" id="joker-btn">⚡ كارت الجوكر</button>
+<button id="restart-btn">🔄 إعادة المباراة</button>
+
+<div class="status-message" id="status-message">
+  تحرك بالبلية واقترب من الكرة للتسديد
+</div>
+
+<div class="joystick-zone" id="joy-zone">
+  <div class="joystick-stick" id="joy-stick"></div>
+</div>
+
+<div class="action-buttons">
+  <button class="act-btn pass" id="btn-pass">
+    <span class="emoji">🎯</span><span>باص</span>
+  </button>
+
+  <button class="act-btn cross" id="btn-cross">
+    <span class="emoji">🚀</span><span>عرضية</span>
+  </button>
+
+  <button class="act-btn shoot" id="btn-shoot">
+    <span class="emoji">💥</span><span>تسديد</span>
+  </button>
+
+  <button class="act-btn press" id="btn-press">
+    <span class="emoji">🛡️</span><span>ضغط</span>
+  </button>
+</div>
+
+<div id="canvas-container"></div>
 
 <script>
+"use strict";
+
 const $ = id => document.getElementById(id);
 
-let currentMode = 'offline';
-let selectedTeamName = 'تربون FC';
+let scene, camera, renderer, clock;
+let player, opponent, ball, ballShadow;
+let playerDirection = new THREE.Vector3(1, 0, 0);
+let ballVelocity = new THREE.Vector3();
+let joyVector = { x: 0, y: 0 };
+let playerSpeed = 10;
+let scorePlayer = 0;
+let scoreOpponent = 0;
+let gamePaused = false;
+let jokerAvailable = true;
+let lastActionTime = 0;
 
-function showScreen(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-  $(screenId).classList.remove('hidden');
-  $('game-container').classList.add('hidden');
+const FIELD_X = 34;
+const FIELD_Z = 21;
+const BALL_RADIUS = 0.55;
+
+function setStatus(text) {
+  $("status-message").textContent = text;
 }
 
-function startMatch(mode) {
-  currentMode = mode;
-  showScreen('team-screen');
+function checkOrientation() {
+  $("rotate-notice").style.display =
+    window.innerHeight > window.innerWidth ? "flex" : "none";
 }
 
-function selectTeam(el, name) {
-  document.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedTeamName = name;
+window.addEventListener("resize", () => {
+  checkOrientation();
+  if (!renderer || !camera) return;
+
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+function makeMaterial(color, extra = {}) {
+  return new THREE.MeshStandardMaterial({
+    color,
+    roughness: 0.65,
+    ...extra
+  });
 }
 
-// محرك الكانفاس واللعبة
-let canvas, ctx;
-let gameInterval;
-let score1 = 0, score2 = 0;
-let ball = { x: 225, y: 400, vx: 0, vy: 0, radius: 10 };
-let player = { x: 225, y: 600, radius: 18, speed: 4, color: '#ffd700' };
-let ai = { x: 225, y: 200, radius: 18, speed: 2.5, color: '#ff0055' };
-
-function initGameEngine() {
-  $('team-screen').classList.add('hidden');
-  $('game-container').classList.remove('hidden');
-  $('team1-name').textContent = selectedTeamName;
-
-  canvas = $('fieldCanvas');
-  ctx = canvas.getContext('2d');
-  canvas.width = 450;
-  canvas.height = 800;
-
-  resetBall();
-  if (gameInterval) clearInterval(gameInterval);
-  gameInterval = setInterval(updateGame, 1000 / 60);
+function addBox(parent, w, h, d, x, y, z, material) {
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(w, h, d),
+    material
+  );
+  mesh.position.set(x, y, z);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
 }
 
-function resetBall() {
-  ball.x = canvas.width / 2;
-  ball.y = canvas.height / 2;
-  ball.vx = 0;
-  ball.vy = 0;
+function createPlayer(color, x, z) {
+  const group = new THREE.Group();
+  const shirtMat = makeMaterial(color, {
+    metalness: 0.12,
+    roughness: 0.4
+  });
+  const skinMat = makeMaterial(0xe9b58b);
+  const shortsMat = makeMaterial(0x20243b);
+  const shoeMat = makeMaterial(0x111111);
+
+  // جسم اللاعب: أسطوانة بدل CapsuleGeometry غير المتاحة
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.62, 0.72, 1.25, 16),
+    shirtMat
+  );
+  body.position.y = 1.55;
+  body.castShadow = true;
+  group.add(body);
+
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.38, 18, 14),
+    skinMat
+  );
+  head.position.y = 2.45;
+  head.castShadow = true;
+  group.add(head);
+
+  addBox(group, 1.05, 0.35, 0.72, 0, 0.85, 0, shortsMat);
+
+  const legs = [];
+  for (const side of [-1, 1]) {
+    const leg = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.17, 0.15, 0.8, 10),
+      skinMat
+    );
+    leg.position.set(side * 0.28, 0.42, 0);
+    leg.castShadow = true;
+    group.add(leg);
+    legs.push(leg);
+
+    const shoe = new THREE.Mesh(
+      new THREE.BoxGeometry(0.3, 0.16, 0.48),
+      shoeMat
+    );
+    shoe.position.set(side * 0.28, 0.08, -0.12);
+    group.add(shoe);
+  }
+
+  // رقم القميص
+  const numberMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const number = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.45, 0.45),
+    numberMat
+  );
+  number.position.set(0, 1.65, -0.64);
+  group.add(number);
+
+  group.position.set(x, 0, z);
+  group.userData.legs = legs;
+  scene.add(group);
+  return group;
 }
 
-let moveDir = null;
-function movePlayer(dir) {
-  if (dir === 'left' && player.x > 40) player.x -= 20;
-  if (dir === 'right' && player.x < canvas.width - 40) player.x += 20;
-  if (dir === 'up' && player.y > 100) player.y -= 20;
-  if (dir === 'down' && player.y < canvas.height - 100) player.y += 20;
+function createGoal(x, direction) {
+  const group = new THREE.Group();
+  const postMat = makeMaterial(0xffffff, {
+    metalness: 0.25,
+    roughness: 0.35
+  });
+  const netMat = new THREE.MeshBasicMaterial({
+    color: 0xdde8ff,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.24
+  });
+
+  const goalWidth = 9;
+  const goalHeight = 4.2;
+  const depth = 3.5;
+
+  addBox(group, 0.22, goalHeight, 0.22, 0, goalHeight / 2, -goalWidth / 2, postMat);
+  addBox(group, 0.22, goalHeight, 0.22, 0, goalHeight / 2, goalWidth / 2, postMat);
+  addBox(group, 0.22, 0.22, goalWidth, 0, goalHeight, 0, postMat);
+
+  const net = new THREE.Mesh(
+    new THREE.BoxGeometry(depth, goalHeight, goalWidth),
+    netMat
+  );
+  net.position.set(direction * depth / 2, goalHeight / 2, 0);
+  group.add(net);
+
+  group.position.x = x;
+  scene.add(group);
 }
 
-function playerShoot() {
-  let dx = ball.x - player.x;
-  let dy = ball.y - player.y;
-  let dist = Math.hypot(dx, dy);
-  if (dist < 45) {
-    ball.vx = (dx / dist) * 10;
-    ball.vy = -12; // تسديدة صاروخية للأعلى
+function createPitch() {
+  const grass = makeMaterial(0x12632d, { roughness: 1 });
+  const grass2 = makeMaterial(0x0c5525, { roughness: 1 });
+  const white = new THREE.MeshBasicMaterial({ color: 0xf4fff2 });
+
+  const pitch = new THREE.Mesh(
+    new THREE.PlaneGeometry(FIELD_X * 2, FIELD_Z * 2),
+    grass
+  );
+  pitch.rotation.x = -Math.PI / 2;
+  pitch.receiveShadow = true;
+  scene.add(pitch);
+
+  // شرائط العشب
+  for (let i = 0; i < 8; i++) {
+    const strip = new THREE.Mesh(
+      new THREE.PlaneGeometry(8.5, FIELD_Z * 2),
+      grass2
+    );
+    strip.rotation.x = -Math.PI / 2;
+    strip.position.set(-29.75 + i * 8.5, 0.012, 0);
+    scene.add(strip);
+  }
+
+  function line(w, d, x, z) {
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(w, d),
+      white
+    );
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(x, 0.035, z);
+    scene.add(mesh);
+  }
+
+  line(68, 0.16, 0, -FIELD_Z);
+  line(68, 0.16, 0, FIELD_Z);
+  line(0.16, 42, -FIELD_X, 0);
+  line(0.16, 42, FIELD_X, 0);
+  line(0.13, 42, 0, 0);
+  line(12, 0.12, 0, 0);
+
+  // دائرة منتصف الملعب
+  const circle = new THREE.Mesh(
+    new THREE.RingGeometry(5.7, 5.85, 64),
+    white
+  );
+  circle.rotation.x = -Math.PI / 2;
+  circle.position.y = 0.04;
+  scene.add(circle);
+
+  // منطقتا الجزاء
+  for (const side of [-1, 1]) {
+    const area = new THREE.Mesh(
+      new THREE.PlaneGeometry(12, 23),
+      new THREE.MeshBasicMaterial({
+        color: 0x12632d,
+        transparent: true,
+        opacity: 0.02
+      })
+    );
+    area.rotation.x = -Math.PI / 2;
+    area.position.set(side * 25, 0.025, 0);
+    scene.add(area);
+
+    line(0.12, 23, side * 23, 0);
+    line(11, 0.12, side * 28.5, -11.5);
+    line(11, 0.12, side * 28.5, 11.5);
+  }
+
+  createGoal(-FIELD_X, -1);
+  createGoal(FIELD_X, 1);
+}
+
+function createBall() {
+  const group = new THREE.Group();
+
+  const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(BALL_RADIUS, 24, 20),
+    makeMaterial(0xffffff, { roughness: 0.35 })
+  );
+  sphere.castShadow = true;
+  group.add(sphere);
+
+  // خطوط سوداء زخرفية على الكرة
+  const stripeMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
+  const stripe = new THREE.Mesh(
+    new THREE.TorusGeometry(BALL_RADIUS * 0.72, 0.045, 6, 24),
+    stripeMat
+  );
+  stripe.rotation.x = Math.PI / 2;
+  group.add(stripe);
+
+  group.position.set(0, BALL_RADIUS, 0);
+  scene.add(group);
+
+  const shadow = new THREE.Mesh(
+    new THREE.CircleGeometry(0.7, 20),
+    new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      transparent: true,
+      opacity: 0.25,
+      depthWrite: false
+    })
+  );
+  shadow.rotation.x = -Math.PI / 2;
+  shadow.position.y = 0.045;
+  scene.add(shadow);
+
+  ballShadow = shadow;
+  return group;
+}
+
+function init3D() {
+  if (typeof THREE === "undefined") {
+    $("loading").textContent =
+      "تعذر تحميل مكتبة Three.js. تأكد من اتصال الإنترنت ثم أعد تحميل الصفحة.";
+    return;
+  }
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x071020);
+  scene.fog = new THREE.Fog(0x071020, 70, 150);
+
+  camera = new THREE.PerspectiveCamera(
+    48,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    250
+  );
+  camera.position.set(0, 35, 48);
+  camera.lookAt(0, 0, 0);
+
+  try {
+    renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: "high-performance"
+    });
+  } catch (err) {
+    $("loading").textContent =
+      "جهازك أو المتصفح لا يدعم تشغيل WebGL لهذه اللعبة.";
+    return;
+  }
+
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  if ("outputColorSpace" in renderer) {
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+  } else {
+    renderer.outputEncoding = THREE.sRGBEncoding;
+  }
+
+  $("canvas-container").appendChild(renderer.domElement);
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x19351c, 1.8));
+
+  const sun = new THREE.DirectionalLight(0xfff1cf, 2.1);
+  sun.position.set(-15, 35, 20);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024);
+  sun.shadow.camera.left = -45;
+  sun.shadow.camera.right = 45;
+  sun.shadow.camera.top = 35;
+  sun.shadow.camera.bottom = -35;
+  scene.add(sun);
+
+  createPitch();
+
+  player = createPlayer(0xffd700, -12, 0);
+  opponent = createPlayer(0xff0055, 12, 0);
+  ball = createBall();
+
+  clock = new THREE.Clock();
+
+  $("loading").style.display = "none";
+
+  setupJoystick();
+  setupActions();
+
+  requestAnimationFrame(animate);
+}
+
+function setupJoystick() {
+  const zone = $("joy-zone");
+  const stick = $("joy-stick");
+  let activePointer = null;
+
+  function updateStick(e) {
+    const rect = zone.getBoundingClientRect();
+    let dx = e.clientX - (rect.left + rect.width / 2);
+    let dy = e.clientY - (rect.top + rect.height / 2);
+
+    const maxR = 37;
+    const dist = Math.hypot(dx, dy);
+
+    if (dist > maxR) {
+      dx = dx / dist * maxR;
+      dy = dy / dist * maxR;
+    }
+
+    stick.style.transform = `translate(${dx}px, ${dy}px)`;
+    joyVector.x = dx / maxR;
+    joyVector.y = dy / maxR;
+  }
+
+  zone.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    if (activePointer !== null) return;
+
+    activePointer = e.pointerId;
+    zone.setPointerCapture(e.pointerId);
+    updateStick(e);
+  });
+
+  zone.addEventListener("pointermove", e => {
+    if (e.pointerId === activePointer) updateStick(e);
+  });
+
+  function reset(e) {
+    if (e.pointerId !== activePointer) return;
+    activePointer = null;
+    joyVector = { x: 0, y: 0 };
+    stick.style.transform = "translate(0px, 0px)";
+  }
+
+  zone.addEventListener("pointerup", reset);
+  zone.addEventListener("pointercancel", reset);
+  zone.addEventListener("lostpointercapture", () => {
+    activePointer = null;
+    joyVector = { x: 0, y: 0 };
+    stick.style.transform = "translate(0px, 0px)";
+  });
+}
+
+function setupActions() {
+  $("btn-shoot").addEventListener("pointerdown", e => {
+    e.preventDefault();
+    shootBall(19, 3.5);
+  });
+
+  $("btn-pass").addEventListener("pointerdown", e => {
+    e.preventDefault();
+    shootBall(10, 0.7);
+  });
+
+  $("btn-cross").addEventListener("pointerdown", e => {
+    e.preventDefault();
+    shootBall(13, 8);
+  });
+
+  $("btn-press").addEventListener("pointerdown", e => {
+    e.preventDefault();
+    tackle();
+  });
+
+  $("joker-btn").addEventListener("click", useJoker);
+  $("restart-btn").addEventListener("click", restartMatch);
+}
+
+function shootBall(power, lift) {
+  const now = performance.now();
+  if (now - lastActionTime < 180) return;
+  lastActionTime = now;
+
+  const dist = player.position.distanceTo(ball.position);
+
+  if (dist > 3.5) {
+    setStatus("اقترب من الكرة أولاً! المسافة بعيدة");
+    return;
+  }
+
+  // اتجاه التسديد نحو مرمى الخصم
+  let dx = 1;
+  let dz = 0;
+
+  if (Math.abs(joyVector.x) + Math.abs(joyVector.y) > 0.25) {
+    dx = joyVector.x;
+    dz = joyVector.y;
+  } else {
+    const target = new THREE.Vector3(
+      FIELD_X, 0, 0
+    ).sub(ball.position);
+
+    dx = target.x;
+    dz = target.z;
+  }
+
+  const length = Math.hypot(dx, dz) || 1;
+  dx /= length;
+  dz /= length;
+
+  ballVelocity.set(
+    dx * power,
+    lift,
+    dz * power
+  );
+
+  setStatus(power > 15 ? "💥 تسديدة قوية!" : "🎯 تمريرة!");
+}
+
+function tackle() {
+  const distance = player.position.distanceTo(opponent.position);
+
+  if (distance < 4.2) {
+    opponent.position.x += 2.5;
+    opponent.position.z += (Math.random() - 0.5) * 3;
+
+    setStatus("🛡️ ضغط ناجح على المنافس!");
+
+    if (player.position.distanceTo(ball.position) < 3.5) {
+      ballVelocity.set(
+        5 + Math.random() * 2,
+        1,
+        (Math.random() - 0.5) * 4
+      );
+    }
+  } else {
+    setStatus("اقترب من المنافس لتنفيذ الضغط");
   }
 }
 
-function playerPass() {
-  let dx = ball.x - player.x;
-  let dy = ball.y - player.y;
-  let dist = Math.hypot(dx, dy);
-  if (dist < 45) {
-    ball.vx = (dx / dist) * 5;
-    ball.vy = -6;
+function useJoker() {
+  if (!jokerAvailable) {
+    setStatus("كارت الجوكر استُخدم بالفعل في هذه المباراة");
+    return;
+  }
+
+  jokerAvailable = false;
+
+  // لا يمنح هدفاً تلقائياً؛ يطلق الكرة باتجاه المرمى
+  ball.position.set(
+    player.position.x + 1.2,
+    BALL_RADIUS,
+    player.position.z
+  );
+
+  ballVelocity.set(23, 8, 0);
+
+  setStatus("⚡ كارت الجوكر! تسديدة خارقة!");
+  $("joker-btn").textContent = "⚡ تم الاستخدام";
+  $("joker-btn").disabled = true;
+}
+
+function updatePlayer(dt) {
+  const dx = joyVector.x;
+  const dz = joyVector.y;
+
+  const len = Math.hypot(dx, dz);
+
+  if (len > 0.08) {
+    const vx = dx / Math.max(1, len);
+    const vz = dz / Math.max(1, len);
+
+    player.position.x += vx * playerSpeed * dt;
+    player.position.z += vz * playerSpeed * dt;
+
+    playerDirection.set(vx, 0, vz);
+    player.rotation.y = Math.atan2(vx, vz);
+  }
+
+  player.position.x = THREE.MathUtils.clamp(
+    player.position.x, -FIELD_X + 1, FIELD_X - 1
+  );
+
+  player.position.z = THREE.MathUtils.clamp(
+    player.position.z, -FIELD_Z + 1, FIELD_Z - 1
+  );
+}
+
+function updateOpponent(dt) {
+  const toBall = new THREE.Vector3(
+    ball.position.x - opponent.position.x,
+    0,
+    ball.position.z - opponent.position.z
+  );
+
+  const dist = toBall.length();
+
+  if (dist > 0.1) {
+    toBall.normalize();
+
+    const speed = 5.2;
+    opponent.position.addScaledVector(toBall, speed * dt);
+
+    opponent.rotation.y = Math.atan2(toBall.x, toBall.z);
+  }
+
+  opponent.position.x = THREE.MathUtils.clamp(
+    opponent.position.x, -FIELD_X + 1, FIELD_X - 1
+  );
+
+  opponent.position.z = THREE.MathUtils.clamp(
+    opponent.position.z, -FIELD_Z + 1, FIELD_Z - 1
+  );
+
+  // محاولة الاستحواذ على الكرة
+  if (dist < 1.7 && ball.position.y < 2.2) {
+    const towardGoal = ball.position.x > 0 ? -1 : -1;
+
+    ballVelocity.x = towardGoal * 8;
+    ballVelocity.z = (Math.random() - 0.5) * 5;
+    ballVelocity.y = 1.8;
   }
 }
 
-function playerSprint() {
-  player.speed = 7;
-  setTimeout(() => player.speed = 4, 1500);
-}
+function updateBall(dt) {
+  ball.position.x += ballVelocity.x * dt;
+  ball.position.y += ballVelocity.y * dt;
+  ball.position.z += ballVelocity.z * dt;
 
-function useSkill() {
-  const alertBox = $('card-alert');
-  alertBox.style.display = 'block';
-  setTimeout(() => alertBox.style.display = 'none', 2500);
-}
+  // الجاذبية
+  ballVelocity.y -= 15 * dt;
 
-function updateGame() {
-  // حركة الكرة والفيزياء البسيطة
-  ball.x += ball.vx;
-  ball.y += ball.vy;
-  ball.vx *= 0.98;
-  ball.vy *= 0.98;
+  // احتكاك أرضي وهوائي
+  const horizontalFriction = ball.position.y <= BALL_RADIUS + 0.08
+    ? Math.pow(0.965, dt * 60)
+    : Math.pow(0.994, dt * 60);
 
-  // حدود الملعب الجانبية
-  if (ball.x < 30 || ball.x > canvas.width - 30) ball.vx *= -1;
+  ballVelocity.x *= horizontalFriction;
+  ballVelocity.z *= horizontalFriction;
 
-  // ذكاء اصطناعي يتحرك خلف الكرة
-  if (ai.x < ball.x) ai.x += ai.speed;
-  if (ai.x > ball.x) ai.x -= ai.speed;
-  if (ai.y < ball.y && ai.y > 80) ai.y -= ai.speed * 0.5;
-  if (ai.y > ball.y && ai.y < canvas.height / 2) ai.y += ai.speed * 0.5;
+  // ارتداد الكرة عن الأرض
+  if (ball.position.y < BALL_RADIUS) {
+    ball.position.y = BALL_RADIUS;
 
-  // اصطدام الخصم بالكرة
-  let distAI = Math.hypot(ball.x - ai.x, ball.y - ai.y);
-  if (distAI < 25) {
-    ball.vy = 6;
-    ball.vx += (Math.random() - 0.5) * 6;
-  }
-
-  // تسجيل الأهداف
-  if (ball.y < 50) {
-    if (ball.x > 150 && ball.x < 300) {
-      score1++;
-      $('score1').textContent = score1;
-      resetBall();
+    if (Math.abs(ballVelocity.y) > 1.1) {
+      ballVelocity.y = Math.abs(ballVelocity.y) * 0.42;
     } else {
-      ball.vy *= -1;
+      ballVelocity.y = 0;
     }
   }
-  if (ball.y > canvas.height - 50) {
-    if (ball.x > 150 && ball.x < 300) {
-      score2++;
-      $('score2').textContent = score2;
-      resetBall();
-    } else {
-      ball.vy *= -1;
-    }
+
+  // حدود الجانبين
+  if (ball.position.z > FIELD_Z - BALL_RADIUS) {
+    ball.position.z = FIELD_Z - BALL_RADIUS;
+    ballVelocity.z *= -0.72;
   }
 
-  drawField();
+  if (ball.position.z < -FIELD_Z + BALL_RADIUS) {
+    ball.position.z = -FIELD_Z + BALL_RADIUS;
+    ballVelocity.z *= -0.72;
+  }
+
+  // تحديث ظل الكرة
+  if (ballShadow) {
+    ballShadow.position.x = ball.position.x;
+    ballShadow.position.z = ball.position.z;
+
+    const height = Math.max(0, ball.position.y - BALL_RADIUS);
+    ballShadow.material.opacity = Math.max(0.06, 0.25 - height * 0.025);
+    const scale = 1 + Math.min(height * 0.04, 0.6);
+    ballShadow.scale.set(scale, scale, scale);
+  }
+
+  // اصطدام الكرة بالقائمين أو العارضة
+  const goalWidth = 4.5;
+  const goalHeight = 4.2;
+
+  if (
+    Math.abs(ball.position.z) > goalWidth &&
+    Math.abs(ball.position.x) > FIELD_X - 0.7 &&
+    ball.position.y < goalHeight
+  ) {
+    ball.position.x = Math.sign(ball.position.x) * (FIELD_X - 0.7);
+    ballVelocity.x *= -0.75;
+  }
+
+  // تسجيل هدف فقط داخل فتحة المرمى
+  if (ball.position.x >= FIELD_X + 0.3) {
+    if (
+      Math.abs(ball.position.z) < goalWidth &&
+      ball.position.y < goalHeight
+    ) {
+      scorePlayer++;
+      updateScore();
+      setStatus("⚽ جوووول لعبده كينج!");
+      resetAfterGoal();
+      return;
+    }
+
+    ball.position.x = FIELD_X - BALL_RADIUS;
+    ballVelocity.x *= -0.7;
+  }
+
+  if (ball.position.x <= -FIELD_X - 0.3) {
+    if (
+      Math.abs(ball.position.z) < goalWidth &&
+      ball.position.y < goalHeight
+    ) {
+      scoreOpponent++;
+      updateScore();
+      setStatus("🥅 هدف للمنافس!");
+      resetAfterGoal();
+      return;
+    }
+
+    ball.position.x = -FIELD_X + BALL_RADIUS;
+    ballVelocity.x *= -0.7;
+  }
 }
 
-function drawField() {
-  // تلوين الملعب
-  ctx.fillStyle = '#0a3a1f';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // خطوط الملعب البيضاء
-  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-  ctx.lineWidth = 3;
-  ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
-
-  ctx.beginPath();
-  ctx.moveTo(30, canvas.height / 2);
-  ctx.lineTo(canvas.width - 30, canvas.height / 2);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // المرميين
-  ctx.fillStyle = '#ff0055';
-  ctx.fillRect(150, 10, 150, 10); // مرمى الخصم
-  ctx.fillStyle = '#ffd700';
-  ctx.fillRect(150, canvas.height - 20, 150, 10); // مرمانا
-
-  // رسم اللاعب
-  ctx.fillStyle = player.color;
-  ctx.beginPath();
-  ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // رسم الخصم
-  ctx.fillStyle = ai.color;
-  ctx.beginPath();
-  ctx.arc(ai.x, ai.y, ai.radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-
-  // رسم الكرة
-  ctx.fillStyle = '#fff';
-  ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  ctx.fill();
+function updateScore() {
+  $("score-p").textContent = scorePlayer;
+  $("score-a").textContent = scoreOpponent;
 }
+
+function resetAfterGoal() {
+  ball.position.set(0, BALL_RADIUS, 0);
+  ballVelocity.set(0, 0, 0);
+  player.position.set(-12, 0, 0);
+  opponent.position.set(12, 0, 0);
+  playerDirection.set(1, 0, 0);
+}
+
+function restartMatch() {
+  scorePlayer = 0;
+  scoreOpponent = 0;
+  updateScore();
+
+  jokerAvailable = true;
+  $("joker-btn").disabled = false;
+  $("joker-btn").textContent = "⚡ كارت الجوكر";
+
+  resetAfterGoal();
+  setStatus("بدأت مباراة جديدة! بالتوفيق يا عبده");
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (!renderer || !clock) return;
+
+  // منع القفزات الكبيرة بعد توقف التبويب
+  const dt = Math.min(clock.getDelta(), 0.035);
+
+  if (!gamePaused) {
+    updatePlayer(dt);
+    updateOpponent(dt);
+    updateBall(dt);
+
+    // متابعة اللاعب بالكاميرا بسلاسة
+    const desiredX = player.position.x * 0.45;
+    const desiredZ = player.position.z + 43;
+
+    camera.position.x += (desiredX - camera.position.x) * Math.min(1, dt * 2.5);
+    camera.position.z += (desiredZ - camera.position.z) * Math.min(1, dt * 2.5);
+    camera.position.y += (35 - camera.position.y) * Math.min(1, dt * 2);
+
+    camera.lookAt(
+      player.position.x * 0.35,
+      0,
+      player.position.z * 0.25
+    );
+
+    // دوران الكرة مع الحركة
+    ball.rotation.z += ballVelocity.x * dt * 0.5;
+    ball.rotation.x += ballVelocity.z * dt * 0.5;
+  }
+
+  renderer.render(scene, camera);
+}
+
+window.addEventListener("load", () => {
+  checkOrientation();
+  init3D();
+});
 </script>
+
 </body>
 </html>
