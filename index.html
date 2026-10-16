@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -369,7 +368,6 @@
 <script>
 "use strict";
 
-/* مفتاح YouTube Data API الذي زوّدني به المستخدم */
 const API_KEY = "AIzaSyAhXKfQspu2iCtM4QZ83U-siTnBvFIAEyw";
 
 const $ = id => document.getElementById(id);
@@ -703,123 +701,15 @@ function closeModal(id) {
     const localPlayer = $("localPlayer");
     if (localPlayer) {
       localPlayer.pause();
-      localPlayer.removeAttribute("src");
-      localPlayer.load();
+      localPlayer.src = "";
     }
   }
 }
 
 function closeOnBackdrop(event, id) {
-  if (event.target.id === id) closeModal(id);
-}
-
-function showPage(page) {
-  activePage = page;
-
-  document.querySelectorAll(".nav-btn[data-page]").forEach(button => {
-    button.classList.toggle("active", button.dataset.page === page);
-  });
-
-  $("chips").style.display = page === "home" ? "flex" : "none";
-  $("videoGrid").innerHTML = "";
-
-  if (page === "home") {
-    $("pageTitle").textContent = "أحدث الفيديوهات";
-    loadTrending();
-    return;
+  if (event.target === $(id)) {
+    closeModal(id);
   }
-
-  if (page === "shorts") {
-    $("pageTitle").textContent = "الشورتس";
-    searchVideos("YouTube Shorts عربي");
-    return;
-  }
-
-  if (page === "subscriptions") {
-    $("pageTitle").textContent = "القنوات التي تتابعها";
-    const items = currentItems.filter(video =>
-      followedChannels.includes(video.channelId || video.channel)
-    );
-    renderPageItems(items, "ابحث عن فيديوهات أولًا، ثم تابع القنوات التي تعجبك.");
-    return;
-  }
-
-  if (page === "saved") {
-    $("pageTitle").textContent = "الفيديوهات المحفوظة";
-    const items = currentItems.filter(video => savedIds.includes(video.id));
-    renderPageItems(items, "الفيديوهات التي تحفظها ستظهر هنا بعد تحميلها.");
-    return;
-  }
-
-  if (page === "channel") {
-    $("pageTitle").textContent = "قناتي";
-    $("videoGrid").innerHTML = `
-      <div class="profile-box" style="grid-column:1/-1">
-        <h2>👑 عبده يوتيوب</h2>
-        <p>أهلًا بك في قناتك على عبده يوتيوب.</p>
-        <button class="primary" onclick="openUpload()">＋ إنشاء محتوى</button>
-      </div>
-    `;
-    $("status").style.display = "none";
-    return;
-  }
-
-  if (page === "settings") {
-    $("pageTitle").textContent = "الإعدادات";
-    $("videoGrid").innerHTML = `
-      <div class="profile-box" style="grid-column:1/-1">
-        <h3>إعدادات عبده يوتيوب</h3>
-        <p>يمكنك مسح قائمة المحفوظات والمتابعات المخزنة على هذا الجهاز.</p>
-        <button class="primary" onclick="clearLocalData()">مسح البيانات المحلية</button>
-        <p class="meta">هذا النموذج يحفظ المحفوظات والمتابعات محليًا على جهازك.</p>
-      </div>
-    `;
-    $("status").style.display = "none";
-  }
-}
-
-function renderPageItems(items, emptyMessage) {
-  $("status").style.display = "none";
-  if (items.length) {
-    renderVideos(items);
-  } else {
-    $("videoGrid").innerHTML =
-      '<div class="empty">' + escapeHTML(emptyMessage) + '</div>';
-  }
-}
-
-async function searchCategory(query, button) {
-  document.querySelectorAll(".chip").forEach(chip => chip.classList.remove("active"));
-  if (button) button.classList.add("active");
-
-  activePage = "home";
-  $("pageTitle").textContent = query === "trending" ? "أحدث الفيديوهات" : query;
-  if (query === "trending") {
-    await loadTrending();
-  } else {
-    await searchVideos(query);
-  }
-}
-
-$("searchForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  const query = $("searchInput").value.trim();
-  if (!query) {
-    showStatus("اكتب اسم فيديو أو قناة للبحث.");
-    return;
-  }
-
-  showPageForSearch();
-  await searchVideos(query);
-});
-
-function showPageForSearch() {
-  activePage = "home";
-  document.querySelectorAll(".nav-btn[data-page]").forEach(button => {
-    button.classList.toggle("active", button.dataset.page === "home");
-  });
-  $("chips").style.display = "flex";
-  $("pageTitle").textContent = "نتائج البحث";
 }
 
 function openUpload() {
@@ -827,111 +717,199 @@ function openUpload() {
   $("uploadStatus").textContent = "";
 }
 
-function extractYouTubeId(value) {
+function extractYouTubeId(url = "") {
   try {
-    const url = new URL(value);
-    if (url.hostname === "youtu.be") {
-      return url.pathname.slice(1).split("/")[0];
+    const parsed = new URL(url.trim());
+    if (parsed.hostname.includes("youtu.be")) {
+      return parsed.pathname.slice(1);
     }
-    if (url.hostname.includes("youtube.com")) {
-      if (url.pathname === "/watch") return url.searchParams.get("v");
-      const parts = url.pathname.split("/").filter(Boolean);
-      if (["shorts", "embed", "live"].includes(parts[0])) return parts[1];
+    if (parsed.hostname.includes("youtube.com")) {
+      if (parsed.pathname.startsWith("/shorts/")) {
+        return parsed.pathname.split("/")[2];
+      }
+      return parsed.searchParams.get("v");
     }
-  } catch {}
+  } catch {
+    const trimmed = url.trim();
+    if (/^[A-Za-z0-9_-]{11}$/.test(trimmed)) {
+      return trimmed;
+    }
+  }
   return null;
 }
 
 async function addYouTubeVideo() {
-  const url = $("videoUrl").value.trim();
-  const id = extractYouTubeId(url);
+  const urlInput = $("videoUrl").value.trim();
+  const videoId = extractYouTubeId(urlInput);
 
-  if (!id) {
-    $("uploadStatus").textContent = "الرابط غير صحيح. أدخل رابط فيديو يوتيوب.";
+  if (!videoId) {
+    $("uploadStatus").textContent = "رابط يوتيوب غير صحيح.";
+    $("uploadStatus").className = "meta error";
     return;
   }
 
-  $("uploadStatus").textContent = "جاري إضافة الفيديو...";
+  $("uploadStatus").textContent = "جاري جلب تفاصيل الفيديو...";
+  $("uploadStatus").className = "meta";
 
   try {
     const data = await youtubeRequest("videos", {
       part: "snippet",
-      id
+      id: videoId
     });
 
-    if (!data.items || !data.items.length) {
-      throw new Error("الفيديو غير موجود أو غير متاح.");
+    const item = data.items?.[0];
+    if (!item) {
+      throw new Error("لم يتم العثور على الفيديو.");
     }
 
-    const video = normalizeVideo(data.items[0]);
-    currentItems = [video, ...currentItems.filter(item => item.id !== video.id)];
-
-    closeModal("uploadModal");
-    showPageForSearch();
-    $("pageTitle").textContent = "الفيديو المضاف";
+    const video = normalizeVideo(item);
+    currentItems.unshift(video);
     renderVideos(currentItems);
-    $("status").style.display = "none";
+
     $("videoUrl").value = "";
+    closeModal("uploadModal");
+    showPage("home");
   } catch (error) {
     $("uploadStatus").textContent = error.message;
+    $("uploadStatus").className = "meta error";
   }
 }
 
 function addLocalVideo() {
-  const file = $("localFile").files[0];
-  const title = $("localTitle").value.trim() || file?.name || "فيديو محلي";
+  const fileInput = $("localFile");
+  const titleInput = $("localTitle");
+  const file = fileInput.files[0];
+  const title = titleInput.value.trim() || file?.name || "فيديو محلي";
 
   if (!file) {
-    $("uploadStatus").textContent = "اختَر ملف فيديو من جهازك أولًا.";
-    return;
-  }
-
-  if (!file.type.startsWith("video/")) {
-    $("uploadStatus").textContent = "الملف المحدد ليس فيديو.";
+    $("uploadStatus").textContent = "الرجاء اختيار ملف فيديو.";
+    $("uploadStatus").className = "meta error";
     return;
   }
 
   const localUrl = URL.createObjectURL(file);
   const video = {
-    id: "local-" + Date.now(),
+    id: "local_" + Date.now(),
     title,
-    channel: "قناتي",
-    channelId: "local-channel",
+    channel: "قناتي المحلية",
+    channelId: "my_local_channel",
+    description: "فيديو مرفوع محليًا من الجهاز.",
     thumbnail: "",
+    published: new Date().toISOString(),
     local: true,
     localUrl
   };
 
-  currentItems = [video, ...currentItems];
-  closeModal("uploadModal");
-  showPageForSearch();
-  $("pageTitle").textContent = "الفيديو المضاف";
+  localVideos.unshift(video);
+  writeStorage("abdotube_local_meta", localVideos);
+
+  currentItems.unshift(video);
   renderVideos(currentItems);
-  $("status").style.display = "none";
-  $("localFile").value = "";
-  $("localTitle").value = "";
+
+  fileInput.value = "";
+  titleInput.value = "";
+  closeModal("uploadModal");
+  showPage("channel");
 }
 
-function clearLocalData() {
-  if (!confirm("هل تريد مسح المحفوظات والمتابعات على هذا الجهاز؟")) return;
+async function showPage(page) {
+  activePage = page;
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.page === page);
+  });
 
-  savedIds = [];
-  followedChannels = [];
-  writeStorage("abdotube_saved", savedIds);
-  writeStorage("abdotube_followed", followedChannels);
-  alert("تم مسح المحفوظات والمتابعات المحلية.");
+  $("chips").style.display = page === "home" ? "flex" : "none";
+
+  if (page === "home") {
+    $("pageTitle").textContent = "أحدث الفيديوهات";
+    await loadTrending();
+  } else if (page === "shorts") {
+    $("pageTitle").textContent = "الفيديوهات القصيرة (Shorts)";
+    await searchVideos("أحدث الشورتس المصرية", { order: "date" });
+  } else if (page === "subscriptions") {
+    $("pageTitle").textContent = "اشتراكاتي";
+    if (!followedChannels.length) {
+      $("videoGrid").innerHTML = '<div class="empty">لا توجد قنوات متابَعة حتى الآن. اضغط على "متابعة" تحت أي فيديو لإضافته هنا.</div>';
+      $("status").style.display = "none";
+      currentItems = [];
+      return;
+    }
+    showStatus("جاري تحميل الاشتراكات...");
+    try {
+      const query = followedChannels[0] || "فيديوهات عربية";
+      await searchVideos(query);
+    } catch {
+      showStatus("تعذر جلب قنوات الاشتراكات.", true);
+    }
+  } else if (page === "saved") {
+    $("pageTitle").textContent = "الفيديوهات المحفوظة";
+    if (!savedIds.length) {
+      $("videoGrid").innerHTML = '<div class="empty">لا توجد فيديوهات محفوظة. اضغط على "حفظ" تحت أي فيديو لإضافته هنا.</div>';
+      $("status").style.display = "none";
+      currentItems = [];
+      return;
+    }
+    showStatus("جاري تحميل المحفوظات...");
+    try {
+      const data = await youtubeRequest("videos", {
+        part: "snippet,statistics",
+        id: savedIds.slice(0, 50).join(",")
+      });
+      currentItems = (data.items || []).map(normalizeVideo);
+      renderVideos(currentItems);
+      $("status").style.display = "none";
+    } catch (error) {
+      showStatus("تعذر تحميل الفيديوهات المحفوظة: " + error.message, true);
+    }
+  } else if (page === "channel") {
+    $("pageTitle").textContent = "قناتي ومحتواي المحلي";
+    currentItems = localVideos;
+    renderVideos(currentItems);
+    $("status").style.display = "none";
+    if (!localVideos.length) {
+      $("videoGrid").innerHTML = '<div class="empty">لم تقم برفع أي فيديو محلي بعد. اضغط على "رفع فيديو" لإضافة فيديو من جهازك.</div>';
+    }
+  } else if (page === "settings") {
+    $("pageTitle").textContent = "الإعدادات";
+    $("chips").style.display = "none";
+    $("status").style.display = "none";
+    $("videoGrid").innerHTML = `
+      <div style="grid-column:1/-1; background:var(--card); padding:20px; border-radius:14px;">
+        <h3>إعدادات عبده يوتيوب</h3>
+        <p>مفتاح API المستخدم: <b>${API_KEY.slice(0, 10)}...</b></p>
+        <p>عدد الفيديوهات المحلية: <b>${localVideos.length}</b></p>
+        <p>عدد الفيديوهات المحفوظة: <b>${savedIds.length}</b></p>
+        <button class="primary" onclick="localStorage.clear(); location.reload();">إعادة ضبط التطبيق</button>
+      </div>
+    `;
+  }
 }
 
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    closeModal("playerModal");
-    closeModal("uploadModal");
+async function searchCategory(category, btn) {
+  document.querySelectorAll("#chips .chip").forEach(c => c.classList.remove("active"));
+  btn.classList.add("active");
+
+  if (category === "trending") {
+    await loadTrending();
+  } else {
+    await searchVideos(category);
+  }
+}
+
+$("searchForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const query = $("searchInput").value.trim();
+  if (query) {
+    showPage("home");
+    document.querySelectorAll("#chips .chip").forEach(c => c.classList.remove("active"));
+    searchVideos(query);
   }
 });
 
-$("year").textContent = new Date().getFullYear();
-
-loadTrending();
+window.addEventListener("DOMContentLoaded", () => {
+  $("year").textContent = new Date().getFullYear();
+  showPage("home");
+});
 </script>
 </body>
 </html>
