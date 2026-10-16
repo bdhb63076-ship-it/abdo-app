@@ -25,7 +25,7 @@
     button, input { font: inherit; }
     button { cursor: pointer; }
 
-    /* شاشة تسجيل الدخول والملكية */
+    /* شاشة تسجيل الدخول والتعرف الذكي */
     #login-screen {
       position: fixed;
       inset: 0;
@@ -171,13 +171,13 @@
 </head>
 <body>
 
-<!-- شاشة تسجيل الدخول والتعرف على المالك -->
+<!-- شاشة تسجيل الدخول الرسمية -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">▶ عبده <span>يوتيوب 2</span></div>
-    <p style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">أدخل اسمك للدخول إلى المنصة (اكتب "عبده" للحصول على صلاحيات المالك الملكي 👑):</p>
+    <p style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">مرحباً بك، يرجى أدخل اسم الحساب للدخول إلى المنصة:</p>
     <form id="login-form">
-      <input type="text" id="username-input" class="login-input" placeholder="اكتب اسمك هنا..." required autocomplete="off">
+      <input type="text" id="username-input" class="login-input" placeholder="اكتب الاسم هنا..." required autocomplete="off">
       <button type="submit" class="login-btn">دخول المنصة</button>
     </form>
   </div>
@@ -246,7 +246,6 @@ const $ = id => document.getElementById(id);
 let currentUser = "";
 let isOwner = false;
 
-// التحقق من اسم المستخدم عند بدء التشغيل
 window.addEventListener("DOMContentLoaded", () => {
   const savedUser = localStorage.getItem("abdotube2_user");
   if (savedUser) {
@@ -266,7 +265,8 @@ $("login-form").addEventListener("submit", e => {
 function setupUser(name) {
   currentUser = name;
   const lower = name.toLowerCase();
-  // التحقق من اسم المالك للحصول على الحصانة والتاج والتوثيق
+  
+  // فحص تلقائي وسري لاسم المالك
   isOwner = (lower === "عبده" || lower === "abdo" || lower === "abpo");
 
   let badgeHTML = `<span>${escapeHTML(currentUser)}</span>`;
@@ -276,7 +276,6 @@ function setupUser(name) {
   $("user-badge-display").innerHTML = badgeHTML;
   $("login-screen").style.display = "none";
 
-  // جلب الفيديوهات الافتراضية للرئيسية
   fetchYouTubeVideos("فيديوهات عربية روعة");
 }
 
@@ -286,7 +285,6 @@ function escapeHTML(str) {
   }[tag] || tag));
 }
 
-// الاتصال بـ YouTube API وجلب النتائج الحقيقية
 async function fetchYouTubeVideos(query) {
   const grid = $("video-grid");
   grid.innerHTML = `<div class="status-msg">جاري تحميل أحدث فيديوهات يوتيوب...</div>`;
@@ -329,7 +327,6 @@ async function fetchYouTubeVideos(query) {
   }
 }
 
-// البحث اليدوي
 $("search-form").addEventListener("submit", e => {
   e.preventDefault();
   const q = $("search-input").value.trim();
@@ -339,7 +336,6 @@ $("search-form").addEventListener("submit", e => {
   }
 });
 
-// التصنيفات السريعة
 function filterCategory(category, btn) {
   document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
   btn.classList.add("active");
@@ -347,7 +343,6 @@ function filterCategory(category, btn) {
   fetchYouTubeVideos(category === "الكل" ? "فيديوهات عربية مشهورة" : category);
 }
 
-// فتح مشغل الفيديو المنبثق
 function openPlayer(videoId, title) {
   $("modal-video-title").textContent = title;
   $("youtube-iframe").src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
@@ -365,7 +360,6 @@ function closeModalOnBackdrop(e) {
   }
 }
 
-// التنقل بين الصفحات في القائمة الجانبية
 function switchPage(page) {
   document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
   event?.currentTarget?.classList.add("active");
@@ -381,12 +375,12 @@ function switchPage(page) {
     $("section-title").textContent = "القنوات المشترك بها";
     fetchYouTubeVideos("أفضل القنوات العربية");
   } else if (page === "channel") {
-    $("section-title").textContent = "قناتي الملكية وخيارات التطبيق";
+    $("section-title").textContent = "قناتي والملكية";
     grid.innerHTML = `
       <div style="grid-column: 1/-1; background: var(--card); padding: 30px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
-        <h2 style="color: var(--pink);">قناة المالك الرسمي: ${escapeHTML(currentUser)} ${isOwner ? '👑 ✓' : ''}</h2>
-        <p style="color: var(--muted);">أنت تملك الصلاحيات الكاملة على منصة "عبده يوتيوب 2".</p>
-        <button onclick="localStorage.removeItem('abdotube2_user'); location.reload();" style="background: #333; color: #fff; border: 0; padding: 10px 20px; border-radius: 8px; margin-top: 15px; cursor: pointer;">تبديل الحساب / تسجيل الخروج</button>
+        <h2 style="color: var(--pink);">حساب المستخدم: ${escapeHTML(currentUser)} ${isOwner ? '👑 ✓' : ''}</h2>
+        <p style="color: var(--muted);">${isOwner ? 'أنت تمتك الصلاحيات الموثقة الكاملة على المنصة.' : 'أهلاً بك في عبده يوتيوب 2.'}</p>
+        <button onclick="localStorage.removeItem('abdotube2_user'); location.reload();" style="background: #333; color: #fff; border: 0; padding: 10px 20px; border-radius: 8px; margin-top: 15px; cursor: pointer;">تسجيل الخروج</button>
       </div>
     `;
   }
