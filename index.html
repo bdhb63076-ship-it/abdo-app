@@ -1,297 +1,377 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Kings League Tournament 3D</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f1016">
+<title>الكرة مع عبده - التطبيق المباشر</title>
+
 <style>
-  * { box-sizing: border-box; user-select: none; -webkit-user-select: none; touch-action: none; }
-  body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; color: #fff; font-family: 'Arial', sans-serif; }
-  #canvas-container { position: absolute; inset: 0; width: 100vw; height: 100vh; z-index: 1; }
-
-  /* تنبيه التدوير */
-  #rotate-notice { position: fixed; inset: 0; background: #000; z-index: 300; display: none; flex-direction: column; align-items: center; justify-content: center; color: #ffd700; font-size: 18px; font-weight: bold; text-align: center; padding: 20px; }
-
-  /* شاشة القائمة واختيار البطولة */
-  .screen { position: absolute; inset: 0; background: radial-gradient(circle, #1a1a2e 0%, #000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; text-align: center; padding: 20px; }
-  .hidden { display: none !important; }
-
-  h1 { color: #ffd700; font-size: 28px; margin-bottom: 5px; text-shadow: 0 0 10px #ffd700; }
-  h3 { color: #ff0055; margin-bottom: 20px; }
-
-  .btn { background: linear-gradient(135deg, #ffd700, #ff8800); color: #000; border: 0; padding: 12px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 0 15px rgba(255,215,0,0.5); margin: 5px; }
-
-  /* واجهة النتيجة والبطولة */
-  .hud-top { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; z-index: 10; }
-  .stage-badge { background: #ff0055; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
-  .score-board { display: flex; align-items: center; background: rgba(0, 0, 0, 0.9); border: 2px solid #333; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.9); }
-  
-  .team-bar { display: flex; align-items: center; gap: 8px; padding: 6px 14px; font-weight: bold; font-size: 13px; }
-  .team-bar.t1 { background: linear-gradient(90deg, #111, #222); color: #00ffcc; border-left: 3px solid #00ffcc; }
-  .team-bar.t2 { background: linear-gradient(90deg, #222, #111); color: #ff0055; border-right: 3px solid #ff0055; }
-  .score-box { background: #000; color: #fff; padding: 6px 16px; font-size: 18px; font-weight: 900; border-left: 1px solid #333; border-right: 1px solid #333; text-align: center; }
-
-  /* التحكم */
-  .joystick-zone { position: absolute; bottom: 20px; left: 25px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; z-index: 10; }
-  .joystick-stick { position: absolute; width: 50px; height: 50px; background: radial-gradient(circle, #ffd700, #ff8800); border-radius: 50%; top: 35px; left: 35px; box-shadow: 0 0 15px rgba(255,215,0,0.6); pointer-events: none; }
-
-  .action-buttons { position: absolute; bottom: 20px; right: 25px; width: 150px; height: 150px; z-index: 10; }
-  .act-btn { position: absolute; width: 58px; height: 58px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); color: #fff; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(4px); cursor: pointer; }
-  .act-btn span:first-child { font-size: 15px; }
-  .act-btn.pass { bottom: 0; left: 0; background: rgba(0, 150, 255, 0.4); border-color: #0096ff; }
-  .act-btn.cross { top: 0; right: 40px; background: rgba(255, 170, 0, 0.4); border-color: #ffaa00; }
-  .act-btn.shoot { bottom: 40px; right: 0; background: rgba(255, 0, 85, 0.5); border-color: #ff0055; width: 65px; height: 65px; }
-  .act-btn.press { top: 40px; left: 0; background: rgba(40, 200, 80, 0.4); border-color: #28c850; }
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Tahoma,sans-serif}
+:root{--bg:#0f1016;--card:#1a1c28;--gold:#ffd700;--border:#2a2d3d;--green:#00e6a0}
+body{background:var(--bg);color:#fff;padding-bottom:80px;min-height:100vh}
+header{background:linear-gradient(135deg,#242532,#111218);padding:15px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:10}
+.logo{font-size:17px;font-weight:900;color:var(--gold)}
+.owner{background:linear-gradient(135deg,#ffd700,#ff9200);color:#000;padding:7px 11px;border-radius:20px;font-size:12px;font-weight:900;white-space:nowrap}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px;background:#161822;border-bottom:1px solid var(--border)}
+.tab{border:0;border-radius:20px;background:#292b38;color:#ddd;padding:10px 14px;white-space:nowrap;font-size:12px;font-weight:bold}
+.tab.active{background:var(--gold);color:#111}
+main{max-width:650px;margin:auto;padding:15px 12px}
+.heading{font-size:15px;font-weight:bold;color:var(--gold);margin-bottom:15px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.muted{font-size:11px;color:#aaa}
+button{cursor:pointer}
+.refresh{padding:9px 12px;background:#292414;color:var(--gold);border:1px solid #51461c;border-radius:9px;font-weight:bold}
+.refresh:disabled{opacity:.5}
+.card{background:linear-gradient(145deg,#1e202d,#171923);border:1px solid var(--border);border-radius:15px;padding:14px 11px;margin-bottom:13px}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#aaa;font-size:11px;margin-bottom:18px}
+.comp{overflow-wrap:anywhere}
+.status{background:#292b38;padding:5px 8px;border-radius:20px;white-space:nowrap}
+.status.live{background:#3b171e;color:#ff6474}
+.teams{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:7px;text-align:center}
+.team{min-width:0;display:flex;flex-direction:column;align-items:center;gap:9px}
+.crest{width:42px;height:42px;object-fit:contain}
+.placeholder{width:42px;height:42px;display:grid;place-items:center;font-size:25px}
+.team-name{font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.score{direction:ltr;white-space:nowrap;background:#101117;border:1px solid #393b48;color:var(--gold);border-radius:10px;padding:9px 10px;font-size:20px;font-weight:900}
+.time{text-align:center;color:#bbb;font-size:11px;margin-top:12px}
+.note{background:#12151d;border-right:3px solid var(--green);border-radius:7px;padding:10px;margin-top:12px;font-size:11px;line-height:1.8;color:#ddd}
+.state{text-align:center;padding:27px 15px;background:var(--card);border:1px solid var(--border);border-radius:14px;color:#ddd;font-size:13px;line-height:2;overflow-wrap:anywhere}
+.state button{display:block;margin:12px auto 0;background:var(--gold);border:0;border-radius:8px;padding:9px 14px;font-weight:bold}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#12131b;border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:11px 4px calc(11px + env(safe-area-inset-bottom));z-index:10}
+.nav{background:none;border:0;color:#888;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;min-width:55px}
+.nav span:first-child{font-size:19px}
+.nav.active{color:var(--gold)}
+footer{text-align:center;color:#777;font-size:11px;line-height:1.8;margin:20px 5px}
+@media(max-width:360px){.logo{font-size:14px}.owner{font-size:10px}.score{font-size:17px;padding:8px}.crest,.placeholder{width:35px;height:35px}}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
+
 <body>
+<header>
+  <div class="logo">⚽ الكرة مع عبده</div>
+  <div class="owner">👑 Abpo · المالك</div>
+</header>
 
-<div id="rotate-notice">🔄 يرجى تدوير الهاتف للوضع الأفقي (Landscape)</div>
+<nav class="tabs">
+  <button class="tab active" data-filter="all">كل المباريات</button>
+  <button class="tab" data-filter="live">🔴 مباشر</button>
+  <button class="tab" data-filter="scheduled">القادمة</button>
+  <button class="tab" data-filter="finished">المنتهية</button>
+</nav>
 
-<!-- القائمة الرئيسية ونظام البطولة -->
-<div id="menu-screen" class="screen">
-  <h1>🏆 بطولة كينجز ليج 3D</h1>
-  <h3>KINGS LEAGUE TOURNAMENT</h3>
-  <button class="btn" onclick="startTournament()">بدء البطولة ⚽</button>
-</div>
+<main>
+  <div class="heading">⚽ المباريات والنتائج</div>
 
-<!-- واجهة المباراة -->
-<div id="game-ui" class="hidden">
-  <div class="hud-top">
-    <div class="stage-badge" id="tournament-stage">دور المجموعات - المباراة 1</div>
-    <div class="score-board">
-      <div class="team-bar t1"><span>🇶🇦 ABO FC</span></div>
-      <div class="score-box"><span id="score1">0</span> - <span id="score2">0</span></div>
-      <div class="team-bar t2"><span id="opp-name">3BS FC</span></div>
-    </div>
+  <div class="toolbar">
+    <span class="muted" id="updated">جاري الاتصال بالسيرفر...</span>
+    <button class="refresh" id="refresh">↻ تحديث المباريات</button>
   </div>
 
-  <div class="joystick-zone" id="joy-zone"><div class="joystick-stick" id="joy-stick"></div></div>
+  <section id="matches" aria-live="polite">
+    <div class="state">⏳ جاري تحميل المباريات...</div>
+  </section>
 
-  <div class="action-buttons">
-    <button class="act-btn pass" id="btn-pass"><span>🎯</span><span>باص</span></button>
-    <button class="act-btn cross" id="btn-cross"><span>🚀</span><span>عرضية</span></button>
-    <button class="act-btn shoot" id="btn-shoot"><span>💥</span><span>تسديد</span></button>
-    <button class="act-btn press" id="btn-press"><span>🛡️</span><span>قطع</span></button>
-  </div>
-</div>
+  <footer>
+    يتم تحديث البيانات كل 60 ثانية.
+    النتائج المعروضة تعتمد على بيانات مزود الخدمة.
+  </footer>
+</main>
 
-<div id="canvas-container"></div>
+<nav class="bottom">
+  <button class="nav active" data-page="home"><span>🏠</span><span>الرئيسية</span></button>
+  <button class="nav" data-page="standings"><span>📊</span><span>الترتيب</span></button>
+  <button class="nav" data-page="favorites"><span>⭐</span><span>المفضلة</span></button>
+  <button class="nav" data-page="settings"><span>⚙️</span><span>الإعدادات</span></button>
+</nav>
 
 <script>
-const $ = id => document.getElementById(id);
+"use strict";
 
-let currentStageIndex = 0;
-const tournamentStages = [
-  { name: "دور المجموعات", opp: "3BS FC 🇯🇴" },
-  { name: "نصف النهائي", opp: "TURBON FC 🇪🇸" },
-  { name: "النهائي الكبير 🏆", opp: "AGUERO KING 🇦🇷" }
-];
+/*
+  الواجهة تتصل بالسيرفر عبر /api/matches.
+  يجب تشغيل Backend على نفس الموقع أو إعداد مسار API صحيح.
+  لا تضع مفتاح API السري في هذا الملف.
+*/
 
-function checkOrientation() {
-  $('rotate-notice').style.display = (window.innerHeight > window.innerWidth) ? 'flex' : 'none';
-}
-window.addEventListener('resize', checkOrientation);
-window.addEventListener('load', checkOrientation);
+const API_ENDPOINT = "/api/matches";
+const REFRESH_INTERVAL = 60000;
 
-let scene, camera, renderer, playerMesh, aiMesh, ballMesh;
-let joyVector = { x: 0, y: 0 };
-let ballVelocity = new THREE.Vector3(0, 0, 0);
-let score1 = 0, score2 = 0;
+const box = document.getElementById("matches");
+const refreshButton = document.getElementById("refresh");
+const updated = document.getElementById("updated");
 
-function startTournament() {
-  $('menu-screen').classList.add('hidden');$('game-ui').classList.remove('hidden');
-  loadStage();
-  init3D();
-  setupJoystick();
-  setupActions();
-  animate();
-}
+let matches = [];
+let filter = "all";
+let busy = false;
+let controller = null;
 
-function loadStage() {
-  let stage = tournamentStages[currentStageIndex];
-  $('tournament-stage').textContent = stage.name;
-  $('opp-name').textContent = stage.opp;
-  score1 = 0; score2 = 0;
-  $('score1').textContent = "0";
-  $('score2').textContent = "0";
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[c]);
 }
 
-function init3D() {
-  const container = $('canvas-container');
-  if (renderer) return;
-
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x050508);
-
-  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 32, 38);
-  camera.lookAt(0, 0, -2);
-
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true;
-  container.appendChild(renderer.domElement);
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-  scene.add(ambientLight);
-
-  const light1 = new THREE.SpotLight(0x00aaff, 1.5);
-  light1.position.set(-20, 40, 20);
-  scene.add(light1);
-
-  const light2 = new THREE.SpotLight(0xff0055, 1.5);
-  light2.position.set(20, 40, -20);
-  scene.add(light2);
-
-  const pitchGeo = new THREE.PlaneGeometry(64, 40);
-  const pitchMat = new THREE.MeshStandardMaterial({ color: 0x121215, roughness: 0.8 });
-  const pitch = new THREE.Mesh(pitchGeo, pitchMat);
-  pitch.rotation.x = -Math.PI / 2;
-  scene.add(pitch);
-
-  const linesGeo = new THREE.PlaneGeometry(60, 36);
-  const linesMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
-  const lines = new THREE.Mesh(linesGeo, linesMat);
-  lines.rotation.x = -Math.PI / 2;
-  lines.position.y = 0.01;
-  scene.add(lines);
-
-  const playerGeo = new THREE.CapsuleGeometry(0.8, 1.5, 8, 16);
-  const playerMat = new THREE.MeshStandardMaterial({ color: 0x00ffcc, roughness: 0.3 });
-  playerMesh = new THREE.Mesh(playerGeo, playerMat);
-  playerMesh.position.set(-8, 1.55, 0);
-  scene.add(playerMesh);
-
-  const aiMat = new THREE.MeshStandardMaterial({ color: 0xff0055, roughness: 0.3 });
-  aiMesh = new THREE.Mesh(playerGeo, aiMat);
-  aiMesh.position.set(8, 1.55, 0);
-  scene.add(aiMesh);
-
-  const ballGeo = new THREE.SphereGeometry(0.5, 32, 32);
-  const ballMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
-  ballMesh = new THREE.Mesh(ballGeo, ballMat);
-  ballMesh.position.set(0, 0.5, 0);
-  scene.add(ballMesh);
+function isLive(match) {
+  return ["IN_PLAY","PAUSED","LIVE"].includes(match.status);
 }
 
-function setupJoystick() {
-  const zone = $('joy-zone'), stick =$('joy-stick');
-  let activeTouchId = null;
-
-  zone.addEventListener('touchstart', e => {
-    e.preventDefault();
-    let t = e.changedTouches[0];
-    activeTouchId = t.identifier;
-    updateStick(t);
-  });
-
-  zone.addEventListener('touchmove', e => {
-    e.preventDefault();
-    for (let t of e.changedTouches) {
-      if (t.identifier === activeTouchId) updateStick(t);
-    }
-  });
-
-  const resetStick = e => {
-    for (let t of e.changedTouches) {
-      if (t.identifier === activeTouchId) {
-        activeTouchId = null;
-        stick.style.transform = `translate(0px, 0px)`;
-        joyVector = { x: 0, y: 0 };
-      }
-    }
+function statusName(match) {
+  const names = {
+    IN_PLAY:"مباشر",
+    LIVE:"مباشر",
+    PAUSED:"استراحة",
+    FINISHED:"انتهت",
+    AWARDED:"نتيجة معتمدة",
+    SCHEDULED:"لم تبدأ",
+    TIMED:"لم تبدأ",
+    POSTPONED:"مؤجلة",
+    SUSPENDED:"متوقفة",
+    CANCELLED:"أُلغيت"
   };
-  zone.addEventListener('touchend', resetStick);
-  zone.addEventListener('touchcancel', resetStick);
-
-  function updateStick(t) {
-    let rect = zone.getBoundingClientRect();
-    let dx = t.clientX - (rect.left + rect.width / 2);
-    let dy = t.clientY - (rect.top + rect.height / 2);
-    let dist = Math.hypot(dx, dy);
-    let maxR = 35;
-
-    if (dist > maxR) { dx = (dx / dist) * maxR; dy = (dy / dist) * maxR; }
-    stick.style.transform = `translate(${dx}px, ${dy}px)`;
-    joyVector.x = dx / maxR;
-    joyVector.y = dy / maxR;
-  }
+  return names[match.status] || "غير معروف";
 }
 
-function setupActions() {
-  $('btn-shoot').addEventListener('touchstart', () => kickBall(16, 4));$('btn-pass').addEventListener('touchstart', () => kickBall(9, 0));
-  $('btn-cross').addEventListener('touchstart', () => kickBall(11, 6));$('btn-press').addEventListener('touchstart', () => {
-    playerMesh.position.x += (ballMesh.position.x - playerMesh.position.x) * 0.35;
-    playerMesh.position.z += (ballMesh.position.z - playerMesh.position.z) * 0.35;
+function getScore(match) {
+  const score = match.score || {};
+  let home = score.fullTime?.home;
+  let away = score.fullTime?.away;
+
+  if (home == null || away == null) {
+    home = score.regularTime?.home ?? score.halfTime?.home;
+    away = score.regularTime?.away ?? score.halfTime?.away;
+  }
+
+  return home == null || away == null ? "— : —" : `${home} : ${away}`;
+}
+
+function getTime(match) {
+  if (isLive(match) && match.minute != null) {
+    return `دقيقة المباراة: ${match.minute}`;
+  }
+
+  if (match.status === "FINISHED") {
+    return "انتهت المباراة";
+  }
+
+  if (!match.utcDate) return "الموعد غير متاح";
+
+  const date = new Date(match.utcDate);
+  if (Number.isNaN(date.getTime())) return "الموعد غير متاح";
+
+  return new Intl.DateTimeFormat("ar-EG", {
+    day:"numeric",
+    month:"short",
+    hour:"2-digit",
+    minute:"2-digit"
+  }).format(date);
+}
+
+function teamHTML(team, fallback) {
+  const name = team?.name || fallback;
+  const crest = team?.crest;
+  let logo = '<div class="placeholder">⚽</div>';
+
+  if (crest && /^https?:\/\//i.test(crest)) {
+    logo = `<img class="crest" src="${escapeHTML(crest)}"
+      alt="" loading="lazy" referrerpolicy="no-referrer"
+      onerror="this.style.display='none'">`;
+  }
+
+  return `<div class="team">
+    ${logo}
+    <span class="team-name">${escapeHTML(name)}</span>
+  </div>`;
+}
+
+function filteredMatches() {
+  let list = [...matches];
+
+  if (filter === "live") {
+    list = list.filter(isLive);
+  } else if (filter === "scheduled") {
+    list = list.filter(m =>
+      ["SCHEDULED","TIMED","POSTPONED","SUSPENDED"].includes(m.status)
+    );
+  } else if (filter === "finished") {
+    list = list.filter(m =>
+      ["FINISHED","AWARDED"].includes(m.status)
+    );
+  }
+
+  return list.sort((a,b) => {
+    if (isLive(a) !== isLive(b)) return isLive(a) ? -1 : 1;
+    return new Date(a.utcDate || 0) - new Date(b.utcDate || 0);
   });
 }
 
-function kickBall(speed, upPower) {
-  let dist = playerMesh.position.distanceTo(ballMesh.position);
-  if (dist < 2.5) {
-    let dir = new THREE.Vector3().subVectors(ballMesh.position, playerMesh.position).normalize();
-    if (dir.length() === 0) dir.set(1, 0, 0);
-    ballVelocity.x = dir.x * speed;
-    ballVelocity.z = dir.z * speed;
-    ballVelocity.y = upPower;
+function renderMatches() {
+  const list = filteredMatches();
+
+  if (!list.length) {
+    box.innerHTML = `<div class="state">
+      ${matches.length
+        ? "لا توجد مباريات في هذا التصنيف حاليًا."
+        : "لم يرجع السيرفر أي مباريات متاحة حاليًا."}
+      <button id="retry">إعادة المحاولة</button>
+    </div>`;
+
+    document.getElementById("retry").onclick = () => loadMatches(true);
+    return;
   }
+
+  box.innerHTML = list.map(match => {
+    const live = isLive(match);
+    const competition = match.competition?.name || "بطولة كرة قدم";
+
+    return `<article class="card">
+      <div class="meta">
+        <span class="comp">🏆 ${escapeHTML(competition)}</span>
+        <span class="status ${live ? "live" : ""}">
+          ${live ? "🔴 " : ""}${escapeHTML(statusName(match))}
+        </span>
+      </div>
+
+      <div class="teams">
+        ${teamHTML(match.homeTeam, "الفريق الأول")}
+        <div class="score">${escapeHTML(getScore(match))}</div>
+        ${teamHTML(match.awayTeam, "الفريق الثاني")}
+      </div>
+
+      <div class="time">${escapeHTML(getTime(match))}</div>
+
+      <div class="note">
+        ${live
+          ? "🔴 المباراة جارية وفقًا لبيانات مزود الخدمة."
+          : match.status === "FINISHED"
+            ? "✅ انتهت المباراة."
+            : "📅 تابع موعد المباراة وحالتها."}
+      </div>
+    </article>`;
+  }).join("");
 }
 
-function animate() {
-  requestAnimationFrame(animate);
+function showError(message) {
+  box.innerHTML = `<div class="state">
+    ⚠️ ${escapeHTML(message)}
+    <button id="retry">إعادة المحاولة</button>
+  </div>`;
 
-  playerMesh.position.x += joyVector.x * 0.25;
-  playerMesh.position.z += joyVector.y * 0.25;
+  document.getElementById("retry").onclick = () => loadMatches(true);
+}
 
-  playerMesh.position.x = Math.max(-28, Math.min(28, playerMesh.position.x));
-  playerMesh.position.z = Math.max(-16, Math.min(16, playerMesh.position.z));
+async function loadMatches(manual = false) {
+  if (busy) return;
 
-  ballMesh.position.addScaledVector(ballVelocity, 0.05);
-  ballVelocity.multiplyScalar(0.95);
+  busy = true;
+  refreshButton.disabled = true;
+  refreshButton.textContent = "⏳ جاري التحميل";
 
-  if (ballMesh.position.y > 0.5) {
-    ballVelocity.y -= 0.3;
-  } else {
-    ballMesh.position.y = 0.5;
-    ballVelocity.y = 0;
+  if (!matches.length) {
+    box.innerHTML = '<div class="state">⏳ جاري جلب المباريات من السيرفر...</div>';
   }
 
-  aiMesh.position.x += (ballMesh.position.x - aiMesh.position.x) * 0.03;
-  aiMesh.position.z += (ballMesh.position.z - aiMesh.position.z) * 0.03;
+  controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
 
-  // تسجيل الأهداف والتقدم في البطولة
-  if (ballMesh.position.x > 29) {
-    score1++;
-    $('score1').textContent = score1;
-    resetBall();
-    if (score1 >= 2) {
-      alert("مبروك! تأهلت للمرحلة القادمة في البطولة 🎉");
-      currentStageIndex++;
-      if (currentStageIndex < tournamentStages.length) {
-        loadStage();
-      } else {
-        alert("🏆 مبروك يا عبده! بطل كينجز ليج 3D!");
-        currentStageIndex = 0;
-        loadStage();
-      }
+  try {
+    const response = await fetch(API_ENDPOINT, {
+      method: "GET",
+      headers: { "Accept": "application/json" },
+      cache: "no-store",
+      signal: controller.signal
+    });
+
+    let data;
+
+    try {
+      data = await response.json();
+    } catch (_) {
+      throw new Error("السيرفر لم يرجع بيانات JSON صحيحة.");
     }
-  } else if (ballMesh.position.x < -29) {
-    score2++;
-    $('score2').textContent = score2;
-    resetBall();
+
+    if (!response.ok || data.ok === false) {
+      throw new Error(data.error || `خطأ في السيرفر: ${response.status}`);
+    }
+
+    if (!Array.isArray(data.matches)) {
+      throw new Error("استجابة السيرفر لا تحتوي على قائمة المباريات.");
+    }
+
+    matches = data.matches;
+    renderMatches();
+
+    updated.textContent = "آخر تحديث: " +
+      new Intl.DateTimeFormat("ar-EG", {
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      }).format(new Date(data.updatedAt || Date.now()));
+
+  } catch (error) {
+    console.error("Match loading error:", error);
+
+    showError(error.name === "AbortError"
+      ? "انتهت مهلة الاتصال. تحقق من السيرفر وحاول مرة أخرى."
+      : error.message || "تعذر تحميل المباريات.");
+  } finally {
+    clearTimeout(timeout);
+    busy = false;
+    controller = null;
+    refreshButton.disabled = false;
+    refreshButton.textContent = "↻ تحديث المباريات";
   }
-
-  renderer.render(scene, camera);
 }
 
-function resetBall() {
-  ballMesh.position.set(0, 0.5, 0);
-  ballVelocity.set(0,0,0);
-  playerMesh.position.set(-8, 1.55, 0);
-  aiMesh.position.set(8, 1.55, 0);
-}
+document.querySelectorAll(".tab").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+    filter = button.dataset.filter;
+    renderMatches();
+  });
+});
+
+refreshButton.addEventListener("click", () => loadMatches(true));
+
+document.querySelectorAll(".nav").forEach(button => {
+  button.addEventListener("click", () => {
+    const page = button.dataset.page;
+
+    document.querySelectorAll(".nav").forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+
+    if (page === "home") {
+      filter = "all";
+      document.querySelectorAll(".tab").forEach(b => {
+        b.classList.toggle("active", b.dataset.filter === "all");
+      });
+      renderMatches();
+    } else if (page === "standings") {
+      showError("قسم الترتيب يحتاج اختيار بطولة وربطه ببيانات جدول الترتيب.");
+    } else if (page === "favorites") {
+      showError("لم يتم إعداد نظام المفضلة في هذه النسخة.");
+    } else {
+      showError("قسم الإعدادات سيحتاج إلى إعدادات إضافية.");
+    }
+  });
+});
+
+loadMatches();
+
+setInterval(() => {
+  if (!document.hidden) loadMatches();
+}, REFRESH_INTERVAL);
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && !busy) loadMatches();
+});
 </script>
+
 </body>
 </html>
