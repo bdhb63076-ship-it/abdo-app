@@ -1,94 +1,792 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>عبده سبورت الذكية | AI Autonomous Studio</title>
+<meta name="theme-color" content="#08080e">
+<title>عبده سبورت الذكية | ABDO SPORT AI</title>
+
 <style>
-:root{--bg:#08080e;--card:#14141f;--red:#ff1e38;--gold:#ffd700;--muted:#8e8ea0;--green:#00dc82}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#fff;font-family:Tahoma,Arial,sans-serif}
-header{background:#0e0e16;border-bottom:1px solid #222233;padding:15px;text-align:center}
-.logo{font-size:24px;font-weight:bold;color:var(--red)}
-main{max-width:1000px;margin:auto;padding:20px 12px}
-.control-box{background:var(--card);border:1px solid #28283d;border-radius:14px;padding:18px;margin-bottom:18px}
-.input-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
-input{flex:1;min-width:260px;background:#1c1c2b;border:1px solid #35354d;color:#fff;padding:12px;border-radius:8px;outline:none}
-button{background:var(--red);color:#fff;border:0;padding:12px 24px;border-radius:8px;font-weight:bold;cursor:pointer}
-.studio-screen{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden;border:2px solid #28283d}
-#playerContainer{position:absolute;inset:0;display:grid;place-items:center}
-iframe, video{width:100%;height:100%;border:0}
-.ai-overlay{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:12px}
-.overlay-top{display:flex;justify-content:space-between;align-items:flex-start}
-.channel-badge{background:rgba(0,0,0,.85);border:1px solid var(--red);padding:6px 12px;border-radius:8px;font-size:13px;font-weight:bold;display:flex;align-items:center;gap:6px}
-.live-dot{width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse 1.2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.score-board{background:rgba(10,10,16,.9);border:1px solid #444460;padding:6px 14px;border-radius:8px;display:flex;align-items:center;gap:12px;font-weight:bold}
-.team-name{color:#fff;font-size:14px}
-.match-score{color:var(--gold);font-size:20px;background:#1c1c2b;padding:2px 10px;border-radius:5px}
-.ai-status{text-align:center;background:rgba(0,0,0,.85);padding:8px 14px;font-size:12px;color:var(--green);border-radius:6px;align-self:center;border:1px solid #222}
+:root {
+  --bg: #08080e;
+  --card: #14141f;
+  --red: #ff1e38;
+  --gold: #ffd700;
+  --muted: #a0a0b2;
+  --green: #00dc82;
+  --border: #28283d;
+}
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #fff;
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+header {
+  background: #0e0e16;
+  border-bottom: 1px solid #222233;
+  padding: 16px 10px;
+  text-align: center;
+}
+
+.logo {
+  font-size: clamp(18px, 4vw, 25px);
+  font-weight: bold;
+  color: var(--red);
+}
+
+main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 18px 12px 35px;
+}
+
+.control-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 17px;
+  margin-bottom: 16px;
+}
+
+h3 {
+  color: var(--gold);
+  margin: 0 0 10px;
+}
+
+.description {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+input {
+  flex: 1 1 220px;
+  min-width: 0;
+  width: 100%;
+  background: #1c1c2b;
+  border: 1px solid #35354d;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  outline: none;
+  font: inherit;
+}
+
+input:focus {
+  border-color: var(--gold);
+}
+
+button {
+  background: var(--red);
+  color: white;
+  border: 0;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+button.secondary {
+  background: #29293a;
+  border: 1px solid #41415a;
+}
+
+button.green {
+  background: #087b50;
+}
+
+.studio-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 210px;
+  background: #000;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+#playerContainer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #000;
+}
+
+#playerContainer iframe,
+#playerContainer video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #000;
+}
+
+.placeholder {
+  text-align: center;
+  color: var(--muted);
+  padding: 20px;
+  line-height: 2;
+  font-size: 14px;
+}
+
+.ai-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.overlay-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.channel-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(0,0,0,.88);
+  border: 1px solid var(--red);
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+.score-board {
+  background: rgba(10,10,16,.92);
+  border: 1px solid #444460;
+  padding: 6px 9px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: bold;
+}
+
+.team-name {
+  font-size: clamp(10px, 2.5vw, 14px);
+  max-width: 95px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.match-score {
+  color: var(--gold);
+  font-size: 19px;
+  background: #1c1c2b;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.ai-status {
+  align-self: center;
+  text-align: center;
+  background: rgba(0,0,0,.88);
+  border: 1px solid #333;
+  color: var(--green);
+  padding: 7px 12px;
+  font-size: 11px;
+  line-height: 1.7;
+  border-radius: 7px;
+  max-width: 95%;
+}
+
+.status-error { color: #ff6b79; }
+.status-warning { color: var(--gold); }
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.score-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  margin-top: 12px;
+}
+
+@media (max-width: 500px) {
+  main { padding: 12px 8px 25px; }
+  .control-box { padding: 12px; }
+  .input-row button { width: 100%; }
+  .studio-screen { min-height: 190px; }
+  .ai-overlay { padding: 6px; }
+  .channel-badge { padding: 5px 7px; font-size: 10px; }
+  .score-board { gap: 4px; padding: 5px; }
+  .team-name { max-width: 70px; }
+  .ai-status { font-size: 10px; }
+}
+
+@media (max-width: 350px) {
+  .score-board { width: 100%; justify-content: center; }
+  .overlay-top { width: 100%; }
+}
 </style>
 </head>
+
 <body>
 
 <header>
-  <div class="logo">⚡ عبده سبورت الذكية | Auto AI Studio</div>
+  <div class="logo">⚡ عبده سبورت الذكية</div>
+  <div style="font-size:11px;color:#999;margin-top:5px">
+    ABDO SPORT | SMART BROADCAST STUDIO
+  </div>
 </header>
 
 <main>
-  <div class="control-box">
-    <h3 style="margin:0;color:var(--gold)">🤖 محرك الذكاء الاصطناعي المستقل</h3>
-    <p style="color:var(--muted);font-size:13px;margin-top:5px">ضع رابط البث المباشر فقط. يتكفل الذكاء الاصطناعي بتفكيك العنوان، تحديد الفرق، متابعة النتيجة بصرية، وتغطية البث أوتوماتيكياً.</p>
-    <div class="input-row">
-      <input id="streamUrl" placeholder="الصق رابط البث المباشر هنا...">
-      <button id="startAiBtn">⚡ تشغيل بالذكاء الاصطناعي</button>
-    </div>
-  </div>
 
-  <div class="studio-screen">
+  <section class="control-box">
+    <h3>📺 تشغيل البث الرياضي</h3>
+
+    <div class="description">
+      الصق رابط فيديو YouTube أو رابط بث مباشر قابل للتشغيل.
+      يدعم المشغل روابط YouTube وروابط الفيديو المباشرة MP4
+      وبعض روابط HLS بصيغة M3U8.
+    </div>
+
+    <div class="input-row">
+      <input
+        id="streamUrl"
+        type="url"
+        inputmode="url"
+        autocomplete="url"
+        placeholder="https://www.youtube.com/watch?v=..."
+        aria-label="رابط البث"
+      >
+      <button id="startAiBtn" type="button">
+        ⚡ تشغيل البث
+      </button>
+      <button id="stopBtn" class="secondary" type="button">
+        إيقاف
+      </button>
+    </div>
+
+    <div class="note">
+      ملاحظة: يجب أن يسمح مصدر البث بالتشغيل داخل المواقع.
+      لا يمكن تشغيل كل روابط القنوات أو البث المحمي.
+    </div>
+  </section>
+
+  <section class="studio-screen">
     <div id="playerContainer">
-      <div style="color:var(--muted);text-align:center">📺 أدخل رابط البث ليقوم الذكاء الاصطناعي ببدء التحليل والتغطية...</div>
+      <div class="placeholder">
+        📺<br>
+        أدخل رابط البث واضغط تشغيل<br>
+        سيظهر الفيديو هنا إذا كان الرابط مدعومًا.
+      </div>
     </div>
 
     <div class="ai-overlay">
       <div class="overlay-top">
         <div class="channel-badge">
-          <div class="live-dot"></div>
+          <span class="live-dot"></span>
           <span>ABDO SPORT</span>
         </div>
+
         <div class="score-board">
-          <span class="team-name" id="aiTeamA">جاري التعرّف...</span>
+          <span class="team-name" id="aiTeamA">الفريق الأول</span>
           <span class="match-score" id="aiScore">0 - 0</span>
-          <span class="team-name" id="aiTeamB">جاري التعرّف...</span>
+          <span class="team-name" id="aiTeamB">الفريق الثاني</span>
         </div>
       </div>
-      <div class="ai-status" id="aiStatus">🤖 محرك AI في حالة الاستعداد...</div>
+
+      <div class="ai-status" id="aiStatus" role="status" aria-live="polite">
+        جاهز لتشغيل البث
+      </div>
     </div>
-  </div>
+  </section>
+
+  <section class="control-box" style="margin-top:16px">
+    <h3>🏆 بيانات المباراة والنتيجة</h3>
+
+    <p class="description">
+      عدّل أسماء الفريقين والنتيجة يدويًا، ثم اضغط تحديث لتظهر
+      البيانات على شاشة الاستوديو.
+    </p>
+
+    <div class="editor-grid">
+      <div class="field">
+        <label for="teamAInput">اسم الفريق الأول</label>
+        <input id="teamAInput" maxlength="40" value="الفريق الأول">
+      </div>
+
+      <div class="field">
+        <label for="teamBInput">اسم الفريق الثاني</label>
+        <input id="teamBInput" maxlength="40" value="الفريق الثاني">
+      </div>
+    </div>
+
+    <div class="score-inputs">
+      <div class="field">
+        <label for="scoreAInput">أهداف الفريق الأول</label>
+        <input id="scoreAInput" type="number" min="0"
+          max="999" step="1" value="0">
+      </div>
+
+      <div class="field">
+        <label for="scoreBInput">أهداف الفريق الثاني</label>
+        <input id="scoreBInput" type="number" min="0"
+          max="999" step="1" value="0">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="updateScoreBtn" type="button" class="green">
+        تحديث النتيجة
+      </button>
+
+      <button id="resetScoreBtn" type="button" class="secondary">
+        إعادة النتيجة للصفر
+      </button>
+    </div>
+
+    <div class="note">
+      هذا الإصدار لا يدّعي اكتشاف الأهداف تلقائيًا.
+      التعرّف الحقيقي على الفرق والنتيجة يحتاج خدمة تحليل بصري
+      أو مصدر بيانات رياضي موثوقًا.
+    </div>
+  </section>
+
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 
 <script>
 "use strict";
 
-document.getElementById("startAiBtn").addEventListener("click", () => {
-  const url = document.getElementById("streamUrl").value.trim();
-  if(!url) return alert("ضع رابط بث صحيح أولاً!");
+const $ = id => document.getElementById(id);
 
-  const status = document.getElementById("aiStatus");
-  status.textContent = "🔍 [AI Parsing]: جاري تحليل عنوان البث المباشر واستخراج أسماء الفرق...";
+const container = $("playerContainer");
+const statusBox = $("aiStatus");
+const startButton = $("startAiBtn");
 
-  // محاكاة استخراج بيانات العنوان آلياً بواسطة الـ AI
-  setTimeout(() => {
-    document.getElementById("aiTeamA").textContent = "ريال مدريد";
-    document.getElementById("aiTeamB").textContent = "برشلونة";
-    status.textContent = "🎯 [AI OCR Connected]: تم التعرف على الفرق! جاري ربط الرؤية البصرية لمراقبة النتيجة...";
-    
-    // تحميل مشغل البث الذكي
-    const container = document.getElementById("playerContainer");
-    let videoId = url.includes("v=") ? url.split("v=")[1].split("&")[0] : url.split("/").pop();
-    container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1" allowfullscreen></iframe>`;
-  }, 2000);
+let currentVideo = null;
+let currentHls = null;
+let loadToken = 0;
+
+function setStatus(message, type = "ok") {
+  statusBox.textContent = message;
+  statusBox.className = "ai-status";
+
+  if (type === "error") {
+    statusBox.classList.add("status-error");
+  } else if (type === "warning") {
+    statusBox.classList.add("status-warning");
+  }
+}
+
+function clearPlayer() {
+  loadToken++;
+
+  if (currentHls) {
+    currentHls.destroy();
+    currentHls = null;
+  }
+
+  if (currentVideo) {
+    currentVideo.pause();
+    currentVideo.removeAttribute("src");
+    currentVideo.load();
+    currentVideo = null;
+  }
+
+  container.replaceChildren();
+  return loadToken;
+}
+
+function showPlaceholder(message) {
+  const box = document.createElement("div");
+  box.className = "placeholder";
+  box.textContent = message;
+  container.replaceChildren(box);
+}
+
+function getSafeUrl(raw) {
+  let url;
+
+  try {
+    url = new URL(raw);
+  } catch {
+    throw new Error("الرابط غير صحيح. تأكد من نسخه بالكامل.");
+  }
+
+  if (url.protocol !== "https:" && url.protocol !== "http:") {
+    throw new Error("نوع الرابط غير مدعوم.");
+  }
+
+  if (url.username || url.password) {
+    throw new Error("لا تستخدم رابطًا يحتوي على بيانات تسجيل دخول.");
+  }
+
+  return url;
+}
+
+function getYouTubeId(url) {
+  const host = url.hostname.toLowerCase().replace(/^www\./, "");
+
+  if (
+    host === "youtu.be"
+  ) {
+    return url.pathname.split("/").filter(Boolean)[0] || null;
+  }
+
+  if (
+    host === "youtube.com" ||
+    host === "m.youtube.com" ||
+    host === "music.youtube.com" ||
+    host === "youtube-nocookie.com" ||
+    host === "m.youtube-nocookie.com"
+  ) {
+    if (url.pathname === "/watch") {
+      return url.searchParams.get("v");
+    }
+
+    const parts = url.pathname.split("/").filter(Boolean);
+
+    if (["embed", "shorts", "live", "v"].includes(parts[0])) {
+      return parts[1] || null;
+    }
+  }
+
+  return null;
+}
+
+function isYouTubeHost(url) {
+  const host = url.hostname.toLowerCase().replace(/^www\./, "");
+
+  return [
+    "youtube.com",
+    "m.youtube.com",
+    "music.youtube.com",
+    "youtube-nocookie.com",
+    "m.youtube-nocookie.com",
+    "youtu.be"
+  ].includes(host);
+}
+
+function playYouTube(url, token) {
+  const videoId = getYouTubeId(url);
+
+  if (!videoId || !/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
+    throw new Error("تعذر استخراج معرّف فيديو YouTube من الرابط.");
+  }
+
+  const iframe = document.createElement("iframe");
+
+  iframe.title = "مشغل عبده سبورت";
+  iframe.allow =
+    "autoplay; encrypted-media; picture-in-picture; fullscreen";
+  iframe.allowFullscreen = true;
+  iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+  const embedUrl = new URL(
+    "https://www.youtube.com/embed/" + videoId
+  );
+
+  embedUrl.searchParams.set("autoplay", "1");
+  embedUrl.searchParams.set("playsinline", "1");
+
+  iframe.src = embedUrl.toString();
+
+  iframe.addEventListener("load", () => {
+    if (token === loadToken) {
+      setStatus(
+        "تم تحميل مشغل YouTube. إذا لم يعمل الفيديو فتحقق من توفره وإمكانية تضمينه."
+      );
+    }
+  });
+
+  container.replaceChildren(iframe);
+
+  setStatus("جاري فتح فيديو YouTube...");
+}
+
+function playDirectVideo(url, token) {
+  const video = document.createElement("video");
+
+  video.controls = true;
+  video.autoplay = true;
+  video.playsInline = true;
+  video.preload = "metadata";
+  video.setAttribute("aria-label", "البث الرياضي");
+
+  currentVideo = video;
+  container.replaceChildren(video);
+
+  video.addEventListener("playing", () => {
+    if (token === loadToken) {
+      setStatus("البث يعمل الآن");
+    }
+  });
+
+  video.addEventListener("error", () => {
+    if (token === loadToken) {
+      setStatus(
+        "تعذر تشغيل الفيديو. تحقق من الرابط أو صيغة الملف أو صلاحية الوصول.",
+        "error"
+      );
+    }
+  });
+
+  video.src = url.href;
+  video.load();
+
+  video.play().catch(() => {
+    if (token === loadToken) {
+      setStatus(
+        "اضغط زر التشغيل داخل الفيديو، أو تحقق من دعم المتصفح للرابط.",
+        "warning"
+      );
+    }
+  });
+}
+
+function playHls(url, token) {
+  const video = document.createElement("video");
+
+  video.controls = true;
+  video.autoplay = true;
+  video.playsInline = true;
+  video.preload = "metadata";
+
+  currentVideo = video;
+  container.replaceChildren(video);
+
+  video.addEventListener("playing", () => {
+    if (token === loadToken) {
+      setStatus("بث HLS يعمل الآن");
+    }
+  });
+
+  video.addEventListener("error", () => {
+    if (token === loadToken) {
+      setStatus(
+        "تعذر تشغيل بث HLS. قد يكون الرابط محميًا أو منتهيًا أو يمنع الوصول.",
+        "error"
+      );
+    }
+  });
+
+  if (video.canPlayType("application/vnd.apple.mpegurl")) {
+    video.src = url.href;
+    video.play().catch(() => {
+      if (token === loadToken) {
+        setStatus("اضغط تشغيل لبدء البث.", "warning");
+      }
+    });
+    return;
+  }
+
+  if (window.Hls && Hls.isSupported()) {
+    const hls = new Hls();
+
+    currentHls = hls;
+
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+      if (token === loadToken) {
+        hls.loadSource(url.href);
+      }
+    });
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      if (token === loadToken) {
+        setStatus("تم تحميل قائمة البث. جاري بدء التشغيل...");
+        video.play().catch(() => {
+          if (token === loadToken) {
+            setStatus("اضغط تشغيل لبدء البث.", "warning");
+          }
+        });
+      }
+    });
+
+    hls.on(Hls.Events.ERROR, (event, data) => {
+      if (token !== loadToken || !data.fatal) return;
+
+      setStatus(
+        "تعذر تحميل البث. تحقق من الرابط أو صلاحيات الخادم.",
+        "error"
+      );
+
+      hls.destroy();
+      currentHls = null;
+    });
+
+    return;
+  }
+
+  throw new Error("المتصفح لا يدعم تشغيل صيغة HLS على هذا الجهاز.");
+}
+
+function startBroadcast() {
+  const raw = $("streamUrl").value.trim();
+
+  if (!raw) {
+    setStatus("الصق رابط البث أولًا.", "error");
+    $("streamUrl").focus();
+    return;
+  }
+
+  let url;
+
+  try {
+    url = getSafeUrl(raw);
+  } catch (error) {
+    setStatus(error.message, "error");
+    return;
+  }
+
+  const token = clearPlayer();
+
+  try {
+    if (isYouTubeHost(url)) {
+      playYouTube(url, token);
+      return;
+    }
+
+    const pathname = url.pathname.toLowerCase();
+
+    if (pathname.endsWith(".m3u8")) {
+      playHls(url, token);
+      return;
+    }
+
+    if (/\.(mp4|webm|ogv|mov|m4v)$/.test(pathname)) {
+      playDirectVideo(url, token);
+      return;
+    }
+
+    showPlaceholder(
+      "صيغة الرابط غير معروفة. جرّب رابط YouTube أو ملف MP4 أو رابط M3U8."
+    );
+
+    setStatus(
+      "الرابط صالح شكليًا لكن صيغة البث غير معروفة.",
+      "warning"
+    );
+  } catch (error) {
+    showPlaceholder("تعذر بدء تشغيل البث.");
+    setStatus(error.message || "حدث خطأ أثناء تشغيل البث.", "error");
+  }
+}
+
+function stopBroadcast() {
+  clearPlayer();
+  showPlaceholder("تم إيقاف البث. أدخل رابطًا جديدًا للتشغيل.");
+  setStatus("البث متوقف");
+}
+
+function updateScore() {
+  const teamA = $("teamAInput").value.trim() || "الفريق الأول";
+  const teamB = $("teamBInput").value.trim() || "الفريق الثاني";
+
+  const scoreA = $("scoreAInput").value;
+  const scoreB = $("scoreBInput").value;
+
+  if (
+    scoreA === "" || scoreB === "" ||
+    !Number.isInteger(Number(scoreA)) ||
+    !Number.isInteger(Number(scoreB)) ||
+    Number(scoreA) < 0 || Number(scoreB) < 0 ||
+    Number(scoreA) > 999 || Number(scoreB) > 999
+  ) {
+    setStatus("أدخل نتيجتين صحيحتين من 0 إلى 999.", "error");
+    return;
+  }
+
+  $("aiTeamA").textContent = teamA;
+  $("aiTeamB").textContent = teamB;
+  $("aiScore").textContent = Number(scoreA) + " - " + Number(scoreB);
+
+  setStatus("تم تحديث بيانات المباراة يدويًا.");
+}
+
+function resetScore() {
+  $("scoreAInput").value = "0";
+  $("scoreBInput").value = "0";
+  updateScore();
+}
+
+startButton.addEventListener("click", startBroadcast);
+$("stopBtn").addEventListener("click", stopBroadcast);
+$("updateScoreBtn").addEventListener("click", updateScore);
+$("resetScoreBtn").addEventListener("click", resetScore);
+
+$("streamUrl").addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    startBroadcast();
+  }
 });
+
+updateScore();
 </script>
+
 </body>
 </html>
