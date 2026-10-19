@@ -1,138 +1,162 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#09090d">
 <title>عبده أفلام | Abdo Movies</title>
 <style>
-:root{--bg:#09090d;--card:#17171f;--red:#e50914;--muted:#aaa;--line:#292932;--gold:#ffd54a}
+:root{--bg:#09090d;--card:#191921;--red:#e50914;--gold:#ffd54a;--muted:#aaa;--line:#30303a}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:#fff;font-family:Tahoma,Arial,sans-serif}
 button,input{font:inherit}
-button{cursor:pointer;border:0;border-radius:8px;padding:11px 14px;background:var(--red);color:#fff}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 14px;background:var(--red);color:white}
 button:disabled{opacity:.5;cursor:wait}
-header{position:sticky;top:0;z-index:5;background:#111116;border-bottom:1px solid var(--line);padding:13px}
-.head{max-width:1200px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+input{width:100%;min-width:0;padding:13px;background:#24242d;border:1px solid #40404b;border-radius:9px;color:white}
+[hidden]{display:none!important}
+.login{min-height:100vh;display:grid;place-items:center;padding:18px;background:radial-gradient(ellipse at top,#461019,#09090d 70%)}
+.login-card{width:100%;max-width:420px;background:#17171f;border:1px solid #39303a;border-radius:18px;padding:25px;box-shadow:0 15px 60px #0008}
+.login-card h1{text-align:center;color:#ff2632}
+.login-card label{display:block;margin:18px 0 8px}
+.full{width:100%;margin-top:12px}
+header{position:sticky;top:0;z-index:5;background:#111116;border-bottom:1px solid var(--line);padding:12px}
+.head{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .logo{font-size:22px;font-weight:bold;color:#ff2632}
-.search{display:flex;gap:7px;flex:1;max-width:430px}
-input{min-width:0;width:100%;background:#24242d;border:1px solid #3b3b46;color:#fff;padding:12px;border-radius:8px;outline:none}
-main{max-width:1200px;margin:auto;padding:15px}
-.hero{padding:23px 18px;border-radius:15px;margin-bottom:20px;background:linear-gradient(120deg,#480d17,#20121c,#101018);border:1px solid #46222b}
-.hero h1{margin:0 0 10px;font-size:clamp(24px,5vw,34px)}
-p{line-height:1.8}
-.muted{color:var(--muted);font-size:13px}
-.profile{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#383843;font-weight:bold}
-.owner .avatar{background:linear-gradient(135deg,#ffdf73,#a65a00);color:#271500}
+.profile{display:flex;align-items:center;gap:9px}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#393943;font-weight:bold}
+.owner .avatar{background:linear-gradient(135deg,#ffe77c,#a65a00);color:#241600}
 .owner-name{color:var(--gold);font-weight:bold}
-.crown{color:var(--gold)}
-.settings{display:none} /* تم إخفاء خانة الإعدادات لعدم الحاجة إليها نهائياً */
+.verified{color:#36adff}
+.search{display:flex;gap:7px;flex:1;max-width:430px}
+main{max-width:1200px;margin:auto;padding:15px}
+.hero{padding:24px 18px;margin-bottom:20px;border:1px solid #46222b;border-radius:15px;background:linear-gradient(120deg,#480d17,#20121c,#101018)}
+.hero h1{font-size:clamp(24px,5vw,34px);margin:0 0 10px}
+p{line-height:1.8}
+.muted{color:var(--muted);font-size:13px;line-height:1.8}
 h2{font-size:20px;border-right:4px solid var(--red);padding-right:10px;margin:26px 0 15px}
 .filters{display:flex;gap:8px;overflow:auto;padding-bottom:12px}
-.chip{white-space:nowrap;background:#24242d;border:1px solid #363640}
+.chip{white-space:nowrap;background:#262630;border:1px solid #393943}
 .chip.active{background:#fff;color:#111}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:13px;margin-top:12px}
+.card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .card:hover{border-color:var(--red)}
-.poster{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#222}
+.poster{width:100%;aspect-ratio:2/3;object-fit:cover;background:#222;display:block}
 .info{padding:10px}
-.title{font-size:14px;font-weight:bold;line-height:1.6}
+.title{font-size:14px;font-weight:bold;line-height:1.7}
 .meta{font-size:12px;color:var(--muted);margin-top:6px}
-.card-actions{padding:0 9px 10px;display:grid;gap:6px}
-.small{padding:9px;font-size:12px}
+.card-actions{padding:0 9px 10px;display:grid;gap:7px}
+.small{font-size:12px;padding:10px}
 .secondary{background:#30303a}
-.player{background:#15151c;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:25px}
-.screen{aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center}
-.screen video{width:100%;height:100%;background:#000}
+.empty{grid-column:1/-1;padding:25px;text-align:center;color:#bbb;line-height:2}
+.player{margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#15151c}
+.screen{aspect-ratio:16/9;background:#000;display:grid;place-items:center}
+.screen iframe,.screen video{width:100%;height:100%;border:0;background:#000}
 .placeholder{text-align:center;padding:20px;color:#bbb;line-height:2}
 .player-info{padding:14px}
 .player-info h3{margin:0 0 8px;overflow-wrap:anywhere}
-.player-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.status{padding:12px;background:#24242c;color:#ddd;border-radius:8px;margin-top:10px;font-size:13px;line-height:1.8;overflow-wrap:anywhere}
-.empty{grid-column:1/-1;padding:25px;text-align:center;color:#aaa;line-height:2}
-footer{text-align:center;padding:25px;color:#888;border-top:1px solid var(--line);margin-top:35px;font-size:12px}
-a{color:#ff858b}
-[hidden]{display:none!important}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.status{padding:12px;background:#24242c;border-radius:8px;margin-top:10px;font-size:13px;line-height:1.8;overflow-wrap:anywhere}
+footer{text-align:center;color:#888;border-top:1px solid var(--line);padding:25px;margin-top:35px;font-size:12px}
+@media(max-width:480px){.logo{font-size:19px}.search{flex-basis:100%;max-width:none}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
 </style>
 </head>
 <body>
 
+<!-- الصفحة الأولى -->
+<section id="loginPage" class="login">
+  <div class="login-card">
+    <div style="font-size:48px;text-align:center">🎬</div>
+    <h1>عبده أفلام</h1>
+    <p class="muted" style="text-align:center">أهلاً بك في عالم الأفلام والمسلسلات.</p>
+    <form id="loginForm">
+      <label for="username">اكتب اسمك للدخول</label>
+      <input id="username" maxlength="40" autocomplete="username" placeholder="اسم المستخدم" required>
+      <button class="full" type="submit">دخول إلى الموقع</button>
+    </form>
+    <div class="status">👑 اسما المالك: Abpo وabpo</div>
+    <p class="muted">تسجيل الدخول بالاسم فقط لا يحمي حساب المالك بكلمة مرور.</p>
+  </div>
+</section>
+
+<!-- الصفحة الثانية -->
+<section id="appPage" hidden>
 <header>
   <div class="head">
     <div class="logo">🎬 عبده أفلام</div>
-    <div class="profile owner" id="profile">
-      <div class="avatar">ع</div>
+    <div id="profile" class="profile">
+      <div id="avatar" class="avatar">م</div>
       <div>
-        <div class="owner-name">عبدو 👑</div>
-        <div class="muted">مالك التطبيق</div>
+        <div id="displayName">مشاهد</div>
+        <div id="roleLabel" class="muted">حساب مشاهد</div>
       </div>
     </div>
+    <button id="logout" class="secondary">تسجيل الخروج</button>
     <div class="search">
-      <input id="search" placeholder="ابحث عن فيلم رعب..." aria-label="بحث">
+      <input id="search" placeholder="ابحث عن فيلم أو مسلسل...">
       <button id="searchBtn">بحث</button>
     </div>
   </div>
 </header>
 
 <main>
-  <section class="hero">
-    <h1>عالم الرعب يبدأ هنا 👻</h1>
-    <p>أفلام رعب أجنبية وأشباح وغموض. اختار فيلمًا واكتشف المصادر المتاحة.</p>
-    <div>👑 أهلاً بك يا عبدو في منصتك الخاصة.</div>
+  <section class="hero" id="hero">
+    <h1 id="welcome">أهلاً بك في عبده أفلام 🎬</h1>
+    <p id="welcomeText">اكتشف الأفلام والمسلسلات الجديدة.</p>
+    <div id="ownerMessage"></div>
   </section>
 
-  <div class="filters" id="filters">
-    <button class="chip active" data-kind="movie">أفلام الرعب</button>
-    <button class="chip" data-kind="tv">مسلسلات</button>
+  <div class="filters">
+    <button class="chip active" data-kind="movie" data-mode="horror">👻 أفلام الرعب</button>
+    <button class="chip" data-kind="movie" data-mode="popular">🔥 أفلام مشهورة</button>
+    <button class="chip" data-kind="tv" data-mode="popular">📺 مسلسلات</button>
   </div>
 
-  <div class="muted" id="resultCount">جاري تحميل المحتوى...</div>
-  <section class="grid" id="grid">
+  <div id="resultCount" class="muted">جاري تحميل المحتوى...</div>
+  <section id="grid" class="grid">
     <div class="empty">جاري تحميل الأفلام...</div>
   </section>
 
-  <section class="player" id="player">
-    <div class="screen" id="screen">
-      <div class="placeholder">🍿<br>اختار فيلمًا لبدء البحث عن نسخة متاحة.</div>
+  <section id="player" class="player">
+    <div id="screen" class="screen">
+      <div class="placeholder">🍿<br>اختر فيلمًا أو مسلسلًا لعرض التفاصيل والإعلان الرسمي.</div>
     </div>
     <div class="player-info">
       <h3 id="nowTitle">عبده أفلام</h3>
-      <div class="muted" id="nowMeta">لم يتم اختيار محتوى بعد</div>
-      <div class="player-actions">
-        <button id="findFree" disabled>🔎 ابحث عن نسخة مجانية</button>
-        <button class="secondary" id="stop">إيقاف المشغل</button>
+      <div id="nowMeta" class="muted">لم يتم اختيار محتوى</div>
+      <div class="actions">
+        <button id="playTrailer" disabled>▶ تشغيل الإعلان الرسمي</button>
+        <button id="officialSearch" class="secondary" disabled>🔎 البحث عن مصدر رسمي</button>
+        <button id="stop" class="secondary">إيقاف المشغل</button>
       </div>
-      <div class="status" id="status">بيانات الفيلم منفصلة عن ملف الفيديو نفسه.</div>
-      <div id="sources"></div>
+      <div id="status" class="status">جاهز للبحث عن المحتوى.</div>
     </div>
   </section>
 </main>
-
-<footer>
-  عبده أفلام © <span id="year"></span><br>
-  تصميم وإدارة: عبدو 👑
-</footer>
+<footer>عبده أفلام © <span id="year"></span><br>تصميم وإدارة: عبدو 👑</footer>
+</section>
 
 <script>
 "use strict";
 
 const TMDB = "https://api.themoviedb.org/3";
 const IMG = "https://image.tmdb.org/t/p/w500";
-const ARCHIVE_SEARCH = "https://archive.org/advancedsearch.php";
-const ARCHIVE_META = "https://archive.org/metadata/";
+const API_KEY = "c951174983050c5514f7b6b15804f32c";
 
-// المفتاح ثابت ومدمج هنا بشكل نهائي لتجنب مشاكل ذاكرة المتصفح
-const apiKey = "c951174983050c5514f7b6b15804f32c";
+const $ = id => document.getElementById(id);
+let username = "";
+let isOwner = false;
 let kind = "movie";
+let mode = "horror";
 let currentItem = null;
-let requestNumber = 0;
-let archiveRequestNumber = 0;
+let catalogRequest = 0;
+let trailerRequest = 0;
 
-document.getElementById("year").textContent = new Date().getFullYear();
+$("year").textContent = new Date().getFullYear();
 
-function setStatus(message) {
-  document.getElementById("status").textContent = message;
+function titleOf(item) {
+  return item.title || item.name || item.original_title ||
+    item.original_name || "بدون عنوان";
 }
 
 function escapeHTML(s) {
@@ -141,39 +165,131 @@ function escapeHTML(s) {
   })[c]);
 }
 
-async function tmdb(path, params = {}) {
-  const url = new URL(TMDB + path);
-  url.searchParams.set("api_key", apiKey);
-  url.searchParams.set("language", "ar-SA");
-  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error("تعذر جلب بيانات الأفلام.");
-  }
-  return response.json();
+function setStatus(text) {
+  $("status").textContent = text;
 }
 
-function titleOf(item) {
-  return item.title || item.name || item.original_title || item.original_name || "بدون عنوان";
-}
-
-function posterFallback(title) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450"><rect width="100%" height="100%" fill="#202029"/><text x="50%" y="45%" fill="#e50914" font-size="65" text-anchor="middle">👻</text><text x="50%" y="60%" fill="white" font-size="18" text-anchor="middle">${escapeHTML(title.slice(0,22))}</text></svg>`;
+function fallbackPoster(title) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450"><rect width="100%" height="100%" fill="#202029"/><text x="50%" y="43%" fill="#e50914" font-size="55" text-anchor="middle">🎬</text><text x="50%" y="60%" fill="white" font-size="18" text-anchor="middle">${escapeHTML(title.slice(0,20))}</text></svg>`;
   return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
 }
 
 function posterURL(item) {
-  return item.poster_path ? IMG + item.poster_path : posterFallback(titleOf(item));
+  return item.poster_path ? IMG + item.poster_path : fallbackPoster(titleOf(item));
+}
+
+async function tmdb(path, params = {}) {
+  const url = new URL(TMDB + path);
+  url.searchParams.set("api_key", API_KEY);
+  url.searchParams.set("language", "ar-SA");
+  for (const [key,value] of Object.entries(params)) {
+    url.searchParams.set(key, value);
+  }
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("مفتاح TMDB غير صالح أو غير مفعّل.");
+    }
+    if (response.status === 429) {
+      throw new Error("طلبات كثيرة. انتظر قليلًا ثم أعد المحاولة.");
+    }
+    throw new Error("تعذر تحميل البيانات. تحقق من الإنترنت ومفتاح TMDB.");
+  }
+  return response.json();
+}
+
+/* تسجيل الدخول */
+$("loginForm").addEventListener("submit", event => {
+  event.preventDefault();
+  username = $("username").value.trim();
+  if (!username) return;
+
+  isOwner = username.toLowerCase() === "abpo";
+  $("loginPage").hidden = true;
+  $("appPage").hidden = false;
+
+  $("profile").classList.toggle("owner", isOwner);
+  $("avatar").textContent = [...username][0] || "م";
+  $("displayName").textContent = username;
+
+  if (isOwner) {
+    $("displayName").innerHTML =
+      escapeHTML(username) + ' <span class="owner-name">👑</span> ' +
+      '<span class="verified" title="توثيق الواجهة">✓</span>';
+    $("roleLabel").textContent = "مالك التطبيق";
+    $("welcome").textContent = "أهلاً بالمالك Abpo 👑";
+    $("welcomeText").textContent = "مرحباً بك في واجهة مالك عبده أفلام.";
+    $("ownerMessage").textContent = "👑 التاج الملكي وعلامة التوثيق مفعّلان في الواجهة.";
+    $("hero").style.borderColor = "#8b6c26";
+  } else {
+    $("roleLabel").textContent = "حساب مشاهد";
+    $("welcome").textContent = "أهلاً بك في عبده أفلام 🎬";
+    $("welcomeText").textContent = "اكتشف الأفلام والمسلسلات وابحث عن عناوينك المفضلة.";
+    $("ownerMessage").textContent = "";
+    $("hero").style.borderColor = "";
+  }
+
+  loadCatalog();
+});
+
+$("logout").addEventListener("click", () => {
+  catalogRequest++;
+  trailerRequest++;
+  username = "";
+  isOwner = false;
+  currentItem = null;
+  $("appPage").hidden = true;
+  $("loginPage").hidden = false;
+  $("username").value = "";
+  $("search").value = "";
+  stopPlayer();
+});
+
+/* تحميل الكتالوج */
+async function loadCatalog(query = $("search").value.trim()) {
+  const request = ++catalogRequest;
+  $("grid").innerHTML = '<div class="empty">جاري تحميل المحتوى...</div>';
+  $("resultCount").textContent = "جاري البحث...";
+  setStatus("جاري الاتصال بقاعدة بيانات الأفلام...");
+
+  try {
+    let path;
+    const params = {include_adult:"false",page:"1"};
+
+    if (query) {
+      path = "/search/" + kind;
+      params.query = query;
+    } else if (kind === "movie" && mode === "horror") {
+      path = "/discover/movie";
+      params.with_genres = "27";
+      params.sort_by = "popularity.desc";
+    } else if (kind === "movie") {
+      path = "/movie/popular";
+    } else {
+      path = "/tv/popular";
+    }
+
+    const data = await tmdb(path, params);
+    if (request !== catalogRequest) return;
+    render(data.results || []);
+    setStatus("تم تحميل بيانات المحتوى. اختر عنوانًا لعرض التفاصيل.");
+  } catch (error) {
+    if (request !== catalogRequest) return;
+    $("grid").innerHTML =
+      '<div class="empty">' + escapeHTML(error.message) + '</div>';
+    $("resultCount").textContent = "تعذر تحميل النتائج";
+    setStatus(error.message);
+  }
 }
 
 function render(items) {
-  const grid = document.getElementById("grid");
+  const grid = $("grid");
   grid.replaceChildren();
-  document.getElementById("resultCount").textContent = `تم العثور على ${items.length} نتيجة`;
+  $("resultCount").textContent = "عدد النتائج: " + items.length;
 
   if (!items.length) {
-    grid.innerHTML = '<div class="empty">لا توجد نتائج مطابقة.</div>';
+    grid.innerHTML = '<div class="empty">لا توجد نتائج. جرّب اسمًا آخر.</div>';
     return;
   }
 
@@ -186,7 +302,10 @@ function render(items) {
     img.loading = "lazy";
     img.alt = titleOf(item);
     img.src = posterURL(item);
-    img.onerror = () => { img.onerror = null; img.src = posterFallback(titleOf(item)); };
+    img.onerror = () => {
+      img.onerror = null;
+      img.src = fallbackPoster(titleOf(item));
+    };
 
     const info = document.createElement("div");
     info.className = "info";
@@ -195,9 +314,13 @@ function render(items) {
     title.className = "title";
     title.textContent = titleOf(item);
 
+    const year = (item.release_date || item.first_air_date || "").slice(0,4);
     const meta = document.createElement("div");
     meta.className = "meta";
-    meta.textContent = `${kind === "movie" ? "فيلم" : "مسلسل"} · ⭐ ${Number(item.vote_average || 0).toFixed(1)} · ${(item.release_date || item.first_air_date || "").slice(0,4)}`;
+    meta.textContent =
+      (kind === "movie" ? "فيلم" : "مسلسل") +
+      " · ⭐ " + Number(item.vote_average || 0).toFixed(1) +
+      (year ? " · " + year : "");
 
     info.append(title, meta);
 
@@ -205,160 +328,123 @@ function render(items) {
     actions.className = "card-actions";
 
     const details = document.createElement("button");
-    details.className = "small secondary";
-    details.textContent = "التفاصيل والتشغيل";
+    details.className = "small";
+    details.textContent = "التفاصيل والإعلان";
     details.addEventListener("click", () => selectItem(item));
 
-    const searchBtn = document.createElement("button");
-    searchBtn.className = "small";
-    searchBtn.textContent = "ابحث عن مشاهدة";
-    searchBtn.addEventListener("click", () => {
+    const search = document.createElement("button");
+    search.className = "small secondary";
+    search.textContent = "البحث عن مصدر رسمي";
+    search.addEventListener("click", () => {
       selectItem(item);
-      findFreeVersion();
+      openOfficialSearch(item);
     });
 
-    actions.append(details, searchBtn);
+    actions.append(details, search);
     card.append(img, info, actions);
     grid.append(card);
   }
 }
 
-async function loadCatalog(query = "") {
-  const myRequest = ++requestNumber;
-  document.getElementById("grid").innerHTML = '<div class="empty">جاري تحميل المحتوى...</div>';
-  setStatus("جاري تحميل بيانات الأفلام...");
-
-  try {
-    let data;
-    if (query.trim()) {
-      data = await tmdb("/search/" + kind, { query: query.trim(), include_adult: "false", page: "1" });
-    } else if (kind === "movie") {
-      data = await tmdb("/discover/movie", { with_genres: "27", sort_by: "popularity.desc", include_adult: "false", page: "1" });
-    } else {
-      data = await tmdb("/discover/tv", { sort_by: "popularity.desc", include_adult: "false", page: "1" });
-    }
-
-    if (myRequest !== requestNumber) return;
-    render(data.results || []);
-    setStatus("تم تحميل البيانات بنجاح. اختر عملاً للبدء.");
-  } catch (error) {
-    if (myRequest !== requestNumber) return;
-    document.getElementById("grid").innerHTML = '<div class="empty">تعذر تحميل الأفلام.</div>';
-    setStatus("حدث خطأ أثناء تحميل المحتوى.");
-  }
-}
-
-function stopPlayer() {
-  const oldVideo = document.getElementById("screen").querySelector("video");
-  if (oldVideo) {
-    oldVideo.pause();
-    oldVideo.removeAttribute("src");
-    oldVideo.load();
-  }
-  document.getElementById("screen").innerHTML = '<div class="placeholder">🍿<br>اختار فيلمًا أو حلقة لبدء المشاهدة.</div>';
-}
-
+/* تفاصيل المحتوى */
 function selectItem(item) {
   currentItem = item;
-  document.getElementById("nowTitle").textContent = titleOf(item);
-  document.getElementById("nowMeta").textContent = `${kind === "movie" ? "فيلم" : "مسلسل"} · ${item.release_date || item.first_air_date || "التاريخ غير متاح"}`;
-  document.getElementById("findFree").disabled = false;
-  document.getElementById("sources").replaceChildren();
-  stopPlayer();
-  setStatus("اضغط ابحث عن نسخة مجانية للبحث في المكتبة الرقمية.");
-  document.getElementById("player").scrollIntoView({behavior:"smooth", block:"start"});
+  trailerRequest++;
+  $("nowTitle").textContent = titleOf(item);
+  $("nowMeta").textContent =
+    (kind === "movie" ? "فيلم" : "مسلسل") + " · " +
+    (item.release_date || item.first_air_date || "التاريخ غير متاح");
+
+  $("playTrailer").disabled = false;
+  $("officialSearch").disabled = false;
+  stopPlayer(false);
+  setStatus("يمكنك تشغيل الإعلان الرسمي المتاح أو البحث عن مصدر قانوني.");
+  $("player").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-async function findFreeVersion() {
+/* الإعلان الرسمي */
+async function playTrailer() {
   if (!currentItem) return;
-  const myRequest = ++archiveRequestNumber;
-  const title = titleOf(currentItem);
-  document.getElementById("findFree").disabled = true;
-  document.getElementById("sources").replaceChildren();
-  setStatus("جاري البحث في Internet Archive...");
+  const request = ++trailerRequest;
+  $("playTrailer").disabled = true;
+  setStatus("جاري البحث عن الإعلان الرسمي...");
 
   try {
-    const url = new URL(ARCHIVE_SEARCH);
-    url.searchParams.set("q", `mediatype:movies AND title:("${title.replace(/["\\]/g, "")}")`);
-    url.searchParams.append("fl[]", "identifier");
-    url.searchParams.append("fl[]", "title");
-    url.searchParams.set("rows", "5");
-    url.searchParams.set("output", "json");
+    const path = (kind === "movie" ? "/movie/" : "/tv/") +
+      currentItem.id + "/videos";
+    const data = await tmdb(path);
 
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("تعذر الوصول إلى مكتبة الفيديو.");
-    const data = await response.json();
-    if (myRequest !== archiveRequestNumber) return;
+    if (request !== trailerRequest) return;
 
-    const docs = (data.response && data.response.docs) || [];
-    let playable = null;
+    const videos = data.results || [];
+    const trailer = videos.find(v =>
+      v.site === "YouTube" && v.key && v.type === "Trailer" && v.official
+    ) || videos.find(v =>
+      v.site === "YouTube" && v.key && v.type === "Trailer"
+    ) || videos.find(v => v.site === "YouTube" && v.key);
 
-    for (const doc of docs) {
-      if (myRequest !== archiveRequestNumber) return;
-      if (!doc.identifier) continue;
-
-      try {
-        const mr = await fetch(ARCHIVE_META + encodeURIComponent(doc.identifier));
-        if (!mr.ok) continue;
-
-        const metadata = await mr.json();
-        const file = (metadata.files || []).find(f => {
-          const name = String(f.name || "");
-          const ext = name.split(".").pop().toLowerCase();
-          return ["mp4","webm","ogv"].includes(ext) && !/sample|trailer|preview/i.test(name);
-        });
-
-        if (file && file.name) {
-          playable = {
-            identifier: doc.identifier,
-            url: "https://archive.org/download/" + encodeURIComponent(doc.identifier) + "/" + file.name.split("/").map(encodeURIComponent).join("/")
-          };
-          break;
-        }
-      } catch {}
-    }
-
-    if (myRequest !== archiveRequestNumber) return;
-
-    if (!playable) {
-      setStatus("لم يتم العثور على نسخة فيديو مباشرة لهذا العنوان.");
+    if (!trailer) {
+      setStatus("لم يُعثر على إعلان رسمي متاح لهذا العنوان.");
       return;
     }
 
-    const video = document.createElement("video");
-    video.controls = true;
-    video.playsInline = true;
-    video.src = playable.url;
-    document.getElementById("screen").replaceChildren(video);
-    setStatus("تم العثور على النسخة بنجاح وبدء التشغيل.");
-    video.play().catch(() => {});
+    const iframe = document.createElement("iframe");
+    iframe.title = "الإعلان الرسمي " + titleOf(currentItem);
+    iframe.src = "https://www.youtube-nocookie.com/embed/" +
+      encodeURIComponent(trailer.key) + "?autoplay=1&rel=0";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    $("screen").replaceChildren(iframe);
+    setStatus("تم العثور على الإعلان. يعتمد التشغيل على إتاحته واتصال الإنترنت.");
   } catch (error) {
-    if (myRequest !== archiveRequestNumber) return;
-    setStatus("حدث خطأ أثناء البحث عن النسخة المجانية.");
+    if (request !== trailerRequest) return;
+    setStatus(error.message);
+  } finally {
+    if (request === trailerRequest) $("playTrailer").disabled = false;
   }
 }
 
-document.getElementById("searchBtn").addEventListener("click", () => {
-  loadCatalog(document.getElementById("search").value);
+function openOfficialSearch(item) {
+  const type = kind === "movie" ? "فيلم" : "مسلسل";
+  const query = encodeURIComponent(titleOf(item) + " " + type + " الموقع الرسمي");
+  window.open("https://www.google.com/search?q=" + query,"_blank","noopener,noreferrer");
+}
+
+function stopPlayer(showStatus = true) {
+  trailerRequest++;
+  const placeholder = document.createElement("div");
+  placeholder.className = "placeholder";
+  placeholder.innerHTML = "🍿<br>اختر عنوانًا لعرض الإعلان الرسمي المتاح.";
+  $("screen").replaceChildren(placeholder);
+  if (showStatus) setStatus("تم إيقاف المشغل.");
+}
+
+$("searchBtn").addEventListener("click", () => loadCatalog());
+
+$("search").addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    loadCatalog();
+  }
 });
 
-document.getElementById("search").addEventListener("keypress", (e) => {
-  if (e.key === "Enter") loadCatalog(document.getElementById("search").value);
-});
-
-document.querySelectorAll(".chip").forEach(btn => {
-  btn.addEventListener("click", (e) => {
+document.querySelectorAll(".chip").forEach(button => {
+  button.addEventListener("click", () => {
     document.querySelectorAll(".chip").forEach(b => b.classList.remove("active"));
-    e.target.classList.add("active");
-    kind = e.target.dataset.kind;
-    loadCatalog(document.getElementById("search").value);
+    button.classList.add("active");
+    kind = button.dataset.kind;
+    mode = button.dataset.mode;
+    loadCatalog();
   });
 });
 
-document.getElementById("findFree").addEventListener("click", findFreeVersion);
-document.getElementById("stop").addEventListener("click", stopPlayer);
+$("playTrailer").addEventListener("click", playTrailer);
+$("officialSearch").addEventListener("click", () => {
+  if (currentItem) openOfficialSearch(currentItem);
+});
+$("stop").addEventListener("click", () => stopPlayer());
 
-loadCatalog();
 </script>
 </body>
 </html>
