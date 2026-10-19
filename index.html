@@ -3,537 +3,700 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#09090d">
-<title>عبده أفلام | Abdo Movies</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#09090f">
+<title>عبده سبورت الذكية | ABDO SPORT</title>
+
 <style>
-:root{--bg:#09090d;--card:#17171f;--red:#e50914;--gold:#ffd54a;--muted:#aaa;--line:#30303a}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#fff;font-family:Tahoma,Arial,sans-serif}
-button,input{font:inherit}
-button{cursor:pointer;border:0;border-radius:9px;padding:12px;background:var(--red);color:white}
-button:disabled{opacity:.5;cursor:not-allowed}
-input{width:100%;min-width:0;padding:13px;background:#24242d;border:1px solid #41414c;border-radius:9px;color:white}
-[hidden]{display:none!important}
-.login{min-height:100vh;display:grid;place-items:center;padding:18px;background:radial-gradient(ellipse at top,#461019,#09090d 70%)}
-.login-card{width:100%;max-width:430px;background:var(--card);border:1px solid #39303a;border-radius:20px;padding:25px}
-.login-card h1{text-align:center;color:#ff2632;font-size:32px}
-.login-card label,.settings label{display:block;margin:15px 0 8px}
-.full{width:100%;margin-top:12px}
-header{position:sticky;top:0;z-index:5;background:#111116;border-bottom:1px solid var(--line);padding:12px}
-.head{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.logo{font-size:21px;font-weight:bold;color:#ff2632}
-.profile{display:flex;align-items:center;gap:9px;margin-inline-start:auto}
-.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#393943;font-weight:bold}
-.owner .avatar{background:linear-gradient(135deg,#ffe77c,#a65a00);color:#241600}
-.owner-name{color:var(--gold);font-weight:bold}
-.verified{color:#39adff}
-.muted{color:var(--muted);font-size:13px;line-height:1.9}
-.search{display:flex;gap:8px;width:100%}
-.search button{flex-shrink:0}
-main{max-width:1200px;margin:auto;padding:15px}
-.hero{padding:22px 18px;margin-bottom:20px;border:1px solid #46222b;border-radius:15px;background:linear-gradient(120deg,#480d17,#20121c,#101018)}
-.hero h2{border:0;padding:0;margin:0 0 10px;font-size:clamp(24px,5vw,34px)}
-p{line-height:1.8}
-h3.section-title{font-size:19px;border-right:4px solid var(--red);padding-right:10px;margin:25px 0 14px}
-.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px}
-.chip{white-space:nowrap;background:#262630;border:1px solid #393943}
-.chip.active{background:#fff;color:#111}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;margin-top:12px}
-.card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.card:hover{border-color:var(--red)}
-.poster{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#222}
-.info{padding:10px}
-.title{font-size:14px;font-weight:bold;line-height:1.7}
-.meta{font-size:12px;color:var(--muted);margin-top:6px}
-.card-actions{padding:0 9px 10px;display:grid;gap:7px}
-.small{font-size:12px;padding:10px}
-.secondary{background:#30303a}
-.player{margin-top:25px;background:#15151c;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.screen{aspect-ratio:16/9;background:#000;display:grid;place-items:center}
-.screen iframe{width:100%;height:100%;border:0}
-.placeholder{text-align:center;padding:20px;color:#bbb;line-height:2}
-.player-info{padding:14px}
-.player-info h3{margin:0 0 8px;overflow-wrap:anywhere}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.status{padding:12px;background:#24242c;border-radius:8px;margin-top:10px;font-size:13px;line-height:1.9;overflow-wrap:anywhere}
-.empty{grid-column:1/-1;padding:24px;text-align:center;color:#bbb;line-height:2;background:#17171f;border-radius:10px}
-.settings{margin-top:25px;padding:15px;border:1px solid var(--line);border-radius:12px;background:#15151c}
-footer{text-align:center;color:#888;border-top:1px solid var(--line);padding:25px;margin-top:35px;font-size:12px}
-@media(max-width:480px){.head{gap:10px}.search{flex-basis:100%}main{padding:11px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:18px}}
+:root {
+  --bg:#09090f;
+  --card:#161622;
+  --red:#ff1e38;
+  --gold:#ffd700;
+  --muted:#a0a0b4;
+  --border:#2d2d42;
+  --green:#00dc82;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:var(--bg);
+  color:#fff;
+  font-family:Tahoma,Arial,sans-serif;
+}
+
+button,input { font:inherit; }
+button { cursor:pointer; }
+button:focus-visible,input:focus-visible {
+  outline:2px solid var(--gold);
+  outline-offset:3px;
+}
+
+header {
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:#111119;
+  border-bottom:1px solid #262638;
+  padding:15px;
+  text-align:center;
+}
+
+.logo {
+  font-size:clamp(19px,4vw,26px);
+  font-weight:bold;
+  color:var(--red);
+}
+
+.subtitle {
+  color:var(--muted);
+  font-size:12px;
+  margin-top:7px;
+}
+
+main {
+  width:min(100% - 24px,1000px);
+  margin:auto;
+  padding:20px 0;
+}
+
+.control-box {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 10px 30px #0005;
+}
+
+.control-box h3 {
+  margin:0 0 12px;
+  color:var(--gold);
+  font-size:18px;
+}
+
+.description {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.9;
+}
+
+.input-row {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+input {
+  min-width:0;
+  width:100%;
+  background:#212133;
+  border:1px solid #383852;
+  color:#fff;
+  padding:12px;
+  border-radius:9px;
+}
+
+.input-row input {
+  flex:1 1 280px;
+}
+
+button {
+  border:0;
+  border-radius:9px;
+  padding:12px 16px;
+  background:var(--red);
+  color:#fff;
+  font-weight:bold;
+  transition:filter .2s,transform .2s;
+}
+
+button:hover { filter:brightness(1.12); }
+button:active { transform:scale(.98); }
+
+.secondary {
+  background:#303044;
+}
+
+.gold-btn {
+  background:#c99d00;
+  color:#111;
+}
+
+.green-btn {
+  background:#087b50;
+}
+
+.studio-screen {
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  min-height:220px;
+  background:#000;
+  border:2px solid #2a2a3d;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 15px 50px #0009;
+}
+
+#playerContainer {
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:#08080c;
+}
+
+#playerContainer iframe {
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+.waiting {
+  padding:20px;
+  text-align:center;
+  color:var(--muted);
+  line-height:1.9;
+}
+
+.ai-overlay {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:clamp(7px,2vw,16px);
+}
+
+.overlay-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:8px;
+}
+
+.channel-badge {
+  display:flex;
+  align-items:center;
+  gap:7px;
+  background:#000c;
+  border:1px solid var(--red);
+  padding:8px 10px;
+  border-radius:8px;
+  font-size:clamp(10px,2vw,14px);
+  font-weight:bold;
+  box-shadow:0 4px 15px #ff1e3840;
+}
+
+.live-dot {
+  width:9px;
+  height:9px;
+  flex-shrink:0;
+  background:var(--red);
+  border-radius:50%;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:.3; }
+}
+
+.score-board {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(5px,1.5vw,15px);
+  background:#0a0a0fea;
+  border:1px solid #45455e;
+  padding:8px 10px;
+  border-radius:9px;
+  font-size:clamp(10px,2vw,16px);
+  font-weight:bold;
+  backdrop-filter:blur(6px);
+}
+
+.team-name {
+  color:#fff;
+  max-width:100px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.match-score {
+  color:var(--gold);
+  font-size:clamp(15px,3vw,23px);
+  background:#1a1a26;
+  padding:4px 8px;
+  border-radius:6px;
+  white-space:nowrap;
+}
+
+.ai-status {
+  align-self:center;
+  max-width:100%;
+  text-align:center;
+  background:#000c;
+  color:#fff;
+  padding:7px 12px;
+  font-size:clamp(9px,1.7vw,12px);
+  border-radius:6px;
+  line-height:1.6;
+}
+
+.editor-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:14px;
+}
+
+.field label {
+  display:block;
+  margin-bottom:7px;
+  font-size:13px;
+  color:#ddd;
+}
+
+.field input {
+  width:100%;
+}
+
+.score-controls {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:15px;
+}
+
+.team-control {
+  padding:12px;
+  background:#10101a;
+  border:1px solid var(--border);
+  border-radius:10px;
+  text-align:center;
+}
+
+.team-control strong {
+  display:block;
+  margin-bottom:10px;
+  color:var(--gold);
+}
+
+.button-pair {
+  display:flex;
+  gap:8px;
+}
+
+.button-pair button {
+  flex:1;
+  padding:10px 5px;
+}
+
+.status-line {
+  margin-top:13px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.8;
+}
+
+.status-line strong { color:var(--green); }
+
+.feature-list {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+
+.feature {
+  background:#10101a;
+  border:1px solid var(--border);
+  padding:12px;
+  border-radius:9px;
+  font-size:12px;
+  line-height:1.8;
+}
+
+.feature b {
+  display:block;
+  color:var(--gold);
+  margin-bottom:3px;
+}
+
+footer {
+  text-align:center;
+  padding:22px 12px;
+  color:var(--muted);
+  font-size:12px;
+  border-top:1px solid #262638;
+  line-height:1.9;
+}
+
+@media(max-width:480px) {
+  main { width:calc(100% - 16px); padding-top:12px; }
+  .control-box { padding:13px; }
+  .overlay-top { gap:5px; }
+  .channel-badge { padding:6px; gap:4px; }
+  .score-board { gap:4px; padding:5px; }
+  .team-name { max-width:55px; }
+  .editor-grid { grid-template-columns:1fr; }
+  .studio-screen { min-height:190px; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    animation-duration:.01ms !important;
+    transition-duration:.01ms !important;
+  }
+}
 </style>
 </head>
+
 <body>
 
-<section id="loginPage" class="login">
-  <div class="login-card">
-    <div style="font-size:48px;text-align:center">🎬</div>
-    <h1>عبده أفلام</h1>
-    <p class="muted" style="text-align:center">أهلاً بك في عالم الأفلام والمسلسلات.</p>
-    <form id="loginForm">
-      <label for="username">اكتب اسمك للدخول</label>
-      <input id="username" maxlength="40" placeholder="اسم المستخدم" autocomplete="username" required>
-      <button class="full" type="submit">دخول إلى الموقع</button>
-    </form>
-    <div class="status">👑 اسما المالك في الواجهة: Abpo وabpo</div>
-    <p class="muted">تسجيل الدخول بالاسم وحده لا يحمي صلاحيات المالك بكلمة مرور.</p>
-  </div>
-</section>
-
-<section id="appPage" hidden>
 <header>
-  <div class="head">
-    <div class="logo">🎬 عبده أفلام</div>
-    <div id="profile" class="profile">
-      <div id="avatar" class="avatar">م</div>
-      <div>
-        <div id="displayName">مشاهد</div>
-        <div id="roleLabel" class="muted">حساب مشاهد</div>
-      </div>
-    </div>
-    <button id="logout" class="secondary">تسجيل الخروج</button>
-    <div class="search">
-      <input id="search" placeholder="ابحث عن فيلم أو مسلسل..." aria-label="البحث">
-      <button id="searchBtn">بحث</button>
-    </div>
-  </div>
+  <div class="logo">⚡ عبده سبورت الذكية</div>
+  <div class="subtitle">ABDO SPORT | AI LIVE STUDIO</div>
 </header>
 
 <main>
-  <section class="hero">
-    <h2 id="welcome">عالم الأفلام يبدأ هنا 🎬</h2>
-    <p id="welcomeText">اكتشف الأفلام والمسلسلات وابحث عن إعلانها الرسمي.</p>
-    <div id="ownerMessage"></div>
-  </section>
 
-  <h3 class="section-title">التصنيفات</h3>
-  <div class="filters">
-    <button class="chip active" data-kind="movie" data-mode="horror">👻 أفلام الرعب</button>
-    <button class="chip" data-kind="movie" data-mode="popular">🔥 أفلام مشهورة</button>
-    <button class="chip" data-kind="tv" data-mode="popular">📺 مسلسلات</button>
-  </div>
+  <section class="control-box">
+    <h3>📺 لوحة تشغيل البث الرياضي</h3>
+    <p class="description">
+      الصق رابط فيديو أو بث يوتيوب عام يسمح بالتضمين.
+      ستظهر هوية عبده سبورت ولوحة النتيجة فوق مشغل الفيديو.
+    </p>
 
-  <div id="resultCount" class="muted">جاري التحميل...</div>
-  <section id="grid" class="grid">
-    <div class="empty">جاري تحميل الأفلام...</div>
-  </section>
-
-  <section id="player" class="player">
-    <div id="screen" class="screen">
-      <div class="placeholder">🍿<br>اختر فيلمًا لعرض إعلانه الرسمي المتاح.</div>
-    </div>
-    <div class="player-info">
-      <h3 id="nowTitle">عبده أفلام</h3>
-      <div id="nowMeta" class="muted">لم يتم اختيار محتوى</div>
-      <div class="actions">
-        <button id="playTrailer" disabled>▶ تشغيل الإعلان الرسمي</button>
-        <button id="officialSearch" class="secondary" disabled>🔎 البحث عن مصدر رسمي</button>
-        <button id="stop" class="secondary">إيقاف المشغل</button>
+    <form id="streamForm">
+      <div class="input-row">
+        <input
+          id="youtubeUrl"
+          type="url"
+          inputmode="url"
+          placeholder="https://www.youtube.com/watch?v=..."
+          aria-label="رابط يوتيوب"
+          required
+        >
+        <button type="submit" id="loadStreamBtn">
+          ▶ تشغيل الاستوديو
+        </button>
       </div>
-      <div id="status" class="status">اختر فيلمًا أو مسلسلًا للبدء.</div>
+    </form>
+
+    <div class="status-line" id="streamStatus" role="status" aria-live="polite">
+      جاهز لاستقبال رابط يوتيوب.
     </div>
   </section>
 
-  <section class="settings">
-    <h3 class="section-title">إعدادات TMDB</h3>
-    <p class="muted">إذا رفضت الخدمة المفتاح الحالي، أدخل مفتاح API صالحًا من حسابك الرسمي على TMDB.</p>
-    <label for="apiKeyInput">مفتاح TMDB</label>
-    <input id="apiKeyInput" type="password" autocomplete="off" placeholder="مفتاح API">
-    <div class="actions">
-      <button id="saveKey">اختبار المفتاح</button>
-      <button id="loadAgain" class="secondary">إعادة تحميل المحتوى</button>
+  <section class="studio-screen" aria-label="استوديو عبده سبورت">
+    <div id="playerContainer">
+      <div class="waiting">
+        <div style="font-size:38px">⚽</div>
+        <strong>عبده سبورت</strong>
+        <div>الصق رابط البث واضغط تشغيل الاستوديو</div>
+      </div>
     </div>
-    <div id="keyStatus" class="status">المفتاح يجلب بيانات الأفلام، ولا يوفر ملفات الأفلام الكاملة.</div>
+
+    <div class="ai-overlay">
+      <div class="overlay-top">
+        <div class="channel-badge">
+          <span class="live-dot"></span>
+          <span>ABDO SPORT</span>
+        </div>
+
+        <div class="score-board" aria-label="نتيجة المباراة">
+          <span class="team-name" id="teamA">الأهلي</span>
+          <span class="match-score" id="scoreDisplay">0 - 0</span>
+          <span class="team-name" id="teamB">الزمالك</span>
+        </div>
+      </div>
+
+      <div class="ai-status" id="aiStatusMsg" aria-live="polite">
+        ⚡ استوديو عبده سبورت جاهز
+      </div>
+    </div>
   </section>
+
+  <section class="control-box" style="margin-top:18px">
+    <h3>🏆 إعدادات المباراة والنتيجة</h3>
+    <p class="description">
+      اكتب أسماء الفريقين وعدّل النتيجة يدويًا.
+      التعديلات ستظهر فورًا على شاشة الاستوديو.
+    </p>
+
+    <div class="editor-grid">
+      <div class="field">
+        <label for="teamAInput">اسم الفريق الأول</label>
+        <input id="teamAInput" maxlength="24" value="الأهلي">
+      </div>
+
+      <div class="field">
+        <label for="teamBInput">اسم الفريق الثاني</label>
+        <input id="teamBInput" maxlength="24" value="الزمالك">
+      </div>
+
+      <div class="field">
+        <label for="scoreAInput">أهداف الفريق الأول</label>
+        <input id="scoreAInput" type="number" min="0" max="99" step="1" value="0">
+      </div>
+
+      <div class="field">
+        <label for="scoreBInput">أهداف الفريق الثاني</label>
+        <input id="scoreBInput" type="number" min="0" max="99" step="1" value="0">
+      </div>
+    </div>
+
+    <div class="input-row">
+      <button type="button" id="applyMatchBtn" class="gold-btn">
+        ✓ تطبيق بيانات المباراة
+      </button>
+      <button type="button" id="resetScoreBtn" class="secondary">
+        ↺ تصفير النتيجة
+      </button>
+    </div>
+
+    <div class="score-controls">
+      <div class="team-control">
+        <strong id="teamALabel">الأهلي</strong>
+        <div class="button-pair">
+          <button type="button" id="minusA" class="secondary" aria-label="إنقاص هدف للفريق الأول">− هدف</button>
+          <button type="button" id="plusA" aria-label="إضافة هدف للفريق الأول">+ هدف</button>
+        </div>
+      </div>
+
+      <div class="team-control">
+        <strong id="teamBLabel">الزمالك</strong>
+        <div class="button-pair">
+          <button type="button" id="minusB" class="secondary" aria-label="إنقاص هدف للفريق الثاني">− هدف</button>
+          <button type="button" id="plusB" aria-label="إضافة هدف للفريق الثاني">+ هدف</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-line" id="scoreStatus" role="status" aria-live="polite">
+      النتيجة يدوية وليست متصلة ببيانات المباريات الحقيقية.
+    </div>
+  </section>
+
+  <section class="control-box">
+    <h3>✨ مميزات الاستوديو</h3>
+
+    <div class="feature-list">
+      <div class="feature">
+        <b>📡 مشغل يوتيوب</b>
+        دعم الروابط الشائعة للفيديوهات والبث المباشر القابل للتضمين.
+      </div>
+
+      <div class="feature">
+        <b>🏆 لوحة نتيجة</b>
+        أسماء الفرق والنتيجة تظهر فوق الفيديو.
+      </div>
+
+      <div class="feature">
+        <b>📱 تصميم متجاوب</b>
+        واجهة مناسبة للموبايل والكمبيوتر.
+      </div>
+
+      <div class="feature">
+        <b>⚡ تحكم سريع</b>
+        أزرار لإضافة الأهداف أو حذفها وتصفير النتيجة.
+      </div>
+    </div>
+
+    <p class="description">
+      تنبيه: هذه النسخة لا تكتشف الأهداف تلقائيًا، ولا تجلب نتائج المباريات
+      الحقيقية أو تنشئ بثًا تلفزيونيًا جديدًا. إنها واجهة استوديو تعرض
+      الفيديو المسموح بتضمينه مع رسومات القناة.
+    </p>
+  </section>
+
 </main>
 
-<footer>عبده أفلام © <span id="year"></span><br>تصميم وإدارة: عبدو 👑</footer>
-</section>
+<footer>
+  جميع الحقوق محفوظة · عبده سبورت ©
+  <span id="year"></span>
+  <br>
+  منصة رياضية مستقلة لعرض المحتوى المسموح بتضمينه.
+</footer>
 
 <script>
 "use strict";
 
-const TMDB = "https://api.themoviedb.org/3";
-const IMG = "https://image.tmdb.org/t/p/w500";
+const $ = (id) => document.getElementById(id);
 
-/* المفتاح الذي أرسلته. يمكن تغييره من إعدادات الصفحة. */
-let apiKey = "c951174983050c5514f7b6b15804f32c";
-let username = "";
-let kind = "movie";
-let mode = "horror";
-let currentItem = null;
-let catalogRequest = 0;
-let trailerRequest = 0;
-
-const $ = id => document.getElementById(id);
 $("year").textContent = new Date().getFullYear();
 
-function setStatus(message) {
-  $("status").textContent = message;
-}
+let goalsA = 0;
+let goalsB = 0;
 
-function titleOf(item) {
-  return item.title || item.name || item.original_title ||
-    item.original_name || "بدون عنوان";
-}
-
-function fallbackPoster(title) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450"><rect width="100%" height="100%" fill="#202029"/><text x="50%" y="45%" fill="#e50914" font-size="55" text-anchor="middle">🎬</text><text x="50%" y="60%" fill="white" font-size="18" text-anchor="middle">${String(title).slice(0,18).replace(/[<>&]/g,"")}</text></svg>`;
-  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
-}
-
-function posterURL(item) {
-  return item.poster_path ? IMG + item.poster_path : fallbackPoster(titleOf(item));
-}
-
-async function tmdb(path, params = {}) {
-  if (!apiKey.trim()) {
-    throw new Error("أدخل مفتاح TMDB صالحًا في الإعدادات.");
-  }
-
-  const url = new URL(TMDB + path);
-  url.searchParams.set("api_key", apiKey.trim());
-  url.searchParams.set("language", "ar-SA");
-
-  Object.entries(params).forEach(([key, value]) => {
-    url.searchParams.set(key, String(value));
-  });
-
-  let response;
+function getYouTubeVideoId(rawUrl) {
   try {
-    response = await fetch(url);
-  } catch {
-    throw new Error("تعذر الاتصال بخدمة TMDB. تحقق من الإنترنت.");
-  }
+    const url = new URL(rawUrl.trim());
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
 
-  const data = await response.json().catch(() => ({}));
+    let id = "";
 
-  if (!response.ok || data.success === false) {
-    if (response.status === 401 || data.status_code === 7) {
-      throw new Error("مفتاح TMDB غير صالح أو غير مفعّل. راجع المفتاح من حسابك.");
-    }
-    if (response.status === 403) {
-      throw new Error("الخدمة رفضت الطلب. تحقق من الصلاحيات وإعدادات المفتاح.");
-    }
-    if (response.status === 429) {
-      throw new Error("طلبات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.");
-    }
-    throw new Error(data.status_message || "تعذر تحميل البيانات من TMDB.");
-  }
-
-  return data;
-}
-
-/* تسجيل الدخول: الاسمان متطابقان دون حساسية لحالة الأحرف.
-   هذه صلاحية شكلية في الواجهة وليست مصادقة آمنة. */
-$("loginForm").addEventListener("submit", event => {
-  event.preventDefault();
-
-  username = $("username").value.trim();
-  if (!username) return;
-
-  const isOwner = username.toLowerCase() === "abpo";
-
-  $("loginPage").hidden = true;
-  $("appPage").hidden = false;
-  $("profile").classList.toggle("owner", isOwner);
-  $("avatar").textContent = [...username][0] || "م";
-
-  if (isOwner) {
-    $("displayName").replaceChildren(
-      document.createTextNode(username + " "),
-      Object.assign(document.createElement("span"), {
-        className:"owner-name",
-        textContent:"👑"
-      }),
-      Object.assign(document.createElement("span"), {
-        className:"verified",
-        textContent:" ✓"
-      })
-    );
-    $("roleLabel").textContent = "مالك التطبيق";
-    $("welcome").textContent = "أهلاً بالمالك " + username + " 👑";
-    $("welcomeText").textContent = "مرحبًا بك في عبده أفلام.";
-    $("ownerMessage").textContent = "التاج ظاهر في الواجهة.";
-    $("hero").style.borderColor = "#8b6c26";
-  } else {
-    $("displayName").textContent = username;
-    $("roleLabel").textContent = "حساب مشاهد";
-    $("welcome").textContent = "أهلاً بك في عبده أفلام 🎬";
-    $("welcomeText").textContent = "اكتشف الأفلام والمسلسلات.";
-    $("ownerMessage").textContent = "";
-    $("hero").style.borderColor = "";
-  }
-
-  loadCatalog();
-});
-
-$("logout").addEventListener("click", () => {
-  catalogRequest++;
-  trailerRequest++;
-  username = "";
-  currentItem = null;
-  $("appPage").hidden = true;
-  $("loginPage").hidden = false;
-  $("username").value = "";
-  $("search").value = "";
-  stopPlayer();
-});
-
-/* تحميل الأفلام والمسلسلات */
-async function loadCatalog(query = $("search").value.trim()) {
-  const request = ++catalogRequest;
-
-  $("grid").replaceChildren();
-  const loading = document.createElement("div");
-  loading.className = "empty";
-  loading.textContent = "جاري تحميل المحتوى...";
-  $("grid").append(loading);
-
-  $("resultCount").textContent = "جاري البحث...";
-  setStatus("جاري الاتصال بخدمة بيانات الأفلام...");
-
-  try {
-    let path;
-    const params = {page:1};
-
-    if (query) {
-      path = "/search/" + kind;
-      params.query = query;
-      params.include_adult = false;
-    } else if (kind === "movie" && mode === "horror") {
-      path = "/discover/movie";
-      params.with_genres = 27;
-      params.sort_by = "popularity.desc";
-      params.include_adult = false;
-    } else if (kind === "movie") {
-      path = "/movie/popular";
+    if (host === "youtu.be") {
+      id = url.pathname.split("/").filter(Boolean)[0] || "";
+    } else if (
+      host === "youtube.com" ||
+      host === "m.youtube.com" ||
+      host === "youtube-nocookie.com"
+    ) {
+      if (url.pathname === "/watch") {
+        id = url.searchParams.get("v") || "";
+      } else {
+        const match = url.pathname.match(
+          /^\/(?:embed|live|shorts)\/([a-zA-Z0-9_-]{11})(?:\/|$)/
+        );
+        if (match) id = match[1];
+      }
     } else {
-      path = "/tv/popular";
+      return "";
     }
 
-    const data = await tmdb(path, params);
-    if (request !== catalogRequest) return;
-
-    render(data.results || []);
-    setStatus("تم تحميل بيانات المحتوى. اختر عنوانًا لعرض الإعلان المتاح.");
-  } catch (error) {
-    if (request !== catalogRequest) return;
-    $("grid").replaceChildren();
-
-    const message = document.createElement("div");
-    message.className = "empty";
-    message.textContent = error.message;
-    $("grid").append(message);
-    $("resultCount").textContent = "تعذر تحميل النتائج";
-    setStatus(error.message);
+    return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
+  } catch {
+    return "";
   }
 }
 
-function render(items) {
-  $("grid").replaceChildren();
-  $("resultCount").textContent = "عدد النتائج: " + items.length;
+function loadStream(rawUrl) {
+  const videoId = getYouTubeVideoId(rawUrl);
 
-  if (!items.length) {
-    const empty = document.createElement("div");
-    empty.className = "empty";
-    empty.textContent = "لا توجد نتائج مطابقة. جرّب اسمًا آخر.";
-    $("grid").append(empty);
+  if (!videoId) {
+    $("streamStatus").textContent =
+      "تعذر التعرّف على الرابط. تأكد أنه رابط يوتيوب صحيح.";
     return;
   }
 
-  for (const item of items) {
-    const card = document.createElement("article");
-    card.className = "card";
+  const container = $("playerContainer");
+  container.replaceChildren();
 
-    const img = document.createElement("img");
-    img.className = "poster";
-    img.loading = "lazy";
-    img.alt = titleOf(item);
-    img.src = posterURL(item);
-    img.onerror = () => {
-      img.onerror = null;
-      img.src = fallbackPoster(titleOf(item));
-    };
+  const iframe = document.createElement("iframe");
 
-    const info = document.createElement("div");
-    info.className = "info";
-
-    const title = document.createElement("div");
-    title.className = "title";
-    title.textContent = titleOf(item);
-
-    const year = (item.release_date || item.first_air_date || "").slice(0,4);
-    const meta = document.createElement("div");
-    meta.className = "meta";
-    meta.textContent =
-      (kind === "movie" ? "فيلم" : "مسلسل") +
-      " · ⭐ " + Number(item.vote_average || 0).toFixed(1) +
-      (year ? " · " + year : "");
-
-    info.append(title, meta);
-
-    const actions = document.createElement("div");
-    actions.className = "card-actions";
-
-    const details = document.createElement("button");
-    details.className = "small";
-    details.textContent = "التفاصيل والإعلان";
-    details.addEventListener("click", () => selectItem(item));
-
-    const searchButton = document.createElement("button");
-    searchButton.className = "small secondary";
-    searchButton.textContent = "البحث عن مصدر رسمي";
-    searchButton.addEventListener("click", () => {
-      selectItem(item);
-      openOfficialSearch(item);
-    });
-
-    actions.append(details, searchButton);
-    card.append(img, info, actions);
-    $("grid").append(card);
-  }
-}
-
-function selectItem(item) {
-  currentItem = item;
-  $("nowTitle").textContent = titleOf(item);
-  $("nowMeta").textContent =
-    (kind === "movie" ? "فيلم" : "مسلسل") +
-    " · " + (item.release_date || item.first_air_date || "التاريخ غير متاح");
-
-  $("playTrailer").disabled = false;
-  $("officialSearch").disabled = false;
-  stopPlayer(false);
-  setStatus("اضغط على تشغيل الإعلان الرسمي.");
-  $("player").scrollIntoView({behavior:"smooth",block:"start"});
-}
-
-/* تشغيل إعلان متاح عبر YouTube */
-async function playTrailer() {
-  if (!currentItem) return;
-
-  const request = ++trailerRequest;
-  $("playTrailer").disabled = true;
-  setStatus("جاري البحث عن الإعلان الرسمي...");
-
-  try {
-    const path = (kind === "movie" ? "/movie/" : "/tv/") +
-      encodeURIComponent(currentItem.id) + "/videos";
-
-    const data = await tmdb(path);
-    if (request !== trailerRequest) return;
-
-    const videos = data.results || [];
-    const trailer =
-      videos.find(v => v.site === "YouTube" && v.key &&
-        v.type === "Trailer" && v.official) ||
-      videos.find(v => v.site === "YouTube" && v.key &&
-        v.type === "Trailer") ||
-      videos.find(v => v.site === "YouTube" && v.key);
-
-    if (!trailer) {
-      setStatus("لم يتوفر إعلان من YouTube لهذا العنوان في بيانات TMDB. جرّب البحث عن مصدر رسمي.");
-      return;
-    }
-
-    const frame = document.createElement("iframe");
-    frame.title = "إعلان " + titleOf(currentItem);
-    frame.src = "https://www.youtube-nocookie.com/embed/" +
-      encodeURIComponent(trailer.key) + "?autoplay=1&rel=0";
-    frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-    frame.allowFullscreen = true;
-    frame.referrerPolicy = "strict-origin-when-cross-origin";
-
-    $("screen").replaceChildren(frame);
-    setStatus("تم فتح الإعلان. إذا رفض YouTube التضمين، افتحه من المصدر الأصلي.");
-  } catch (error) {
-    if (request !== trailerRequest) return;
-    setStatus(error.message);
-  } finally {
-    if (request === trailerRequest) $("playTrailer").disabled = false;
-  }
-}
-
-function openOfficialSearch(item) {
-  const type = kind === "movie" ? "فيلم" : "مسلسل";
-  const query = encodeURIComponent(titleOf(item) + " " + type + " مشاهدة رسمية");
-  window.open(
-    "https://www.google.com/search?q=" + query,
-    "_blank",
-    "noopener,noreferrer"
-  );
-}
-
-function stopPlayer(showMessage = true) {
-  trailerRequest++;
-
-  const placeholder = document.createElement("div");
-  placeholder.className = "placeholder";
-  placeholder.textContent = "🍿 اختر عنوانًا لعرض الإعلان الرسمي المتاح.";
-  $("screen").replaceChildren(placeholder);
-
-  if (showMessage) setStatus("تم إيقاف المشغل.");
-}
-
-$("searchBtn").addEventListener("click", () => loadCatalog());
-
-$("search").addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    loadCatalog();
-  }
-});
-
-document.querySelectorAll(".chip").forEach(button => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll(".chip").forEach(b => b.classList.remove("active"));
-    button.classList.add("active");
-    kind = button.dataset.kind;
-    mode = button.dataset.mode;
-    loadCatalog();
+  // يبدأ الفيديو مكتومًا لتقليل مشكلات حظر التشغيل التلقائي.
+  const params = new URLSearchParams({
+    autoplay: "1",
+    mute: "1",
+    playsinline: "1",
+    rel: "0"
   });
+
+  iframe.src =
+    "https://www.youtube.com/embed/" +
+    videoId + "?" + params.toString();
+
+  iframe.title = "مشغل عبده سبورت";
+  iframe.allow =
+    "accelerometer; autoplay; clipboard-write; encrypted-media; " +
+    "gyroscope; picture-in-picture; web-share";
+  iframe.allowFullscreen = true;
+  iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+  container.appendChild(iframe);
+
+  $("streamStatus").textContent =
+    "تم تجهيز مشغل يوتيوب. إذا لم يعمل الفيديو، فقد يكون التضمين غير مسموح.";
+  $("aiStatusMsg").textContent =
+    "⚡ تم تحميل مشغل عبده سبورت";
+}
+
+$("streamForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  loadStream($("youtubeUrl").value);
 });
 
-$("playTrailer").addEventListener("click", playTrailer);
+function getSafeScore(id) {
+  const value = Number($(id).value);
 
-$("officialSearch").addEventListener("click", () => {
-  if (currentItem) openOfficialSearch(currentItem);
-});
+  if (!Number.isInteger(value) || value < 0 || value > 99) {
+    return null;
+  }
 
-$("stop").addEventListener("click", () => stopPlayer());
+  return value;
+}
 
-$("saveKey").addEventListener("click", async () => {
-  const candidate = $("apiKeyInput").value.trim();
+function updateScoreDisplay() {
+  $("scoreDisplay").textContent = goalsA + " - " + goalsB;
+  $("scoreAInput").value = goalsA;
+  $("scoreBInput").value = goalsB;
+}
 
-  if (!candidate) {
-    $("keyStatus").textContent = "اكتب مفتاح TMDB أولًا.";
+function applyMatchData() {
+  const nameA = $("teamAInput").value.trim();
+  const nameB = $("teamBInput").value.trim();
+  const scoreA = getSafeScore("scoreAInput");
+  const scoreB = getSafeScore("scoreBInput");
+
+  if (!nameA || !nameB) {
+    $("scoreStatus").textContent = "اكتب اسم الفريقين أولًا.";
     return;
   }
 
-  $("saveKey").disabled = true;
-  $("keyStatus").textContent = "جاري اختبار المفتاح...";
-
-  const oldKey = apiKey;
-  apiKey = candidate;
-
-  try {
-    const data = await tmdb("/movie/popular", {page:1});
-    if (!Array.isArray(data.results)) {
-      throw new Error("استجابة الخدمة غير متوقعة.");
-    }
-
-    $("keyStatus").textContent = "المفتاح صالح للطلب التجريبي. جاري تحميل المحتوى.";
-    loadCatalog();
-  } catch (error) {
-    apiKey = oldKey;
-    $("keyStatus").textContent = error.message;
-  } finally {
-    $("saveKey").disabled = false;
+  if (scoreA === null || scoreB === null) {
+    $("scoreStatus").textContent =
+      "أدخل نتيجة صحيحة من صفر إلى 99 لكل فريق.";
+    return;
   }
+
+  goalsA = scoreA;
+  goalsB = scoreB;
+
+  $("teamA").textContent = nameA;
+  $("teamB").textContent = nameB;
+  $("teamALabel").textContent = nameA;
+  $("teamBLabel").textContent = nameB;
+
+  updateScoreDisplay();
+
+  $("scoreStatus").textContent = "تم تطبيق أسماء الفريقين والنتيجة.";
+  $("aiStatusMsg").textContent = "🏆 تم تحديث بيانات المباراة";
+}
+
+$("applyMatchBtn").addEventListener("click", applyMatchData);
+
+function changeGoal(team, amount) {
+  if (team === "A") {
+    goalsA = Math.max(0, Math.min(99, goalsA + amount));
+  } else {
+    goalsB = Math.max(0, Math.min(99, goalsB + amount));
+  }
+
+  updateScoreDisplay();
+
+  $("scoreStatus").textContent =
+    "تم تعديل النتيجة يدويًا. لم يتم التحقق من نتيجة مباراة حقيقية.";
+
+  $("aiStatusMsg").textContent = "🏆 تم تحديث لوحة النتيجة";
+}
+
+$("plusA").addEventListener("click", () => changeGoal("A", 1));
+$("minusA").addEventListener("click", () => changeGoal("A", -1));
+$("plusB").addEventListener("click", () => changeGoal("B", 1));
+$("minusB").addEventListener("click", () => changeGoal("B", -1));
+
+$("resetScoreBtn").addEventListener("click", () => {
+  goalsA = 0;
+  goalsB = 0;
+  updateScoreDisplay();
+
+  $("scoreStatus").textContent = "تم تصفير النتيجة.";
+  $("aiStatusMsg").textContent = "⚽ النتيجة أصبحت صفرًا للفريقين";
 });
 
-$("loadAgain").addEventListener("click", () => loadCatalog());
+// تحديث أسماء الفرق عند تطبيق الإعدادات فقط.
+updateScoreDisplay();
 </script>
+
 </body>
 </html>
