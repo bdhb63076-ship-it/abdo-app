@@ -7,63 +7,64 @@
 <meta name="theme-color" content="#09090d">
 <title>عبده أفلام | Abdo Movies</title>
 <style>
-:root{--bg:#09090d;--card:#191921;--red:#e50914;--gold:#ffd54a;--muted:#aaa;--line:#30303a}
+:root{--bg:#09090d;--card:#17171f;--red:#e50914;--gold:#ffd54a;--muted:#aaa;--line:#30303a}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:#fff;font-family:Tahoma,Arial,sans-serif}
 button,input{font:inherit}
-button{cursor:pointer;border:0;border-radius:9px;padding:11px 14px;background:var(--red);color:white}
-button:disabled{opacity:.5;cursor:wait}
-input{width:100%;min-width:0;padding:13px;background:#24242d;border:1px solid #40404b;border-radius:9px;color:white}
+button{cursor:pointer;border:0;border-radius:9px;padding:12px;background:var(--red);color:white}
+button:disabled{opacity:.5;cursor:not-allowed}
+input{width:100%;min-width:0;padding:13px;background:#24242d;border:1px solid #41414c;border-radius:9px;color:white}
 [hidden]{display:none!important}
 .login{min-height:100vh;display:grid;place-items:center;padding:18px;background:radial-gradient(ellipse at top,#461019,#09090d 70%)}
-.login-card{width:100%;max-width:420px;background:#17171f;border:1px solid #39303a;border-radius:18px;padding:25px;box-shadow:0 15px 60px #0008}
-.login-card h1{text-align:center;color:#ff2632}
-.login-card label{display:block;margin:18px 0 8px}
+.login-card{width:100%;max-width:430px;background:var(--card);border:1px solid #39303a;border-radius:20px;padding:25px}
+.login-card h1{text-align:center;color:#ff2632;font-size:32px}
+.login-card label,.settings label{display:block;margin:15px 0 8px}
 .full{width:100%;margin-top:12px}
 header{position:sticky;top:0;z-index:5;background:#111116;border-bottom:1px solid var(--line);padding:12px}
-.head{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.logo{font-size:22px;font-weight:bold;color:#ff2632}
-.profile{display:flex;align-items:center;gap:9px}
+.head{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-size:21px;font-weight:bold;color:#ff2632}
+.profile{display:flex;align-items:center;gap:9px;margin-inline-start:auto}
 .avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#393943;font-weight:bold}
 .owner .avatar{background:linear-gradient(135deg,#ffe77c,#a65a00);color:#241600}
 .owner-name{color:var(--gold);font-weight:bold}
-.verified{color:#36adff}
-.search{display:flex;gap:7px;flex:1;max-width:430px}
+.verified{color:#39adff}
+.muted{color:var(--muted);font-size:13px;line-height:1.9}
+.search{display:flex;gap:8px;width:100%}
+.search button{flex-shrink:0}
 main{max-width:1200px;margin:auto;padding:15px}
-.hero{padding:24px 18px;margin-bottom:20px;border:1px solid #46222b;border-radius:15px;background:linear-gradient(120deg,#480d17,#20121c,#101018)}
-.hero h1{font-size:clamp(24px,5vw,34px);margin:0 0 10px}
+.hero{padding:22px 18px;margin-bottom:20px;border:1px solid #46222b;border-radius:15px;background:linear-gradient(120deg,#480d17,#20121c,#101018)}
+.hero h2{border:0;padding:0;margin:0 0 10px;font-size:clamp(24px,5vw,34px)}
 p{line-height:1.8}
-.muted{color:var(--muted);font-size:13px;line-height:1.8}
-h2{font-size:20px;border-right:4px solid var(--red);padding-right:10px;margin:26px 0 15px}
-.filters{display:flex;gap:8px;overflow:auto;padding-bottom:12px}
+h3.section-title{font-size:19px;border-right:4px solid var(--red);padding-right:10px;margin:25px 0 14px}
+.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px}
 .chip{white-space:nowrap;background:#262630;border:1px solid #393943}
 .chip.active{background:#fff;color:#111}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:13px;margin-top:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;margin-top:12px}
 .card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .card:hover{border-color:var(--red)}
-.poster{width:100%;aspect-ratio:2/3;object-fit:cover;background:#222;display:block}
+.poster{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;background:#222}
 .info{padding:10px}
 .title{font-size:14px;font-weight:bold;line-height:1.7}
 .meta{font-size:12px;color:var(--muted);margin-top:6px}
 .card-actions{padding:0 9px 10px;display:grid;gap:7px}
 .small{font-size:12px;padding:10px}
 .secondary{background:#30303a}
-.empty{grid-column:1/-1;padding:25px;text-align:center;color:#bbb;line-height:2}
-.player{margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#15151c}
+.player{margin-top:25px;background:#15151c;border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .screen{aspect-ratio:16/9;background:#000;display:grid;place-items:center}
-.screen iframe,.screen video{width:100%;height:100%;border:0;background:#000}
+.screen iframe{width:100%;height:100%;border:0}
 .placeholder{text-align:center;padding:20px;color:#bbb;line-height:2}
 .player-info{padding:14px}
 .player-info h3{margin:0 0 8px;overflow-wrap:anywhere}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.status{padding:12px;background:#24242c;border-radius:8px;margin-top:10px;font-size:13px;line-height:1.8;overflow-wrap:anywhere}
+.status{padding:12px;background:#24242c;border-radius:8px;margin-top:10px;font-size:13px;line-height:1.9;overflow-wrap:anywhere}
+.empty{grid-column:1/-1;padding:24px;text-align:center;color:#bbb;line-height:2;background:#17171f;border-radius:10px}
+.settings{margin-top:25px;padding:15px;border:1px solid var(--line);border-radius:12px;background:#15151c}
 footer{text-align:center;color:#888;border-top:1px solid var(--line);padding:25px;margin-top:35px;font-size:12px}
-@media(max-width:480px){.logo{font-size:19px}.search{flex-basis:100%;max-width:none}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+@media(max-width:480px){.head{gap:10px}.search{flex-basis:100%}main{padding:11px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:18px}}
 </style>
 </head>
 <body>
 
-<!-- الصفحة الأولى -->
 <section id="loginPage" class="login">
   <div class="login-card">
     <div style="font-size:48px;text-align:center">🎬</div>
@@ -71,15 +72,14 @@ footer{text-align:center;color:#888;border-top:1px solid var(--line);padding:25p
     <p class="muted" style="text-align:center">أهلاً بك في عالم الأفلام والمسلسلات.</p>
     <form id="loginForm">
       <label for="username">اكتب اسمك للدخول</label>
-      <input id="username" maxlength="40" autocomplete="username" placeholder="اسم المستخدم" required>
+      <input id="username" maxlength="40" placeholder="اسم المستخدم" autocomplete="username" required>
       <button class="full" type="submit">دخول إلى الموقع</button>
     </form>
-    <div class="status">👑 اسما المالك: Abpo وabpo</div>
-    <p class="muted">تسجيل الدخول بالاسم فقط لا يحمي حساب المالك بكلمة مرور.</p>
+    <div class="status">👑 اسما المالك في الواجهة: Abpo وabpo</div>
+    <p class="muted">تسجيل الدخول بالاسم وحده لا يحمي صلاحيات المالك بكلمة مرور.</p>
   </div>
 </section>
 
-<!-- الصفحة الثانية -->
 <section id="appPage" hidden>
 <header>
   <div class="head">
@@ -93,33 +93,34 @@ footer{text-align:center;color:#888;border-top:1px solid var(--line);padding:25p
     </div>
     <button id="logout" class="secondary">تسجيل الخروج</button>
     <div class="search">
-      <input id="search" placeholder="ابحث عن فيلم أو مسلسل...">
+      <input id="search" placeholder="ابحث عن فيلم أو مسلسل..." aria-label="البحث">
       <button id="searchBtn">بحث</button>
     </div>
   </div>
 </header>
 
 <main>
-  <section class="hero" id="hero">
-    <h1 id="welcome">أهلاً بك في عبده أفلام 🎬</h1>
-    <p id="welcomeText">اكتشف الأفلام والمسلسلات الجديدة.</p>
+  <section class="hero">
+    <h2 id="welcome">عالم الأفلام يبدأ هنا 🎬</h2>
+    <p id="welcomeText">اكتشف الأفلام والمسلسلات وابحث عن إعلانها الرسمي.</p>
     <div id="ownerMessage"></div>
   </section>
 
+  <h3 class="section-title">التصنيفات</h3>
   <div class="filters">
     <button class="chip active" data-kind="movie" data-mode="horror">👻 أفلام الرعب</button>
     <button class="chip" data-kind="movie" data-mode="popular">🔥 أفلام مشهورة</button>
     <button class="chip" data-kind="tv" data-mode="popular">📺 مسلسلات</button>
   </div>
 
-  <div id="resultCount" class="muted">جاري تحميل المحتوى...</div>
+  <div id="resultCount" class="muted">جاري التحميل...</div>
   <section id="grid" class="grid">
     <div class="empty">جاري تحميل الأفلام...</div>
   </section>
 
   <section id="player" class="player">
     <div id="screen" class="screen">
-      <div class="placeholder">🍿<br>اختر فيلمًا أو مسلسلًا لعرض التفاصيل والإعلان الرسمي.</div>
+      <div class="placeholder">🍿<br>اختر فيلمًا لعرض إعلانه الرسمي المتاح.</div>
     </div>
     <div class="player-info">
       <h3 id="nowTitle">عبده أفلام</h3>
@@ -129,10 +130,23 @@ footer{text-align:center;color:#888;border-top:1px solid var(--line);padding:25p
         <button id="officialSearch" class="secondary" disabled>🔎 البحث عن مصدر رسمي</button>
         <button id="stop" class="secondary">إيقاف المشغل</button>
       </div>
-      <div id="status" class="status">جاهز للبحث عن المحتوى.</div>
+      <div id="status" class="status">اختر فيلمًا أو مسلسلًا للبدء.</div>
     </div>
   </section>
+
+  <section class="settings">
+    <h3 class="section-title">إعدادات TMDB</h3>
+    <p class="muted">إذا رفضت الخدمة المفتاح الحالي، أدخل مفتاح API صالحًا من حسابك الرسمي على TMDB.</p>
+    <label for="apiKeyInput">مفتاح TMDB</label>
+    <input id="apiKeyInput" type="password" autocomplete="off" placeholder="مفتاح API">
+    <div class="actions">
+      <button id="saveKey">اختبار المفتاح</button>
+      <button id="loadAgain" class="secondary">إعادة تحميل المحتوى</button>
+    </div>
+    <div id="keyStatus" class="status">المفتاح يجلب بيانات الأفلام، ولا يوفر ملفات الأفلام الكاملة.</div>
+  </section>
 </main>
+
 <footer>عبده أفلام © <span id="year"></span><br>تصميم وإدارة: عبدو 👑</footer>
 </section>
 
@@ -141,36 +155,30 @@ footer{text-align:center;color:#888;border-top:1px solid var(--line);padding:25p
 
 const TMDB = "https://api.themoviedb.org/3";
 const IMG = "https://image.tmdb.org/t/p/w500";
-const API_KEY = "c951174983050c5514f7b6b15804f32c";
 
-const $ = id => document.getElementById(id);
+/* المفتاح الذي أرسلته. يمكن تغييره من إعدادات الصفحة. */
+let apiKey = "c951174983050c5514f7b6b15804f32c";
 let username = "";
-let isOwner = false;
 let kind = "movie";
 let mode = "horror";
 let currentItem = null;
 let catalogRequest = 0;
 let trailerRequest = 0;
 
+const $ = id => document.getElementById(id);
 $("year").textContent = new Date().getFullYear();
+
+function setStatus(message) {
+  $("status").textContent = message;
+}
 
 function titleOf(item) {
   return item.title || item.name || item.original_title ||
     item.original_name || "بدون عنوان";
 }
 
-function escapeHTML(s) {
-  return String(s ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[c]);
-}
-
-function setStatus(text) {
-  $("status").textContent = text;
-}
-
 function fallbackPoster(title) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450"><rect width="100%" height="100%" fill="#202029"/><text x="50%" y="43%" fill="#e50914" font-size="55" text-anchor="middle">🎬</text><text x="50%" y="60%" fill="white" font-size="18" text-anchor="middle">${escapeHTML(title.slice(0,20))}</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450"><rect width="100%" height="100%" fill="#202029"/><text x="50%" y="45%" fill="#e50914" font-size="55" text-anchor="middle">🎬</text><text x="50%" y="60%" fill="white" font-size="18" text-anchor="middle">${String(title).slice(0,18).replace(/[<>&]/g,"")}</text></svg>`;
   return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
 }
 
@@ -179,53 +187,80 @@ function posterURL(item) {
 }
 
 async function tmdb(path, params = {}) {
-  const url = new URL(TMDB + path);
-  url.searchParams.set("api_key", API_KEY);
-  url.searchParams.set("language", "ar-SA");
-  for (const [key,value] of Object.entries(params)) {
-    url.searchParams.set(key, value);
+  if (!apiKey.trim()) {
+    throw new Error("أدخل مفتاح TMDB صالحًا في الإعدادات.");
   }
 
-  const response = await fetch(url);
-  if (!response.ok) {
-    if (response.status === 401) {
-      throw new Error("مفتاح TMDB غير صالح أو غير مفعّل.");
+  const url = new URL(TMDB + path);
+  url.searchParams.set("api_key", apiKey.trim());
+  url.searchParams.set("language", "ar-SA");
+
+  Object.entries(params).forEach(([key, value]) => {
+    url.searchParams.set(key, String(value));
+  });
+
+  let response;
+  try {
+    response = await fetch(url);
+  } catch {
+    throw new Error("تعذر الاتصال بخدمة TMDB. تحقق من الإنترنت.");
+  }
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok || data.success === false) {
+    if (response.status === 401 || data.status_code === 7) {
+      throw new Error("مفتاح TMDB غير صالح أو غير مفعّل. راجع المفتاح من حسابك.");
+    }
+    if (response.status === 403) {
+      throw new Error("الخدمة رفضت الطلب. تحقق من الصلاحيات وإعدادات المفتاح.");
     }
     if (response.status === 429) {
-      throw new Error("طلبات كثيرة. انتظر قليلًا ثم أعد المحاولة.");
+      throw new Error("طلبات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.");
     }
-    throw new Error("تعذر تحميل البيانات. تحقق من الإنترنت ومفتاح TMDB.");
+    throw new Error(data.status_message || "تعذر تحميل البيانات من TMDB.");
   }
-  return response.json();
+
+  return data;
 }
 
-/* تسجيل الدخول */
+/* تسجيل الدخول: الاسمان متطابقان دون حساسية لحالة الأحرف.
+   هذه صلاحية شكلية في الواجهة وليست مصادقة آمنة. */
 $("loginForm").addEventListener("submit", event => {
   event.preventDefault();
+
   username = $("username").value.trim();
   if (!username) return;
 
-  isOwner = username.toLowerCase() === "abpo";
+  const isOwner = username.toLowerCase() === "abpo";
+
   $("loginPage").hidden = true;
   $("appPage").hidden = false;
-
   $("profile").classList.toggle("owner", isOwner);
   $("avatar").textContent = [...username][0] || "م";
-  $("displayName").textContent = username;
 
   if (isOwner) {
-    $("displayName").innerHTML =
-      escapeHTML(username) + ' <span class="owner-name">👑</span> ' +
-      '<span class="verified" title="توثيق الواجهة">✓</span>';
+    $("displayName").replaceChildren(
+      document.createTextNode(username + " "),
+      Object.assign(document.createElement("span"), {
+        className:"owner-name",
+        textContent:"👑"
+      }),
+      Object.assign(document.createElement("span"), {
+        className:"verified",
+        textContent:" ✓"
+      })
+    );
     $("roleLabel").textContent = "مالك التطبيق";
-    $("welcome").textContent = "أهلاً بالمالك Abpo 👑";
-    $("welcomeText").textContent = "مرحباً بك في واجهة مالك عبده أفلام.";
-    $("ownerMessage").textContent = "👑 التاج الملكي وعلامة التوثيق مفعّلان في الواجهة.";
+    $("welcome").textContent = "أهلاً بالمالك " + username + " 👑";
+    $("welcomeText").textContent = "مرحبًا بك في عبده أفلام.";
+    $("ownerMessage").textContent = "التاج ظاهر في الواجهة.";
     $("hero").style.borderColor = "#8b6c26";
   } else {
+    $("displayName").textContent = username;
     $("roleLabel").textContent = "حساب مشاهد";
     $("welcome").textContent = "أهلاً بك في عبده أفلام 🎬";
-    $("welcomeText").textContent = "اكتشف الأفلام والمسلسلات وابحث عن عناوينك المفضلة.";
+    $("welcomeText").textContent = "اكتشف الأفلام والمسلسلات.";
     $("ownerMessage").textContent = "";
     $("hero").style.borderColor = "";
   }
@@ -237,7 +272,6 @@ $("logout").addEventListener("click", () => {
   catalogRequest++;
   trailerRequest++;
   username = "";
-  isOwner = false;
   currentItem = null;
   $("appPage").hidden = true;
   $("loginPage").hidden = false;
@@ -246,24 +280,32 @@ $("logout").addEventListener("click", () => {
   stopPlayer();
 });
 
-/* تحميل الكتالوج */
+/* تحميل الأفلام والمسلسلات */
 async function loadCatalog(query = $("search").value.trim()) {
   const request = ++catalogRequest;
-  $("grid").innerHTML = '<div class="empty">جاري تحميل المحتوى...</div>';
+
+  $("grid").replaceChildren();
+  const loading = document.createElement("div");
+  loading.className = "empty";
+  loading.textContent = "جاري تحميل المحتوى...";
+  $("grid").append(loading);
+
   $("resultCount").textContent = "جاري البحث...";
-  setStatus("جاري الاتصال بقاعدة بيانات الأفلام...");
+  setStatus("جاري الاتصال بخدمة بيانات الأفلام...");
 
   try {
     let path;
-    const params = {include_adult:"false",page:"1"};
+    const params = {page:1};
 
     if (query) {
       path = "/search/" + kind;
       params.query = query;
+      params.include_adult = false;
     } else if (kind === "movie" && mode === "horror") {
       path = "/discover/movie";
-      params.with_genres = "27";
+      params.with_genres = 27;
       params.sort_by = "popularity.desc";
+      params.include_adult = false;
     } else if (kind === "movie") {
       path = "/movie/popular";
     } else {
@@ -272,24 +314,31 @@ async function loadCatalog(query = $("search").value.trim()) {
 
     const data = await tmdb(path, params);
     if (request !== catalogRequest) return;
+
     render(data.results || []);
-    setStatus("تم تحميل بيانات المحتوى. اختر عنوانًا لعرض التفاصيل.");
+    setStatus("تم تحميل بيانات المحتوى. اختر عنوانًا لعرض الإعلان المتاح.");
   } catch (error) {
     if (request !== catalogRequest) return;
-    $("grid").innerHTML =
-      '<div class="empty">' + escapeHTML(error.message) + '</div>';
+    $("grid").replaceChildren();
+
+    const message = document.createElement("div");
+    message.className = "empty";
+    message.textContent = error.message;
+    $("grid").append(message);
     $("resultCount").textContent = "تعذر تحميل النتائج";
     setStatus(error.message);
   }
 }
 
 function render(items) {
-  const grid = $("grid");
-  grid.replaceChildren();
+  $("grid").replaceChildren();
   $("resultCount").textContent = "عدد النتائج: " + items.length;
 
   if (!items.length) {
-    grid.innerHTML = '<div class="empty">لا توجد نتائج. جرّب اسمًا آخر.</div>';
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "لا توجد نتائج مطابقة. جرّب اسمًا آخر.";
+    $("grid").append(empty);
     return;
   }
 
@@ -332,71 +381,72 @@ function render(items) {
     details.textContent = "التفاصيل والإعلان";
     details.addEventListener("click", () => selectItem(item));
 
-    const search = document.createElement("button");
-    search.className = "small secondary";
-    search.textContent = "البحث عن مصدر رسمي";
-    search.addEventListener("click", () => {
+    const searchButton = document.createElement("button");
+    searchButton.className = "small secondary";
+    searchButton.textContent = "البحث عن مصدر رسمي";
+    searchButton.addEventListener("click", () => {
       selectItem(item);
       openOfficialSearch(item);
     });
 
-    actions.append(details, search);
+    actions.append(details, searchButton);
     card.append(img, info, actions);
-    grid.append(card);
+    $("grid").append(card);
   }
 }
 
-/* تفاصيل المحتوى */
 function selectItem(item) {
   currentItem = item;
-  trailerRequest++;
   $("nowTitle").textContent = titleOf(item);
   $("nowMeta").textContent =
-    (kind === "movie" ? "فيلم" : "مسلسل") + " · " +
-    (item.release_date || item.first_air_date || "التاريخ غير متاح");
+    (kind === "movie" ? "فيلم" : "مسلسل") +
+    " · " + (item.release_date || item.first_air_date || "التاريخ غير متاح");
 
   $("playTrailer").disabled = false;
   $("officialSearch").disabled = false;
   stopPlayer(false);
-  setStatus("يمكنك تشغيل الإعلان الرسمي المتاح أو البحث عن مصدر قانوني.");
+  setStatus("اضغط على تشغيل الإعلان الرسمي.");
   $("player").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-/* الإعلان الرسمي */
+/* تشغيل إعلان متاح عبر YouTube */
 async function playTrailer() {
   if (!currentItem) return;
+
   const request = ++trailerRequest;
   $("playTrailer").disabled = true;
   setStatus("جاري البحث عن الإعلان الرسمي...");
 
   try {
     const path = (kind === "movie" ? "/movie/" : "/tv/") +
-      currentItem.id + "/videos";
-    const data = await tmdb(path);
+      encodeURIComponent(currentItem.id) + "/videos";
 
+    const data = await tmdb(path);
     if (request !== trailerRequest) return;
 
     const videos = data.results || [];
-    const trailer = videos.find(v =>
-      v.site === "YouTube" && v.key && v.type === "Trailer" && v.official
-    ) || videos.find(v =>
-      v.site === "YouTube" && v.key && v.type === "Trailer"
-    ) || videos.find(v => v.site === "YouTube" && v.key);
+    const trailer =
+      videos.find(v => v.site === "YouTube" && v.key &&
+        v.type === "Trailer" && v.official) ||
+      videos.find(v => v.site === "YouTube" && v.key &&
+        v.type === "Trailer") ||
+      videos.find(v => v.site === "YouTube" && v.key);
 
     if (!trailer) {
-      setStatus("لم يُعثر على إعلان رسمي متاح لهذا العنوان.");
+      setStatus("لم يتوفر إعلان من YouTube لهذا العنوان في بيانات TMDB. جرّب البحث عن مصدر رسمي.");
       return;
     }
 
-    const iframe = document.createElement("iframe");
-    iframe.title = "الإعلان الرسمي " + titleOf(currentItem);
-    iframe.src = "https://www.youtube-nocookie.com/embed/" +
+    const frame = document.createElement("iframe");
+    frame.title = "إعلان " + titleOf(currentItem);
+    frame.src = "https://www.youtube-nocookie.com/embed/" +
       encodeURIComponent(trailer.key) + "?autoplay=1&rel=0";
-    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-    iframe.allowFullscreen = true;
-    iframe.referrerPolicy = "strict-origin-when-cross-origin";
-    $("screen").replaceChildren(iframe);
-    setStatus("تم العثور على الإعلان. يعتمد التشغيل على إتاحته واتصال الإنترنت.");
+    frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = "strict-origin-when-cross-origin";
+
+    $("screen").replaceChildren(frame);
+    setStatus("تم فتح الإعلان. إذا رفض YouTube التضمين، افتحه من المصدر الأصلي.");
   } catch (error) {
     if (request !== trailerRequest) return;
     setStatus(error.message);
@@ -407,17 +457,23 @@ async function playTrailer() {
 
 function openOfficialSearch(item) {
   const type = kind === "movie" ? "فيلم" : "مسلسل";
-  const query = encodeURIComponent(titleOf(item) + " " + type + " الموقع الرسمي");
-  window.open("https://www.google.com/search?q=" + query,"_blank","noopener,noreferrer");
+  const query = encodeURIComponent(titleOf(item) + " " + type + " مشاهدة رسمية");
+  window.open(
+    "https://www.google.com/search?q=" + query,
+    "_blank",
+    "noopener,noreferrer"
+  );
 }
 
-function stopPlayer(showStatus = true) {
+function stopPlayer(showMessage = true) {
   trailerRequest++;
+
   const placeholder = document.createElement("div");
   placeholder.className = "placeholder";
-  placeholder.innerHTML = "🍿<br>اختر عنوانًا لعرض الإعلان الرسمي المتاح.";
+  placeholder.textContent = "🍿 اختر عنوانًا لعرض الإعلان الرسمي المتاح.";
   $("screen").replaceChildren(placeholder);
-  if (showStatus) setStatus("تم إيقاف المشغل.");
+
+  if (showMessage) setStatus("تم إيقاف المشغل.");
 }
 
 $("searchBtn").addEventListener("click", () => loadCatalog());
@@ -440,11 +496,44 @@ document.querySelectorAll(".chip").forEach(button => {
 });
 
 $("playTrailer").addEventListener("click", playTrailer);
+
 $("officialSearch").addEventListener("click", () => {
   if (currentItem) openOfficialSearch(currentItem);
 });
+
 $("stop").addEventListener("click", () => stopPlayer());
 
+$("saveKey").addEventListener("click", async () => {
+  const candidate = $("apiKeyInput").value.trim();
+
+  if (!candidate) {
+    $("keyStatus").textContent = "اكتب مفتاح TMDB أولًا.";
+    return;
+  }
+
+  $("saveKey").disabled = true;
+  $("keyStatus").textContent = "جاري اختبار المفتاح...";
+
+  const oldKey = apiKey;
+  apiKey = candidate;
+
+  try {
+    const data = await tmdb("/movie/popular", {page:1});
+    if (!Array.isArray(data.results)) {
+      throw new Error("استجابة الخدمة غير متوقعة.");
+    }
+
+    $("keyStatus").textContent = "المفتاح صالح للطلب التجريبي. جاري تحميل المحتوى.";
+    loadCatalog();
+  } catch (error) {
+    apiKey = oldKey;
+    $("keyStatus").textContent = error.message;
+  } finally {
+    $("saveKey").disabled = false;
+  }
+});
+
+$("loadAgain").addEventListener("click", () => loadCatalog());
 </script>
 </body>
 </html>
