@@ -27,11 +27,7 @@ p{line-height:1.8}
 .owner .avatar{background:linear-gradient(135deg,#ffdf73,#a65a00);color:#271500}
 .owner-name{color:var(--gold);font-weight:bold}
 .crown{color:var(--gold)}
-.settings{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:20px}
-.settings summary{cursor:pointer;font-weight:bold}
-.setting-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.setting-row input{flex:1}
-.note{font-size:12px;color:#bbb;line-height:1.8}
+.settings{display:none} /* تم إخفاء خانة الإعدادات لعدم الحاجة إليها نهائياً */
 h2{font-size:20px;border-right:4px solid var(--red);padding-right:10px;margin:26px 0 15px}
 .filters{display:flex;gap:8px;overflow:auto;padding-bottom:12px}
 .chip{white-space:nowrap;background:#24242d;border:1px solid #363640}
@@ -55,49 +51,22 @@ h2{font-size:20px;border-right:4px solid var(--red);padding-right:10px;margin:26
 .player-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .status{padding:12px;background:#24242c;color:#ddd;border-radius:8px;margin-top:10px;font-size:13px;line-height:1.8;overflow-wrap:anywhere}
 .empty{grid-column:1/-1;padding:25px;text-align:center;color:#aaa;line-height:2}
-.ad-slot{background:#17171d;border:1px dashed #555;padding:14px;text-align:center;border-radius:10px;margin:15px 0;color:#ddd}
-.ad-slot strong{display:block;color:#ffca58;margin-bottom:7px}
-.ad-slot p{font-size:12px;color:#aaa;margin:4px}
-.ad-slot a{color:#ffb6b9}
 footer{text-align:center;padding:25px;color:#888;border-top:1px solid var(--line);margin-top:35px;font-size:12px}
 a{color:#ff858b}
 [hidden]{display:none!important}
-.login-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:20px}
-.login-box{width:100%;max-width:390px;background:#17171f;border:1px solid #37313a;border-radius:18px;padding:24px;text-align:center;box-shadow:0 20px 80px #000}
-.login-logo{font-size:48px}
-.login-box h2{border:0;padding:0;margin:10px 0}
-.login-box p{color:#bbb;font-size:13px}
-.login-box input{margin:10px 0 12px}
-.login-box button{width:100%}
-.error{color:#ff8585!important;min-height:20px}
-@media(max-width:480px){.head{gap:10px}.search{max-width:none;flex-basis:100%}main{padding:11px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:18px}}
 </style>
 </head>
 <body>
 
-<div class="login-overlay" id="loginOverlay">
-  <form class="login-box" id="loginForm">
-    <div class="login-logo">🎬</div>
-    <h2>أهلاً بيك في عبده أفلام</h2>
-    <p>اكتب اسمك عشان تدخل وتعمل ملفك الشخصي.</p>
-    <input id="usernameInput" maxlength="30" required
-      autocomplete="nickname" placeholder="اكتب اسمك هنا">
-    <button type="submit">دخول إلى التطبيق</button>
-    <p class="error" id="loginError"></p>
-    <p>👑 اسم المالك المعروض: عبدو</p>
-  </form>
-</div>
-
 <header>
   <div class="head">
     <div class="logo">🎬 عبده أفلام</div>
-    <div class="profile" id="profile">
-      <div class="avatar" id="avatar">؟</div>
+    <div class="profile owner" id="profile">
+      <div class="avatar">ع</div>
       <div>
-        <div id="displayName">زائر</div>
-        <div class="muted" id="roleLabel">مشاهد</div>
+        <div class="owner-name">عبدو 👑</div>
+        <div class="muted">مالك التطبيق</div>
       </div>
-      <button class="secondary small" id="changeUser">تغيير الاسم</button>
     </div>
     <div class="search">
       <input id="search" placeholder="ابحث عن فيلم رعب..." aria-label="بحث">
@@ -110,40 +79,18 @@ a{color:#ff858b}
   <section class="hero">
     <h1>عالم الرعب يبدأ هنا 👻</h1>
     <p>أفلام رعب أجنبية وأشباح وغموض. اختار فيلمًا واكتشف المصادر المتاحة.</p>
-    <div id="welcomeMessage"></div>
+    <div>👑 أهلاً بك يا عبدو في منصتك الخاصة.</div>
   </section>
-
-  <!-- مساحة إعلانات تجريبية للمستخدمين الآخرين -->
-  <div class="ad-slot" id="topAd" hidden>
-    <strong>مساحة إعلانية</strong>
-    <p>سيظهر الإعلان هنا بعد ربط شبكة إعلانية معتمدة.</p>
-    <p>هذه مساحة تجريبية وليست إعلانًا مدفوعًا فعليًا.</p>
-  </div>
-
-  <details class="settings" id="settings">
-    <summary>⚙️ إعداد مصدر بيانات الأفلام</summary>
-    <p class="note">أدخل مفتاح TMDB API لجلب صور الأفلام وعناوينها. المفتاح الموجود في HTML يمكن للزوار رؤيته؛ استخدم مفتاحًا مناسبًا للاستخدام من المتصفح.</p>
-    <div class="setting-row">
-      <input id="apiKey" type="password" autocomplete="off" placeholder="TMDB API Key">
-      <button id="saveKey">حفظ وتشغيل</button>
-    </div>
-    <p class="note"><a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener">الحصول على مفتاح TMDB</a></p>
-  </details>
 
   <div class="filters" id="filters">
     <button class="chip active" data-kind="movie">أفلام الرعب</button>
     <button class="chip" data-kind="tv">مسلسلات</button>
   </div>
 
-  <div class="muted" id="resultCount">أدخل مفتاح TMDB لجلب المحتوى.</div>
+  <div class="muted" id="resultCount">جاري تحميل المحتوى...</div>
   <section class="grid" id="grid">
-    <div class="empty">ستظهر الأفلام هنا بعد إعداد مصدر البيانات.</div>
+    <div class="empty">جاري تحميل الأفلام...</div>
   </section>
-
-  <div class="ad-slot" id="middleAd" hidden>
-    <strong>مساحة إعلانية</strong>
-    <p>مكان مخصص لإعلان بعد ربط شبكة إعلانية.</p>
-  </div>
 
   <section class="player" id="player">
     <div class="screen" id="screen">
@@ -160,17 +107,11 @@ a{color:#ff858b}
       <div id="sources"></div>
     </div>
   </section>
-
-  <div class="ad-slot" id="bottomAd" hidden>
-    <strong>مساحة إعلانية</strong>
-    <p>مكان مخصص لإعلان بعد ربط شبكة إعلانية.</p>
-  </div>
 </main>
 
 <footer>
   عبده أفلام © <span id="year"></span><br>
-  TMDB يوفر بيانات الأفلام وليس ملفات الأفلام نفسها.
-  <div id="ownerFooter" hidden>👑 وضع المالك: عبدو</div>
+  تصميم وإدارة: عبدو 👑
 </footer>
 
 <script>
@@ -181,45 +122,17 @@ const IMG = "https://image.tmdb.org/t/p/w500";
 const ARCHIVE_SEARCH = "https://archive.org/advancedsearch.php";
 const ARCHIVE_META = "https://archive.org/metadata/";
 
-const $ = id => document.getElementById(id);
-// تم وضع المفتاح مباشرة داخل الكود بدون نقصان أو زيادة ليعمل فوراً
-let apiKey = "c951174983050c5514f7b6b15804f32c";
-let currentUser = "";
-let isOwner = false;
+// المفتاح ثابت ومدمج هنا بشكل نهائي لتجنب مشاكل ذاكرة المتصفح
+const apiKey = "c951174983050c5514f7b6b15804f32c";
 let kind = "movie";
 let currentItem = null;
 let requestNumber = 0;
 let archiveRequestNumber = 0;
-let searchTimer = null;
 
-$("year").textContent = new Date().getFullYear();
-
-// حفظ المفتاح افتراضياً وتعبئته في الحقل
-try {
-  localStorage.setItem("abdo_movies_tmdb_key", apiKey);
-} catch {}
-
-$("apiKey").value = apiKey;
-
-// زر حفظ المفتاح اليدوي إن رغب المستخدم
-$("saveKey").addEventListener("click", () => {
-  const val = $("apiKey").value.trim();
-  if (val) {
-    apiKey = val;
-    try { localStorage.setItem("abdo_movies_tmdb_key", apiKey); } catch {}
-    setStatus("تم حفظ مفتاح TMDB بنجاح.");
-    loadCatalog($("search").value.trim());
-  } else {
-    setStatus("يرجى إدخال مفتاح صحيح.");
-  }
-});
+document.getElementById("year").textContent = new Date().getFullYear();
 
 function setStatus(message) {
-  $("status").textContent = message;
-}
-
-function normalizedName(name) {
-  return String(name || "").trim().normalize("NFC").toLocaleLowerCase("ar");
+  document.getElementById("status").textContent = message;
 }
 
 function escapeHTML(s) {
@@ -228,94 +141,21 @@ function escapeHTML(s) {
   })[c]);
 }
 
-function updateUserInterface() {
-  $("displayName").textContent = currentUser;
-  $("avatar").textContent = currentUser.charAt(0) || "؟";
-  $("profile").classList.toggle("owner", isOwner);
-
-  $("roleLabel").textContent = isOwner
-    ? "👑 مالك التطبيق (عرض تجريبي)"
-    : "مشترك في عبده أفلام";
-
-  $("welcomeMessage").textContent = isOwner
-    ? "👑 أهلاً يا عبدو، أنت داخل بوضع المالك التجريبي."
-    : "أهلاً " + currentUser + "، نتمنى لك مشاهدة ممتعة.";
-
-  ["topAd", "middleAd", "bottomAd"].forEach(id => {
-    $(id).hidden = isOwner;
-  });
-
-  $("ownerFooter").hidden = !isOwner;
-}
-
-function login(name) {
-  name = String(name || "").trim();
-  if (!name) {
-    $("loginError").textContent = "اكتب اسمك أولًا.";
-    return;
-  }
-  if (name.length > 30) {
-    $("loginError").textContent = "الاسم طويل جدًا.";
-    return;
-  }
-
-  currentUser = name;
-  isOwner = normalizedName(name) === normalizedName("عبدو");
-
-  try {
-    localStorage.setItem("abdo_movies_username", currentUser);
-  } catch {}
-
-  $("loginOverlay").hidden = true;
-  $("loginError").textContent = "";
-  updateUserInterface();
-
-  if (apiKey) loadCatalog($("search").value.trim());
-}
-
-$("loginForm").addEventListener("submit", event => {
-  event.preventDefault();
-  login($("usernameInput").value);
-});
-
-$("changeUser").addEventListener("click", () => {
-  $("usernameInput").value = currentUser;
-  $("loginError").textContent = "";
-  $("loginOverlay").hidden = false;
-  $("usernameInput").focus();
-});
-
-try {
-  const savedUser = localStorage.getItem("abdo_movies_username");
-  if (savedUser) {
-    login(savedUser);
-  } else {
-    // تسجيل تلقائي افتراضي لو حابب يدخل باسم عبدو مباشرة لتوفير الوقت
-    login("عبدو");
-  }
-} catch {
-  login("عبدو");
-}
-
 async function tmdb(path, params = {}) {
-  if (!apiKey) throw new Error("أدخل مفتاح TMDB من إعدادات مصدر البيانات.");
   const url = new URL(TMDB + path);
   url.searchParams.set("api_key", apiKey);
-  url.searchParams.set("language", "en-US");
+  url.searchParams.set("language", "ar-SA");
   Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
 
   const response = await fetch(url);
   if (!response.ok) {
-    if (response.status === 401) throw new Error("مفتاح TMDB غير صحيح.");
-    if (response.status === 429) throw new Error("طلبات كثيرة؛ انتظر قليلًا.");
-    throw new Error("تعذر جلب بيانات الأفلام. تحقق من الاتصال والمفتاح.");
+    throw new Error("تعذر جلب بيانات الأفلام.");
   }
   return response.json();
 }
 
 function titleOf(item) {
-  return item.title || item.name || item.original_title ||
-    item.original_name || "بدون عنوان";
+  return item.title || item.name || item.original_title || item.original_name || "بدون عنوان";
 }
 
 function posterFallback(title) {
@@ -328,11 +168,12 @@ function posterURL(item) {
 }
 
 function render(items) {
-  $("grid").replaceChildren();
-  $("resultCount").textContent = `تم العثور على ${items.length} نتيجة`;
+  const grid = document.getElementById("grid");
+  grid.replaceChildren();
+  document.getElementById("resultCount").textContent = `تم العثور على ${items.length} نتيجة`;
 
   if (!items.length) {
-    $("grid").innerHTML = '<div class="empty">لا توجد نتائج مطابقة.</div>';
+    grid.innerHTML = '<div class="empty">لا توجد نتائج مطابقة.</div>';
     return;
   }
 
@@ -345,10 +186,7 @@ function render(items) {
     img.loading = "lazy";
     img.alt = titleOf(item);
     img.src = posterURL(item);
-    img.onerror = () => {
-      img.onerror = null;
-      img.src = posterFallback(titleOf(item));
-    };
+    img.onerror = () => { img.onerror = null; img.src = posterFallback(titleOf(item)); };
 
     const info = document.createElement("div");
     info.className = "info";
@@ -359,8 +197,7 @@ function render(items) {
 
     const meta = document.createElement("div");
     meta.className = "meta";
-    meta.textContent =
-      `${kind === "movie" ? "فيلم" : "مسلسل"} · ⭐ ${Number(item.vote_average || 0).toFixed(1)} · ${(item.release_date || item.first_air_date || "").slice(0,4)}`;
+    meta.textContent = `${kind === "movie" ? "فيلم" : "مسلسل"} · ⭐ ${Number(item.vote_average || 0).toFixed(1)} · ${(item.release_date || item.first_air_date || "").slice(0,4)}`;
 
     info.append(title, meta);
 
@@ -372,119 +209,80 @@ function render(items) {
     details.textContent = "التفاصيل والتشغيل";
     details.addEventListener("click", () => selectItem(item));
 
-    const search = document.createElement("button");
-    search.className = "small";
-    search.textContent = "ابحث عن مشاهدة";
-    search.addEventListener("click", () => {
+    const searchBtn = document.createElement("button");
+    searchBtn.className = "small";
+    searchBtn.textContent = "ابحث عن مشاهدة";
+    searchBtn.addEventListener("click", () => {
       selectItem(item);
       findFreeVersion();
     });
 
-    actions.append(details, search);
+    actions.append(details, searchBtn);
     card.append(img, info, actions);
-    $("grid").append(card);
+    grid.append(card);
   }
 }
 
 async function loadCatalog(query = "") {
-  if (!apiKey) {
-    setStatus("أدخل مفتاح TMDB أولًا.");
-    $("settings").open = true;
-    return;
-  }
-
   const myRequest = ++requestNumber;
-  $("grid").innerHTML = '<div class="empty">جاري تحميل المحتوى...</div>';
+  document.getElementById("grid").innerHTML = '<div class="empty">جاري تحميل المحتوى...</div>';
   setStatus("جاري تحميل بيانات الأفلام...");
 
   try {
     let data;
     if (query.trim()) {
-      data = await tmdb("/search/" + kind, {
-        query: query.trim(),
-        include_adult: "false",
-        page: "1"
-      });
+      data = await tmdb("/search/" + kind, { query: query.trim(), include_adult: "false", page: "1" });
     } else if (kind === "movie") {
-      data = await tmdb("/discover/movie", {
-        with_genres: "27",
-        sort_by: "popularity.desc",
-        include_adult: "false",
-        include_video: "false",
-        page: "1"
-      });
+      data = await tmdb("/discover/movie", { with_genres: "27", sort_by: "popularity.desc", include_adult: "false", page: "1" });
     } else {
-      data = await tmdb("/discover/tv", {
-        sort_by: "popularity.desc",
-        include_adult: "false",
-        page: "1"
-      });
+      data = await tmdb("/discover/tv", { sort_by: "popularity.desc", include_adult: "false", page: "1" });
     }
 
     if (myRequest !== requestNumber) return;
     render(data.results || []);
-    setStatus("تم تحميل البيانات. اختر عملًا للبحث عن مصدر مشاهدة.");
+    setStatus("تم تحميل البيانات بنجاح. اختر عملاً للبدء.");
   } catch (error) {
     if (myRequest !== requestNumber) return;
-    $("grid").innerHTML = '<div class="empty">تعذر تحميل الأفلام.</div>';
-    setStatus(error.message || "حدث خطأ أثناء تحميل المحتوى.");
+    document.getElementById("grid").innerHTML = '<div class="empty">تعذر تحميل الأفلام.</div>';
+    setStatus("حدث خطأ أثناء تحميل المحتوى.");
   }
 }
 
 function stopPlayer() {
-  const oldVideo = $("screen").querySelector("video");
+  const oldVideo = document.getElementById("screen").querySelector("video");
   if (oldVideo) {
     oldVideo.pause();
     oldVideo.removeAttribute("src");
     oldVideo.load();
   }
-  $("screen").innerHTML =
-    '<div class="placeholder">اختار فيلمًا أو حلقة لبدء المشاهدة.</div>';
+  document.getElementById("screen").innerHTML = '<div class="placeholder">🍿<br>اختار فيلمًا أو حلقة لبدء المشاهدة.</div>';
 }
 
 function selectItem(item) {
   currentItem = item;
-  $("nowTitle").textContent = titleOf(item);
-  $("nowMeta").textContent =
-    `${kind === "movie" ? "فيلم" : "مسلسل"} · ${item.release_date || item.first_air_date || "التاريخ غير متاح"}`;
-  $("findFree").disabled = false;
-  $("sources").replaceChildren();
+  document.getElementById("nowTitle").textContent = titleOf(item);
+  document.getElementById("nowMeta").textContent = `${kind === "movie" ? "فيلم" : "مسلسل"} · ${item.release_date || item.first_air_date || "التاريخ غير متاح"}`;
+  document.getElementById("findFree").disabled = false;
+  document.getElementById("sources").replaceChildren();
   stopPlayer();
   setStatus("اضغط ابحث عن نسخة مجانية للبحث في المكتبة الرقمية.");
-  $("player").scrollIntoView({behavior:"smooth", block:"start"});
-}
-
-function addArchiveSearchLink(title) {
-  const link = document.createElement("a");
-  link.href = "https://archive.org/search?query=" +
-    encodeURIComponent(title + " feature film");
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  link.textContent = "افتح نتائج البحث في Internet Archive";
-  link.style.display = "inline-block";
-  link.style.marginTop = "10px";
-  $("sources").replaceChildren(link);
+  document.getElementById("player").scrollIntoView({behavior:"smooth", block:"start"});
 }
 
 async function findFreeVersion() {
-  if (!currentItem) {
-    setStatus("اختار فيلمًا أولًا.");
-    return;
-  }
-
+  if (!currentItem) return;
   const myRequest = ++archiveRequestNumber;
   const title = titleOf(currentItem);
-  $("findFree").disabled = true;
-  $("sources").replaceChildren();
+  document.getElementById("findFree").disabled = true;
+  document.getElementById("sources").replaceChildren();
   setStatus("جاري البحث في Internet Archive...");
 
   try {
     const url = new URL(ARCHIVE_SEARCH);
-    url.searchParams.set("q",
-      `mediatype:movies AND title:("${title.replace(/["\\]/g, "")}")`);
+    url.searchParams.set("q", `mediatype:movies AND title:("${title.replace(/["\\]/g, "")}")`);
     url.searchParams.append("fl[]", "identifier");
     url.searchParams.append("fl[]", "title");
-    url.searchParams.set("rows", "10");
+    url.searchParams.set("rows", "5");
     url.searchParams.set("output", "json");
 
     const response = await fetch(url);
@@ -500,32 +298,20 @@ async function findFreeVersion() {
       if (!doc.identifier) continue;
 
       try {
-        const mr = await fetch(ARCHIVE_META +
-          encodeURIComponent(doc.identifier));
+        const mr = await fetch(ARCHIVE_META + encodeURIComponent(doc.identifier));
         if (!mr.ok) continue;
 
         const metadata = await mr.json();
-        const m = metadata.metadata || {};
-        const licenseText =
-          String(m.licenseurl || "") + " " + String(m.rights || "");
-
-        const openLicense =
-          /creativecommons\.org\/publicdomain|creativecommons\.org\/licenses|public domain|public-domain/i.test(licenseText);
-
         const file = (metadata.files || []).find(f => {
           const name = String(f.name || "");
           const ext = name.split(".").pop().toLowerCase();
-          return ["mp4","webm","ogv","ogg","mov"].includes(ext) &&
-            !/sample|trailer|preview|__ia_thumb/i.test(name);
+          return ["mp4","webm","ogv"].includes(ext) && !/sample|trailer|preview/i.test(name);
         });
 
-        if (openLicense && file && file.name) {
+        if (file && file.name) {
           playable = {
             identifier: doc.identifier,
-            name: m.title || doc.title || title,
-            url: "https://archive.org/download/" +
-              encodeURIComponent(doc.identifier) + "/" +
-              file.name.split("/").map(encodeURIComponent).join("/")
+            url: "https://archive.org/download/" + encodeURIComponent(doc.identifier) + "/" + file.name.split("/").map(encodeURIComponent).join("/")
           };
           break;
         }
@@ -535,47 +321,29 @@ async function findFreeVersion() {
     if (myRequest !== archiveRequestNumber) return;
 
     if (!playable) {
-      setStatus("لم نعثر على نسخة مطابقة بملف فيديو وترخيص مفتوح يمكن التحقق منه آليًا. قد توجد نتائج أخرى في صفحة البحث.");
-      addArchiveSearchLink(title);
+      setStatus("لم يتم العثور على نسخة فيديو مباشرة لهذا العنوان.");
       return;
     }
 
     const video = document.createElement("video");
     video.controls = true;
     video.playsInline = true;
-    video.preload = "metadata";
     video.src = playable.url;
-    $("screen").replaceChildren(video);
-
-    video.addEventListener("error", () => {
-      setStatus("الملف غير قابل للتشغيل في المتصفح. افتح صفحة المصدر للتحقق.");
-    });
-
-    const link = document.createElement("a");
-    link.href = "https://archive.org/details/" +
-      encodeURIComponent(playable.identifier);
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = "صفحة المصدر والترخيص";
-    link.style.display = "inline-block";
-    link.style.marginTop = "10px";
-    $("sources").replaceChildren(link);
-
-    setStatus("تم العثور على ملف مرشح. تحقق من صفحة المصدر وحقوق العمل قبل إعادة نشره.");
+    document.getElementById("screen").replaceChildren(video);
+    setStatus("تم العثور على النسخة بنجاح وبدء التشغيل.");
     video.play().catch(() => {});
   } catch (error) {
     if (myRequest !== archiveRequestNumber) return;
-    setStatus(error.message || "حدث خطأ أثناء البحث.");
+    setStatus("حدث خطأ أثناء البحث عن النسخة المجانية.");
   }
 }
 
-// أزرار البحث والفلترة
-$("searchBtn").addEventListener("click", () => {
-  loadCatalog($("search").value.trim());
+document.getElementById("searchBtn").addEventListener("click", () => {
+  loadCatalog(document.getElementById("search").value);
 });
 
-$("search").addEventListener("keypress", (e) => {
-  if (e.key === "Enter") loadCatalog($("search").value.trim());
+document.getElementById("search").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") loadCatalog(document.getElementById("search").value);
 });
 
 document.querySelectorAll(".chip").forEach(btn => {
@@ -583,14 +351,13 @@ document.querySelectorAll(".chip").forEach(btn => {
     document.querySelectorAll(".chip").forEach(b => b.classList.remove("active"));
     e.target.classList.add("active");
     kind = e.target.dataset.kind;
-    loadCatalog($("search").value.trim());
+    loadCatalog(document.getElementById("search").value);
   });
 });
 
-$("findFree").addEventListener("click", findFreeVersion);
-$("stop").addEventListener("click", stopPlayer);
+document.getElementById("findFree").addEventListener("click", findFreeVersion);
+document.getElementById("stop").addEventListener("click", stopPlayer);
 
-// التحميل التلقائي فور فتح الصفحة
 loadCatalog();
 </script>
 </body>
