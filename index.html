@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -183,7 +182,8 @@ const ARCHIVE_SEARCH = "https://archive.org/advancedsearch.php";
 const ARCHIVE_META = "https://archive.org/metadata/";
 
 const $ = id => document.getElementById(id);
-let apiKey = "";
+// تم وضع المفتاح مباشرة داخل الكود بدون نقصان أو زيادة ليعمل فوراً
+let apiKey = "c951174983050c5514f7b6b15804f32c";
 let currentUser = "";
 let isOwner = false;
 let kind = "movie";
@@ -194,11 +194,25 @@ let searchTimer = null;
 
 $("year").textContent = new Date().getFullYear();
 
+// حفظ المفتاح افتراضياً وتعبئته في الحقل
 try {
-  apiKey = localStorage.getItem("abdo_movies_tmdb_key") || "";
+  localStorage.setItem("abdo_movies_tmdb_key", apiKey);
 } catch {}
 
 $("apiKey").value = apiKey;
+
+// زر حفظ المفتاح اليدوي إن رغب المستخدم
+$("saveKey").addEventListener("click", () => {
+  const val = $("apiKey").value.trim();
+  if (val) {
+    apiKey = val;
+    try { localStorage.setItem("abdo_movies_tmdb_key", apiKey); } catch {}
+    setStatus("تم حفظ مفتاح TMDB بنجاح.");
+    loadCatalog($("search").value.trim());
+  } else {
+    setStatus("يرجى إدخال مفتاح صحيح.");
+  }
+});
 
 function setStatus(message) {
   $("status").textContent = message;
@@ -214,12 +228,6 @@ function escapeHTML(s) {
   })[c]);
 }
 
-/*
-  ملاحظة أمنية:
-  تحديد المالك بالاسم هنا للعرض التجريبي فقط.
-  لا يمكن ضمان إعفاء المالك من الإعلانات أمنيًا بملف HTML
-  وحده؛ يجب التحقق من هوية المالك على سيرفر قبل نشر التطبيق.
-*/
 function updateUserInterface() {
   $("displayName").textContent = currentUser;
   $("avatar").textContent = currentUser.charAt(0) || "؟";
@@ -233,8 +241,6 @@ function updateUserInterface() {
     ? "👑 أهلاً يا عبدو، أنت داخل بوضع المالك التجريبي."
     : "أهلاً " + currentUser + "، نتمنى لك مشاهدة ممتعة.";
 
-  // الإعلان هنا مجرد مساحة مكانية. لا يظهر إعلان حقيقي إلا بعد
-  // ربط مزود إعلانات فعلي وتهيئة حسابه.
   ["topAd", "middleAd", "bottomAd"].forEach(id => {
     $(id).hidden = isOwner;
   });
@@ -281,8 +287,15 @@ $("changeUser").addEventListener("click", () => {
 
 try {
   const savedUser = localStorage.getItem("abdo_movies_username");
-  if (savedUser) login(savedUser);
-} catch {}
+  if (savedUser) {
+    login(savedUser);
+  } else {
+    // تسجيل تلقائي افتراضي لو حابب يدخل باسم عبدو مباشرة لتوفير الوقت
+    login("عبدو");
+  }
+} catch {
+  login("عبدو");
+}
 
 async function tmdb(path, params = {}) {
   if (!apiKey) throw new Error("أدخل مفتاح TMDB من إعدادات مصدر البيانات.");
@@ -553,58 +566,32 @@ async function findFreeVersion() {
   } catch (error) {
     if (myRequest !== archiveRequestNumber) return;
     setStatus(error.message || "حدث خطأ أثناء البحث.");
-    addArchiveSearchLink(title);
-  } finally {
-    if (myRequest === archiveRequestNumber) $("findFree").disabled = false;
   }
 }
 
-$("saveKey").addEventListener("click", () => {
-  const value = $("apiKey").value.trim();
-  if (!value) {
-    setStatus("اكتب مفتاح TMDB أولًا.");
-    return;
-  }
-  apiKey = value;
-  try {
-    localStorage.setItem("abdo_movies_tmdb_key", apiKey);
-  } catch {}
-  $("settings").open = false;
+// أزرار البحث والفلترة
+$("searchBtn").addEventListener("click", () => {
   loadCatalog($("search").value.trim());
 });
 
-$("searchBtn").addEventListener("click", () =>
-  loadCatalog($("search").value.trim()));
-
-$("search").addEventListener("keydown", event => {
-  if (event.key === "Enter") loadCatalog($("search").value.trim());
+$("search").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") loadCatalog($("search").value.trim());
 });
 
-$("search").addEventListener("input", () => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(
-    () => loadCatalog($("search").value.trim()), 500);
-});
-
-$("filters").addEventListener("click", event => {
-  const btn = event.target.closest("[data-kind]");
-  if (!btn) return;
-  kind = btn.dataset.kind;
-  $("filters").querySelectorAll("button").forEach(b =>
-    b.classList.toggle("active", b === btn));
-  currentItem = null;
-  $("findFree").disabled = true;
-  loadCatalog($("search").value.trim());
+document.querySelectorAll(".chip").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    document.querySelectorAll(".chip").forEach(b => b.classList.remove("active"));
+    e.target.classList.add("active");
+    kind = e.target.dataset.kind;
+    loadCatalog($("search").value.trim());
+  });
 });
 
 $("findFree").addEventListener("click", findFreeVersion);
-$("stop").addEventListener("click", () => {
-  archiveRequestNumber++;
-  stopPlayer();
-  setStatus("تم إيقاف المشغل.");
-});
+$("stop").addEventListener("click", stopPlayer);
 
-if (currentUser && apiKey) loadCatalog();
+// التحميل التلقائي فور فتح الصفحة
+loadCatalog();
 </script>
 </body>
 </html>
