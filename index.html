@@ -3,586 +3,460 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090b12">
-<title>عبده سبورت الذكية | Abdo Sport AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090d14">
+<title>احرس عائلتك مع عبده</title>
 <style>
 :root{
-  --bg:#090b12;--card:#141925;--card2:#1b2230;
-  --gold:#ffd166;--red:#ff3658;--green:#23d5ab;
-  --text:#f5f7ff;--muted:#9aa5b8;--border:#2a3243
+ --bg:#090d14;--panel:#121a26;--card:#192434;
+ --line:#2b394d;--green:#29d17d;--blue:#5299ff;
+ --red:#ff5c69;--gold:#ffcf66;--text:#f3f7ff;--muted:#9aaac0;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}
-button,input,textarea,select{font:inherit}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:Tahoma,Arial,sans-serif;min-height:100vh;
+}
+button,input{font:inherit}
 button{cursor:pointer}
-.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;background:#0d111bea;backdrop-filter:blur(15px);border-bottom:1px solid var(--border)}
-.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px}
-.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#ffe59a,#e79d21);display:grid;place-items:center;color:#17120a;font-size:23px}
-.brand small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
-.status{font-size:11px;color:var(--green);border:1px solid #245849;border-radius:20px;padding:7px 9px}
-main{max-width:1100px;margin:auto;padding:16px}
-.hero{padding:22px 18px;border-radius:22px;background:linear-gradient(120deg,#25213a,#121c2a 65%,#30200e);border:1px solid #34334a;margin-bottom:16px}
-.hero h1{margin:0 0 10px;font-size:25px}
-.hero p{margin:0;color:#c0c8d8;line-height:1.9;font-size:13px}
-.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:16px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:19px;padding:16px;margin-bottom:16px;min-width:0}
-h2{font-size:16px;margin:0 0 14px}
-h3{font-size:14px;margin:0 0 10px}
-label{display:block;color:#bdc7d9;font-size:12px;margin-bottom:7px}
-input,textarea,select{width:100%;background:#0c111a;color:white;border:1px solid var(--border);border-radius:11px;padding:12px;outline:none;margin-bottom:11px}
-input:focus,textarea:focus{border-color:var(--gold)}
-button{border:0;border-radius:11px;padding:11px 14px;font-weight:bold}
-.primary{background:var(--gold);color:#17130b}
-.secondary{background:#252e40;color:white;border:1px solid #39465d}
-.danger{background:#47212d;color:#ffb5c1}
-.btnrow{display:flex;gap:8px;flex-wrap:wrap}
-.btnrow button{flex:1}
-.player{width:100%;aspect-ratio:16/9;background:#030509;border-radius:14px;overflow:hidden;display:grid;place-items:center;margin-bottom:12px}
-.player video,.player iframe{width:100%;height:100%;border:0;object-fit:contain;background:#000}
-.placeholder{text-align:center;color:var(--muted);padding:20px;line-height:2}
-.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:#0b1018;padding:16px;border-radius:15px;text-align:center}
-.team input{text-align:center;font-weight:bold;margin:8px 0}
-.score{font-size:34px;font-weight:900;color:var(--gold);direction:ltr;white-space:nowrap}
-.scoreinput{font-size:24px!important;text-align:center;font-weight:bold;padding:8px!important}
-.timer{font-size:25px;font-weight:900;direction:ltr;color:var(--green);text-align:center;margin:14px}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{background:#202838;border:1px solid var(--border);color:#dce4f3;border-radius:20px;padding:8px 12px;font-size:12px}
-.result{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1018;border:1px solid var(--border);border-radius:13px;padding:14px;line-height:2;font-size:13px;min-height:90px;color:#e8edf7}
-.muted{color:var(--muted);font-size:12px;line-height:1.9}
-.good{color:var(--green)}.gold{color:var(--gold)}
-.footer{text-align:center;padding:20px;color:#768197;font-size:11px}
-#fileInput{display:none}
+button:focus-visible,input:focus-visible{
+ outline:2px solid var(--blue);outline-offset:3px
+}
+.app{max-width:1100px;margin:auto;padding:18px}
+.top{
+ display:flex;align-items:center;gap:13px;padding:16px 0 22px;
+ border-bottom:1px solid var(--line);margin-bottom:24px
+}
+.logo{
+ width:48px;height:48px;border-radius:15px;
+ display:grid;place-items:center;background:#173d30;font-size:25px
+}
+h1{font-size:20px;margin:0}
+.subtitle{font-size:12px;color:var(--muted);margin-top:6px}
+.badge{
+ margin-right:auto;border:1px solid var(--line);
+ border-radius:20px;padding:8px 11px;font-size:11px;color:var(--muted)
+}
+.screen{display:none}
+.screen.active{display:block}
+.hero{text-align:center;padding:20px 0 25px}
+.hero h2{font-size:26px;margin:0 0 12px}
+.hero p{color:var(--muted);line-height:1.9;font-size:14px;max-width:620px;margin:auto}
+.cards{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px
+}
+.card{
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:17px;padding:21px;min-width:0
+}
+.role-card{text-align:center;transition:.2s}
+.role-card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.role-icon{
+ width:76px;height:76px;border-radius:23px;margin:0 auto 18px;
+ display:grid;place-items:center;font-size:34px
+}
+.father{background:#18385e;color:#8dbbff}
+.child{background:#16452e;color:#6ff0ac}
+h3{font-size:18px;margin:0 0 10px}
+p{line-height:1.8}
+.desc{font-size:13px;color:var(--muted);min-height:50px}
+.btn{
+ width:100%;padding:13px 15px;border:0;border-radius:10px;
+ color:#07140e;background:var(--green);font-weight:bold
+}
+.btn.blue{background:var(--blue);color:#081426}
+.btn.dark{background:var(--card);border:1px solid var(--line);color:var(--text)}
+.btn.red{background:#48212a;color:#ffc3ca;border:1px solid #71313b}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row .btn{flex:1;min-width:130px}
+.back{
+ background:transparent;border:1px solid var(--line);color:var(--text);
+ border-radius:9px;padding:9px 13px;margin-bottom:18px
+}
+.field{margin:16px 0}
+.field label{display:block;font-size:13px;margin-bottom:9px}
+.field input{
+ width:100%;background:#090f19;border:1px solid var(--line);
+ border-radius:10px;color:white;padding:15px;letter-spacing:2px
+}
+.hint{color:var(--muted);font-size:12px;line-height:1.9}
+.alert{
+ display:none;padding:13px;border-radius:10px;font-size:13px;
+ line-height:1.8;margin:14px 0
+}
+.alert.show{display:block}
+.alert.info{background:#172c47;color:#b7d8ff}
+.alert.success{background:#143b2b;color:#a5f5c8}
+.alert.error{background:#451f28;color:#ffc0c7}
+.code{
+ font-size:36px;font-weight:bold;letter-spacing:9px;text-align:center;
+ padding:22px 10px;border:1px dashed #4a8e70;border-radius:14px;
+ background:#10241d;color:#7ff0b2;margin:20px 0
+}
+.timer{text-align:center;font-size:12px;color:var(--muted)}
+.section-title{margin:0 0 15px;font-size:19px}
+.status{
+ display:flex;align-items:center;gap:9px;background:var(--card);
+ border:1px solid var(--line);padding:14px;border-radius:11px;margin-bottom:13px
+}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--gold)}
+.dot.green{background:var(--green)}
+.dot.red{background:var(--red)}
+.panel-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px
+}
+.feature{
+ background:var(--card);border:1px solid var(--line);
+ border-radius:12px;padding:16px
+}
+.feature .icon{font-size:23px;margin-bottom:12px}
+.feature h4{margin:0 0 8px;font-size:14px}
+.feature p{font-size:12px;color:var(--muted);margin:0 0 12px}
+.feature .btn{padding:10px;font-size:12px}
+.footer{text-align:center;padding:28px 0;color:var(--muted);font-size:11px}
 .hidden{display:none!important}
-@media(max-width:760px){
- main{padding:11px}.layout{grid-template-columns:1fr}
- .hero h1{font-size:21px}.card{padding:13px}
- .brand{font-size:15px}.scoreboard{gap:6px;padding:10px}
- .score{font-size:26px}.scoreinput{font-size:20px!important}
+@media(max-width:650px){
+ .app{padding:13px}
+ .cards,.panel-grid{grid-template-columns:1fr}
+ .hero h2{font-size:22px}
+ .badge{font-size:10px}
+ .card{padding:17px}
+ .code{font-size:30px;letter-spacing:6px}
+ .desc{min-height:0;margin-bottom:18px}
 }
 </style>
 </head>
 <body>
-
-<header class="topbar">
-  <div class="brand">
-    <div class="logo">⚽</div>
-    <div>عبده سبورت <small>ABDO SPORT AI STUDIO</small></div>
+<div class="app">
+ <header class="top">
+  <div class="logo">🛡️</div>
+  <div>
+   <h1>احرس عائلتك مع عبده</h1>
+   <div class="subtitle">منصة أمان العائلة والأجهزة</div>
   </div>
-  <div class="status" id="status">● جاهز للتشغيل</div>
-</header>
+  <div class="badge" id="headerBadge">اختيار الجهاز</div>
+ </header>
 
-<main>
-  <section class="hero">
-    <h1>استوديو عبده الرياضي الذكي 👑</h1>
-    <p>شغّل الفيديو الرياضي، اكتب بيانات المباراة، التقط لقطة وحللها بالذكاء الاصطناعي. واجهة عربية متوافقة مع الموبايل والكمبيوتر.</p>
-  </section>
-
-  <div class="layout">
-    <section>
-      <div class="card">
-        <h2>🎬 مشغل الفيديو الرياضي</h2>
-        <div class="player" id="player">
-          <div class="placeholder">⚽<br>اختار فيديو من جهازك أو افتح رابط يوتيوب</div>
-        </div>
-        <input id="fileInput" type="file" accept="video/*">
-        <div class="btnrow">
-          <button class="primary" id="chooseBtn">📁 اختيار فيديو</button>
-          <button class="secondary" id="captureBtn">📸 التقاط لقطة</button>
-        </div>
-        <label style="margin-top:15px">رابط فيديو مباشر أو رابط يوتيوب</label>
-        <input id="videoUrl" type="url" placeholder="https://...">
-        <div class="btnrow">
-          <button class="secondary" id="openUrlBtn">فتح الرابط</button>
-          <button class="secondary" id="stopBtn">إيقاف الفيديو</button>
-        </div>
-        <p class="muted">ملاحظة: بعض روابط الفيديو الخارجية تمنع التشغيل بسبب إعدادات الموقع المصدر. روابط يوتيوب تُعرض داخل مشغل يوتيوب، ولا يمكن التقاط صورة منها مباشرة بسبب قيود المتصفح.</p>
-      </div>
-
-      <div class="card">
-        <h2>📊 لوحة نتيجة المباراة</h2>
-        <div class="scoreboard">
-          <div class="team">
-            <label>الفريق الأول</label>
-            <input id="team1" value="الفريق الأول">
-            <input id="goals1" class="scoreinput" type="number" min="0" max="999" value="0">
-          </div>
-          <div>
-            <div class="score" id="scoreDisplay">0 - 0</div>
-            <div class="muted">النتيجة</div>
-          </div>
-          <div class="team">
-            <label>الفريق الثاني</label>
-            <input id="team2" value="الفريق الثاني">
-            <input id="goals2" class="scoreinput" type="number" min="0" max="999" value="0">
-          </div>
-        </div>
-        <div class="timer" id="timer">00:00</div>
-        <div class="btnrow">
-          <button class="primary" id="startTimer">▶ بدء الوقت</button>
-          <button class="secondary" id="pauseTimer">⏸ إيقاف مؤقت</button>
-          <button class="danger" id="resetTimer">↺ تصفير</button>
-        </div>
-        <label style="margin-top:14px">حالة المباراة</label>
-        <select id="matchPeriod">
-          <option>قبل بداية المباراة</option>
-          <option>الشوط الأول</option>
-          <option>استراحة بين الشوطين</option>
-          <option>الشوط الثاني</option>
-          <option>وقت إضافي</option>
-          <option>ركلات الترجيح</option>
-          <option>انتهت المباراة</option>
-        </select>
-      </div>
-    </section>
-
-    <aside>
-      <div class="card">
-        <h2>🤖 تحليل المباراة بالذكاء الاصطناعي</h2>
-        <label>مفتاح Gemini API</label>
-        <input id="apiKey" type="password" placeholder="أدخل مفتاح Gemini هنا" autocomplete="off">
-        <p class="muted">المفتاح يُستخدم من متصفحك مباشرة في هذه النسخة، لذلك لا تنشر الصفحة بمفتاحك الشخصي.</p>
-        <label>إيه اللي عايز تحلله؟</label>
-        <textarea id="question" rows="3" placeholder="مثال: حلل تمركز اللاعبين والفرص الظاهرة في هذه اللقطة"></textarea>
-        <div class="chips" style="margin-bottom:12px">
-          <button class="chip" data-question="حلل التمركز والتحركات الظاهرة في الصورة">تحليل التمركز</button>
-          <button class="chip" data-question="اشرح ما يظهر في اللقطة من أحداث رياضية">شرح اللقطة</button>
-          <button class="chip" data-question="حلل الموقف التكتيكي الظاهر، واذكر حدود ما يمكن استنتاجه">تحليل تكتيكي</button>
-        </div>
-        <div class="btnrow">
-          <button class="primary" id="analyzeBtn">✨ تحليل اللقطة</button>
-          <button class="secondary" id="clearBtn">مسح النتيجة</button>
-        </div>
-        <div id="analysisResult" class="result" style="margin-top:13px">نتيجة التحليل هتظهر هنا.</div>
-        <p class="muted" id="analysisMeta"></p>
-      </div>
-
-      <div class="card">
-        <h2>🖼️ اللقطة الحالية</h2>
-        <div class="player" id="snapshot">
-          <div class="placeholder">لسه مفيش لقطة<br>شغّل فيديو واضغط «التقاط لقطة»</div>
-        </div>
-        <button class="secondary" id="removeSnapshot" style="width:100%">حذف اللقطة</button>
-        <p class="muted">التحليل يعتمد على صورة واحدة فقط، وليس مشاهدة المباراة كاملة. قد يخطئ الذكاء الاصطناعي في تحديد اللاعبين أو قراءة النتيجة.</p>
-      </div>
-
-      <div class="card">
-        <h2>📋 ملخص بيانات المباراة</h2>
-        <div class="result" id="matchSummary">الفريق الأول 0 - 0 الفريق الثاني</div>
-        <button class="secondary" id="copySummary" style="width:100%;margin-top:10px">نسخ الملخص</button>
-      </div>
-    </aside>
+ <!-- الصفحة الرئيسية -->
+ <section class="screen active" id="home">
+  <div class="hero">
+   <h2>أهلاً بيك في لوحة العائلة 👋</h2>
+   <p>اختار نوع الجهاز للبدء. الأب يدخل كود الاقتران، والابن ينشئ كودًا لتجربة الربط. الاتصال بين هاتفين مختلفين يحتاج خادمًا مشتركًا.</p>
   </div>
-  <div class="footer">ABDO SPORT AI · استوديو رياضي تجريبي</div>
-</main>
+  <div class="cards">
+   <div class="card role-card">
+    <div class="role-icon father">👨‍👧</div>
+    <h3>تليفون الأب</h3>
+    <p class="desc">إدخال كود الاقتران، ومراجعة حالة الربط والميزات المتاحة للأجهزة المتصلة.</p>
+    <button class="btn blue" id="fatherStart">الدخول كأب</button>
+   </div>
+   <div class="card role-card">
+    <div class="role-icon child">📱</div>
+    <h3>تليفون الابن</h3>
+    <p class="desc">إنشاء كود تجريبي، ومراجعة حالة الجهاز قبل مشاركة بياناته بإذن صاحبه.</p>
+    <button class="btn" id="childStart">الدخول كابن</button>
+   </div>
+  </div>
+  <div class="card" style="margin-top:17px">
+   <h3>🔐 حماية الاتصال</h3>
+   <p class="hint">كود الاقتران التجريبي هنا لا يفتح تحكمًا حقيقيًا في هاتف آخر. لا تستخدم أكوادًا ثابتة أو مشتركة لفتح صلاحيات الجهاز. الربط الحقيقي يتطلب خادمًا آمنًا، وموافقة من الجهازين، وتحققًا من هوية كل طرف.</p>
+  </div>
+ </section>
+
+ <!-- وضع الابن -->
+ <section class="screen" id="child">
+  <button class="back" data-home>← رجوع</button>
+  <div class="card">
+   <h2 class="section-title">📱 تليفون الابن</h2>
+   <p class="hint">أنشئ كودًا عشوائيًا للتجربة. في هذه النسخة يُحفظ على المتصفح نفسه، لذلك لن يصل تلقائيًا إلى هاتف الأب الآخر.</p>
+   <div id="childCodeArea" class="hidden">
+    <div class="code" id="childCode">------</div>
+    <div class="timer" id="codeTimer">الكود صالح لمدة 5 دقائق في هذه الجلسة</div>
+    <div class="row" style="margin-top:16px">
+     <button class="btn dark" id="copyCode">نسخ الكود</button>
+     <button class="btn" id="newCode">إنشاء كود جديد</button>
+    </div>
+   </div>
+   <div id="noChildCode">
+    <button class="btn" id="generateCode">إنشاء كود الاقتران</button>
+   </div>
+   <div id="childAlert" class="alert"></div>
+   <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+   <h3>حالة الجهاز</h3>
+   <div class="status"><span class="dot green"></span><span>واجهة الابن جاهزة</span></div>
+   <p class="hint">لا توجد مشاركة موقع أو كاميرا أو رسائل حتى توافق عليها وتُفعّل عبر تطبيق حقيقي.</p>
+  </div>
+ </section>
+
+ <!-- وضع الأب -->
+ <section class="screen" id="father">
+  <button class="back" data-home>← رجوع</button>
+  <div class="card">
+   <h2 class="section-title">👨‍👧 تليفون الأب</h2>
+   <p class="hint">اكتب كود الاقتران التجريبي. يجب أن يكون الكود متاحًا في نفس المتصفح لهذه النسخة. الربط بين هاتفين منفصلين غير متاح من دون خادم.</p>
+   <form id="pairForm">
+    <div class="field">
+     <label for="pairCode">كود الاقتران المكوّن من 6 أرقام</label>
+     <input id="pairCode" inputmode="numeric" autocomplete="one-time-code"
+      maxlength="6" pattern="[0-9]{6}" placeholder="000000" required>
+    </div>
+    <button class="btn blue" type="submit">التحقق من الكود</button>
+   </form>
+   <div id="fatherAlert" class="alert"></div>
+   <div class="hint" style="margin-top:15px">الكود وحده لا يمنح صلاحية قفل الهاتف أو تشغيل كاميرته أو قراءة رسائله.</div>
+  </div>
+ </section>
+
+ <!-- لوحة التحكم -->
+ <section class="screen" id="dashboard">
+  <button class="back" data-home>← الصفحة الرئيسية</button>
+  <h2 class="section-title">لوحة أمان الجهاز</h2>
+  <div class="status">
+   <span class="dot green"></span>
+   <div><strong>تم التحقق من الكود التجريبي</strong><div class="hint">هذا لا يعني أن هاتفًا آخر اتصل فعليًا.</div></div>
+  </div>
+  <div class="alert info show">هذه لوحة توضيحية. البيانات المعروضة لا تأتي من هاتف آخر، ولا توجد أوامر بعيدة مفعّلة.</div>
+  <div class="panel-grid">
+   <div class="feature">
+    <div class="icon">📍</div><h4>الموقع الجغرافي</h4>
+    <p>يمكن تحديد موقع الجهاز الذي وافق على الإذن من متصفحه فقط.</p>
+    <button class="btn dark" id="localLocation">طلب إذن الموقع لهذا الجهاز</button>
+   </div>
+   <div class="feature">
+    <div class="icon">🔋</div><h4>حالة البطارية</h4>
+    <p>قراءة البطارية قد تكون غير مدعومة في بعض المتصفحات.</p>
+    <button class="btn dark" id="batteryInfo">عرض حالة الدعم</button>
+   </div>
+   <div class="feature">
+    <div class="icon">📷</div><h4>الكاميرا</h4>
+    <p>لا يمكن فتح كاميرا هاتف آخر من صفحة ويب عادية.</p>
+    <button class="btn dark" id="cameraInfo">عرض المتطلبات</button>
+   </div>
+   <div class="feature">
+    <div class="icon">🔒</div><h4>قفل الشاشة وإعادة التشغيل</h4>
+    <p>يتطلبان تطبيقًا مصاحبًا وصلاحيات نظام مناسبة.</p>
+    <button class="btn dark" id="deviceInfo">عرض التفاصيل</button>
+   </div>
+   <div class="feature">
+    <div class="icon">💬</div><h4>واتساب والتطبيقات</h4>
+    <p>لا تتم قراءة الرسائل أو مراقبة النشاط من هذه الصفحة.</p>
+    <button class="btn dark" id="privacyInfo">عرض سياسة الخصوصية</button>
+   </div>
+   <div class="feature">
+    <div class="icon">🔗</div><h4>حالة الاقتران</h4>
+    <p>اقتران تجريبي محلي، وليس اتصالًا شبكيًا بين جهازين.</p>
+    <button class="btn red" id="unlink">إنهاء الجلسة التجريبية</button>
+   </div>
+  </div>
+  <div id="dashAlert" class="alert"></div>
+ </section>
+
+ <div class="footer">احرس عائلتك مع عبده · نسخة تجريبية آمنة</div>
+</div>
 
 <script>
 "use strict";
 
 const $ = id => document.getElementById(id);
-let videoElement = null;
-let objectUrl = null;
-let snapshotData = null;
-let elapsed = 0;
-let timerInterval = null;
-let timerRunning = false;
+const screens = ["home","child","father","dashboard"];
+let currentCode = "";
+let expiresAt = 0;
+let expiryInterval = null;
 
-function setStatus(text, good=false) {
-  $("status").textContent = "● " + text;
-  $("status").style.color = good ? "#23d5ab" : "#ffd166";
+function showScreen(name) {
+ screens.forEach(id => $(id).classList.toggle("active", id === name));
+ const names = {
+  home:"اختيار الجهاز",
+  child:"تليفون الابن",
+  father:"تليفون الأب",
+  dashboard:"لوحة التحكم"
+ };
+ $("headerBadge").textContent = names[name] || "احرس عائلتك";
+ window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function updateScore() {
-  const a = Math.max(0, Number($("goals1").value) || 0);
-  const b = Math.max(0, Number($("goals2").value) || 0);
-  $("scoreDisplay").textContent = a + " - " + b;
-  updateSummary();
+function showAlert(id,message,type="info") {
+ const box = $(id);
+ box.textContent = message;
+ box.className = "alert show " + type;
 }
 
-function formatTime(seconds) {
-  const minutes = Math.floor(seconds / 60);
-  const remainder = seconds % 60;
-  return String(minutes).padStart(2, "0") + ":" +
-         String(remainder).padStart(2, "0");
+function clearAlert(id) {
+ $(id).className = "alert";
+ $(id).textContent = "";
 }
 
-function updateTimer() {
-  $("timer").textContent = formatTime(elapsed);
-  updateSummary();
-}
+$("fatherStart").addEventListener("click",()=>showScreen("father"));
+$("childStart").addEventListener("click",()=>showScreen("child"));
 
-function updateSummary() {
-  const a = $("team1").value.trim() || "الفريق الأول";
-  const b = $("team2").value.trim() || "الفريق الثاني";
-  const ga = Math.max(0, Number($("goals1").value) || 0);
-  const gb = Math.max(0, Number($("goals2").value) || 0);
-  $("matchSummary").textContent =
-    a + " " + ga + " - " + gb + " " + b +
-    "\nالوقت: " + formatTime(elapsed) +
-    "\nالحالة: " + $("matchPeriod").value;
-}
-
-function startTimer() {
-  if (timerRunning) return;
-  timerRunning = true;
-  timerInterval = setInterval(() => {
-    elapsed++;
-    updateTimer();
-  }, 1000);
-  setStatus("عداد المباراة يعمل", true);
-}
-
-function pauseTimer() {
-  clearInterval(timerInterval);
-  timerInterval = null;
-  timerRunning = false;
-  setStatus("العداد متوقف مؤقتًا");
-}
-
-function resetTimer() {
-  pauseTimer();
-  elapsed = 0;
-  updateTimer();
-}
-
-function destroyCurrentVideo() {
-  if (videoElement) {
-    try { videoElement.pause(); } catch (_) {}
-  }
-  videoElement = null;
-  $("player").replaceChildren();
-  if (objectUrl) {
-    URL.revokeObjectURL(objectUrl);
-    objectUrl = null;
-  }
-}
-
-function showPlaceholder(message) {
-  const div = document.createElement("div");
-  div.className = "placeholder";
-  div.textContent = message;
-  $("player").replaceChildren(div);
-}
-
-function isYouTubeUrl(value) {
-  try {
-    const u = new URL(value);
-    const host = u.hostname.toLowerCase();
-    return host === "youtu.be" ||
-      host === "youtube.com" ||
-      host.endsWith(".youtube.com") ||
-      host === "youtube-nocookie.com" ||
-      host.endsWith(".youtube-nocookie.com");
-  } catch (_) {
-    return false;
-  }
-}
-
-function getYouTubeId(value) {
-  try {
-    const u = new URL(value);
-    let id = "";
-    if (u.hostname.includes("youtu.be")) {
-      id = u.pathname.split("/").filter(Boolean)[0] || "";
-    } else if (u.pathname === "/watch") {
-      id = u.searchParams.get("v") || "";
-    } else if (/^\/(embed|shorts|live)\//.test(u.pathname)) {
-      id = u.pathname.split("/")[2] || "";
-    }
-    return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
-  } catch (_) {
-    return "";
-  }
-}
-
-function loadYouTube(url) {
-  const id = getYouTubeId(url);
-  if (!id) {
-    showPlaceholder("رابط يوتيوب غير صالح. تأكد من الرابط وحاول مرة أخرى.");
-    return;
-  }
-
-  destroyCurrentVideo();
-  const iframe = document.createElement("iframe");
-  iframe.src = "https://www.youtube-nocookie.com/embed/" +
-    encodeURIComponent(id) + "?autoplay=1&rel=0";
-  iframe.title = "مشغل فيديو رياضي";
-  iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
-  iframe.allowFullscreen = true;
-  iframe.referrerPolicy = "strict-origin-when-cross-origin";
-  $("player").replaceChildren(iframe);
-  setStatus("فيديو يوتيوب مفتوح", true);
-}
-
-function loadDirectVideo(url) {
-  destroyCurrentVideo();
-  const video = document.createElement("video");
-  video.controls = true;
-  video.playsInline = true;
-  video.preload = "metadata";
-  video.crossOrigin = "anonymous";
-  video.src = url;
-
-  video.addEventListener("loadedmetadata", () => {
-    setStatus("الفيديو جاهز", true);
-  });
-
-  video.addEventListener("error", () => {
-    setStatus("تعذر تشغيل الرابط");
-  });
-
-  $("player").replaceChildren(video);
-  videoElement = video;
-  video.play().catch(() => {});
-}
-
-function openUrl() {
-  const url = $("videoUrl").value.trim();
-  if (!url) {
-    alert("اكتب رابط الفيديو أولًا.");
-    return;
-  }
-
-  try {
-    const parsed = new URL(url);
-    if (!["http:", "https:"].includes(parsed.protocol)) {
-      throw new Error("بروتوكول غير مسموح");
-    }
-  } catch (_) {
-    alert("اكتب رابطًا صحيحًا يبدأ بـ https:// أو http://");
-    return;
-  }
-
-  if (isYouTubeUrl(url)) {
-    loadYouTube(url);
-  } else {
-    loadDirectVideo(url);
-  }
-}
-
-function loadLocalFile(file) {
-  if (!file) return;
-  if (!file.type.startsWith("video/")) {
-    alert("اختار ملف فيديو صالح.");
-    return;
-  }
-
-  destroyCurrentVideo();
-  objectUrl = URL.createObjectURL(file);
-
-  const video = document.createElement("video");
-  video.controls = true;
-  video.playsInline = true;
-  video.preload = "metadata";
-  video.src = objectUrl;
-
-  video.addEventListener("loadedmetadata", () => {
-    setStatus("فيديو الجهاز جاهز", true);
-  });
-
-  video.addEventListener("error", () => {
-    setStatus("تعذر قراءة ملف الفيديو");
-  });
-
-  $("player").replaceChildren(video);
-  videoElement = video;
-}
-
-function captureFrame() {
-  if (!videoElement || videoElement.readyState < 2) {
-    alert("شغّل فيديو مباشرًا أو ارفع فيديو من جهازك أولًا. لا يمكن التقاط إطار من مشغل يوتيوب المضمّن.");
-    return;
-  }
-
-  if (!videoElement.videoWidth || !videoElement.videoHeight) {
-    alert("الفيديو لم يصبح جاهزًا لالتقاط الصورة بعد.");
-    return;
-  }
-
-  try {
-    const canvas = document.createElement("canvas");
-    const maxWidth = 1100;
-    const scale = Math.min(1, maxWidth / videoElement.videoWidth);
-    canvas.width = Math.round(videoElement.videoWidth * scale);
-    canvas.height = Math.round(videoElement.videoHeight * scale);
-
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-    snapshotData = canvas.toDataURL("image/jpeg", 0.82);
-
-    const img = document.createElement("img");
-    img.src = snapshotData;
-    img.alt = "لقطة من الفيديو";
-    img.style.width = "100%";
-    img.style.height = "100%";
-    img.style.objectFit = "contain";
-
-    $("snapshot").replaceChildren(img);
-    $("analysisResult").textContent =
-      "تم التقاط اللقطة. اكتب سؤالك واضغط تحليل اللقطة.";
-    $("analysisMeta").textContent =
-      "حجم الصورة: " + Math.round(snapshotData.length / 1024) + " كيلوبايت";
-    setStatus("تم التقاط اللقطة", true);
-  } catch (error) {
-    console.error(error);
-    alert("المتصفح منع التقاط الصورة. قد يكون الفيديو من مصدر خارجي لا يسمح بالوصول إلى إطاراته.");
-  }
-}
-
-async function analyzeSnapshot() {
-  const apiKey = $("apiKey").value.trim();
-  if (!apiKey) {
-    alert("أدخل مفتاح Gemini API أولًا.");
-    $("apiKey").focus();
-    return;
-  }
-
-  if (!snapshotData) {
-    alert("التقط لقطة من الفيديو أولًا.");
-    return;
-  }
-
-  const button = $("analyzeBtn");
-  button.disabled = true;
-  button.textContent = "⏳ جاري التحليل...";
-  $("analysisResult").textContent = "جاري إرسال اللقطة إلى Gemini...";
-  $("analysisMeta").textContent = "";
-  setStatus("جاري تحليل اللقطة");
-
-  const matchInfo = $("matchSummary").textContent;
-  const question = $("question").value.trim() ||
-    "حلل اللقطة الرياضية واشرح ما يمكن ملاحظته دون افتراض معلومات غير ظاهرة.";
-
-  try {
-    const comma = snapshotData.indexOf(",");
-    const base64 = snapshotData.slice(comma + 1);
-
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
-        encodeURIComponent(apiKey),
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              {
-                inline_data: {
-                  mime_type: "image/jpeg",
-                  data: base64
-                }
-              },
-              {
-                text:
-                  "أنت مساعد تحليل رياضي تتحدث بالعربية. حلل الصورة المرفقة فقط. " +
-                  "لا تدّع مشاهدة المباراة كاملة. لا تخمّن أسماء اللاعبين أو النتيجة إذا لم تكن واضحة. " +
-                  "ميّز بين الملاحظة المرئية والاستنتاج المحتمل. قدم إجابة منظمة بنقاط.\n\n" +
-                  "بيانات المباراة:\n" + matchInfo +
-                  "\n\nسؤال المستخدم:\n" + question
-              }
-            ]
-          }],
-          generationConfig: {
-            temperature: 0.3,
-            maxOutputTokens: 900
-          }
-        })
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      const message = data?.error?.message || "فشل طلب التحليل.";
-      throw new Error(message);
-    }
-
-    const text = data?.candidates?.[0]?.content?.parts
-      ?.map(part => part.text || "")
-      .join("\n")
-      .trim();
-
-    if (!text) {
-      throw new Error("لم يرجع Gemini نتيجة نصية. جرّب لقطة أخرى.");
-    }
-
-    $("analysisResult").textContent = text;
-    $("analysisMeta").textContent =
-      "اكتمل التحليل باستخدام Gemini. النتيجة تقديرية وتعتمد على الصورة المرفقة.";
-    setStatus("اكتمل التحليل", true);
-  } catch (error) {
-    console.error(error);
-    $("analysisResult").textContent =
-      "تعذر إتمام التحليل.\n\n" +
-      error.message +
-      "\n\nتحقق من صحة المفتاح، وتوفر النموذج في حسابك، واتصال الإنترنت وصلاحية API.";
-    setStatus("فشل التحليل");
-  } finally {
-    button.disabled = false;
-    button.textContent = "✨ تحليل اللقطة";
-  }
-}
-
-$("chooseBtn").addEventListener("click", () => $("fileInput").click());
-$("fileInput").addEventListener("change", event => {
-  loadLocalFile(event.target.files[0]);
-  event.target.value = "";
+document.querySelectorAll("[data-home]").forEach(button=>{
+ button.addEventListener("click",()=>showScreen("home"));
 });
 
-$("openUrlBtn").addEventListener("click", openUrl);
+function getStoredCode() {
+ try {
+  const data = JSON.parse(sessionStorage.getItem("abdoFamilyDemoCode") || "null");
+  if (!data || !data.code || data.expiresAt < Date.now()) return null;
+  return data;
+ } catch {
+  return null;
+ }
+}
 
-$("videoUrl").addEventListener("keydown", event => {
-  if (event.key === "Enter") openUrl();
-});
+function generatePairCode() {
+ const bytes = new Uint32Array(1);
+ if (window.crypto && crypto.getRandomValues) {
+  crypto.getRandomValues(bytes);
+ } else {
+  bytes[0] = Math.floor(Math.random()*1000000);
+ }
+ currentCode = String(bytes[0] % 1000000).padStart(6,"0");
+ expiresAt = Date.now() + 5*60*1000;
 
-$("stopBtn").addEventListener("click", () => {
-  if (videoElement) videoElement.pause();
-  setStatus("الفيديو متوقف");
-});
+ try {
+  sessionStorage.setItem("abdoFamilyDemoCode",JSON.stringify({
+   code:currentCode,expiresAt
+  }));
+ } catch {}
 
-$("captureBtn").addEventListener("click", captureFrame);
-$("analyzeBtn").addEventListener("click", analyzeSnapshot);
-$("startTimer").addEventListener("click", startTimer);
-$("pauseTimer").addEventListener("click", pauseTimer);
-$("resetTimer").addEventListener("click", resetTimer);
+ $("childCode").textContent = currentCode;
+ $("childCodeArea").classList.remove("hidden");
+ $("noChildCode").classList.add("hidden");
+ clearAlert("childAlert");
+ startCountdown();
+}
 
-["goals1", "goals2", "team1", "team2", "matchPeriod"].forEach(id => {
-  $(id).addEventListener("input", updateScore);
-  $(id).addEventListener("change", updateSummary);
-});
-
-document.querySelectorAll("[data-question]").forEach(button => {
-  button.addEventListener("click", () => {
-    $("question").value = button.dataset.question;
-  });
-});
-
-$("clearBtn").addEventListener("click", () => {
-  $("analysisResult").textContent = "نتيجة التحليل هتظهر هنا.";
-  $("analysisMeta").textContent = "";
-});
-
-$("removeSnapshot").addEventListener("click", () => {
-  snapshotData = null;
-  const placeholder = document.createElement("div");
-  placeholder.className = "placeholder";
-  placeholder.textContent = "لسه مفيش لقطة";
-  $("snapshot").replaceChildren(placeholder);
-  $("analysisMeta").textContent = "";
-});
-
-$("copySummary").addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText($("matchSummary").textContent);
-    setStatus("تم نسخ الملخص", true);
-  } catch (_) {
-    alert("تعذر النسخ تلقائيًا. حدد نص الملخص وانسخه يدويًا.");
+function startCountdown() {
+ if (expiryInterval) clearInterval(expiryInterval);
+ const tick = () => {
+  const remaining = Math.max(0,Math.ceil((expiresAt-Date.now())/1000));
+  if (!remaining) {
+   clearInterval(expiryInterval);
+   expiryInterval = null;
+   currentCode = "";
+   $("childCode").textContent = "انتهى";
+   $("codeTimer").textContent = "انتهت صلاحية الكود. أنشئ كودًا جديدًا.";
+   $("copyCode").disabled = true;
+   return;
   }
+  $("copyCode").disabled = false;
+  $("codeTimer").textContent =
+   "الكود التجريبي صالح لمدة " +
+   Math.floor(remaining/60) + ":" +
+   String(remaining%60).padStart(2,"0");
+ };
+ tick();
+ expiryInterval = setInterval(tick,1000);
+}
+
+$("generateCode").addEventListener("click",generatePairCode);
+$("newCode").addEventListener("click",generatePairCode);
+
+$("copyCode").addEventListener("click",async()=>{
+ if (!currentCode || Date.now() > expiresAt) {
+  showAlert("childAlert","انتهت صلاحية الكود. أنشئ كودًا جديدًا.","error");
+  return;
+ }
+ try {
+  await navigator.clipboard.writeText(currentCode);
+  showAlert("childAlert","تم نسخ الكود التجريبي.","success");
+ } catch {
+  showAlert("childAlert","تعذر النسخ تلقائيًا. يمكنك نسخ الأرقام الظاهرة يدويًا.","info");
+ }
 });
 
-updateScore();
-updateTimer();
+$("pairForm").addEventListener("submit",event=>{
+ event.preventDefault();
+ const input = $("pairCode").value.trim();
+ const stored = getStoredCode();
+
+ if (!/^\d{6}$/.test(input)) {
+  showAlert("fatherAlert","اكتب 6 أرقام صحيحة.","error");
+  return;
+ }
+ if (!stored) {
+  showAlert("fatherAlert","لا يوجد كود تجريبي صالح في جلسة المتصفح هذه. أنشئ كودًا أولًا. لن يعمل هذا النموذج بين هاتفين منفصلين.","error");
+  return;
+ }
+ if (input !== stored.code) {
+  showAlert("fatherAlert","الكود غير صحيح.","error");
+  return;
+ }
+ showScreen("dashboard");
+});
+
+function dashboardMessage(message,type="info") {
+ showAlert("dashAlert",message,type);
+}
+
+$("localLocation").addEventListener("click",()=>{
+ if (!navigator.geolocation) {
+  dashboardMessage("متصفحك لا يدعم تحديد الموقع.","error");
+  return;
+ }
+ navigator.geolocation.getCurrentPosition(
+  pos=>{
+   dashboardMessage(
+    "موقع هذا الجهاز: "+pos.coords.latitude.toFixed(5)+
+    ", "+pos.coords.longitude.toFixed(5)+
+    ". هذه الإحداثيات تخص الجهاز الذي وافق على الإذن.",
+    "success"
+   );
+  },
+  err=>{
+   dashboardMessage(
+    err.code===1 ? "تم رفض إذن الموقع." :
+    "تعذر تحديد الموقع. تأكد من تفعيل GPS واستخدام HTTPS.",
+    "error"
+   );
+  },
+  {enableHighAccuracy:true,timeout:15000}
+ );
+});
+
+$("batteryInfo").addEventListener("click",()=>{
+ dashboardMessage(
+  navigator.getBattery
+  ? "المتصفح يدعم واجهة البطارية. القراءة ستكون للجهاز الحالي فقط."
+  : "واجهة البطارية غير مدعومة في هذا المتصفح."
+ );
+});
+
+$("cameraInfo").addEventListener("click",()=>{
+ dashboardMessage(
+  "يلزم تطبيق مصاحب على الجهاز الآخر، مع موافقة مستخدمه وإذن الكاميرا واتصال آمن."
+ );
+});
+
+$("deviceInfo").addEventListener("click",()=>{
+ dashboardMessage(
+  "صفحة الويب لا تستطيع فرض قفل الشاشة أو إعادة تشغيل الهاتف. يلزم تطبيق إدارة أجهزة مصرح به."
+ );
+});
+
+$("privacyInfo").addEventListener("click",()=>{
+ dashboardMessage(
+  "لا يتم الوصول إلى رسائل واتساب أو تسجيل نشاط التطبيقات. استخدم أدوات الرقابة الأبوية الرسمية وبموجب الصلاحيات المناسبة."
+ );
+});
+
+$("unlink").addEventListener("click",()=>{
+ try { sessionStorage.removeItem("abdoFamilyDemoCode"); } catch {}
+ if (expiryInterval) clearInterval(expiryInterval);
+ expiryInterval = null;
+ currentCode = "";
+ expiresAt = 0;
+ $("pairCode").value = "";
+ $("childCodeArea").classList.add("hidden");
+ $("noChildCode").classList.remove("hidden");
+ $("childCode").textContent = "------";
+ $("copyCode").disabled = false;
+ clearAlert("childAlert");
+ clearAlert("fatherAlert");
+ clearAlert("dashAlert");
+ showScreen("home");
+});
 </script>
 </body>
 </html>
